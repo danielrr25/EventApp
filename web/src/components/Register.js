@@ -5,7 +5,7 @@ const Register = () => {
 
   var loginName;
   var loginPassword;
-  
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -30,7 +30,7 @@ const Register = () => {
        var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
        localStorage.setItem('user_data', JSON.stringify(user));
        setMessage('');
-       window.location.href = '/cards';
+       window.location.href = '/EventApp';
       }
     }
     catch(e)
