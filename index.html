@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>ContactUs Homepage</title>
+
+    <script type="text/javascript" src="js/md5.js"></script>
+    <script type="text/javascript" src="js/code.js"></script>
+    <link href="css/styles_home.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Ubuntu"
+      rel="stylesheet"
+    />
+    <script src="js/script_index.js" defer></script>
+  </head>
+  <body>
+    <div>
+      <button
+        type="button"
+        class="sign-up-buttons"
+        onclick="location.href='https:/\/github.com/danielrr25/EventApp'"
+      >
+        GitHub
+      </button>
+    </div>
+
+    <!-- text displaying login/register verification -->
+    <div id="loginResult"></div>
+    <div id="registerResult"></div>
+
+    <!-- LOGIN & REGISTER FEATURES -->
+    <div class="container">
+      <!-- slider for login/register -->
+      <div class="slider"></div>
+      <div class="btn">
+        <button class="login">Login</button>
+        <button class="register">Register</button>
+      </div>
+
+      <!-- form for login/register -->
+      <div class="form-section">
+        <!-- login form -->
+        <form class="login-box" onsubmit="return false">
+          <input
+            type="text"
+            id="loginName"
+            class="ele"
+            placeholder="Username"
+          />
+          <input
+            type="password"
+            id="loginPassword"
+            class="ele"
+            placeholder="Password"
+          />
+          <button class="clkbtn" onclick="doLogin()">Login</button>
+        </form>
+
+        <!-- register form -->
+        <form class="register-box" onsubmit="return false">
+          <input type="text" id="fName" class="ele" placeholder="First Name" />
+          <input type="text" id="lName" class="ele" placeholder="Last Name" />
+          <input type="text" id="username" class="ele" placeholder="Username" />
+          <input
+            type="password"
+            id="password"
+            class="ele"
+            placeholder="Password"
+          />
+          <button class="clkbtn" onclick="doSignup()">Register</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
