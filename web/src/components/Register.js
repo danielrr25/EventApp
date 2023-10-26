@@ -23,7 +23,7 @@ const Register = () => {
       
       if( res.id <= 0 )
       {
-        setMessage('User/Password combination incorrect');
+        setMessage('Invalid registeration');
       }
       else
       {
