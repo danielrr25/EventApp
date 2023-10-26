@@ -19,7 +19,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).send({ error: 'Invalid login credentials' });
         }
 
-        res.send({ message: 'Logged in successfully' });
+        res.send({userID:user._id ,message: 'Logged in successfully' });
     } catch (error) {
         res.status(500).send(error);
     }
