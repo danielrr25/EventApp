@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const autoIncrement = require('mongoose-auto-increment');
-
+const { Schema } = mongoose;
 const connection = mongoose.createConnection('mongodb://localhost/mydatabase'); // Replace with your MongoDB connection string
-autoIncrement.initialize(connection);
 
 const userSchema = new mongoose.Schema({
     firstname: {
@@ -37,18 +35,12 @@ const userSchema = new mongoose.Schema({
         required: false,
     },
     friendslist: [{
-        type: Number,
+        type: Schema.Types.ObjectId,
         ref: 'users',
         required: false,
     }]
 });
 
-userSchema.plugin(autoIncrement.plugin, {
-    model: 'users',
-    field: '_id',
-    startAt: 1,
-    incrementBy: 1
-});
 
 userSchema.pre('save', async function (next) {
     if (this.isModified('password')) {

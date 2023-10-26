@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
+const { Schema } = mongoose;
+const chatMessageSchema = new mongoose.Schema({
     EventId: {
-      type: Number,
+      type: Schema.Types.ObjectId,
       ref: 'events',
       required: true,
     },
     SenderId: {
-      type: Number,
+      type: Schema.Types.ObjectId,
       ref: 'users',
-      required: false,
+      required: true,
   },
     Tmestamp: {
         type: Date,
@@ -20,3 +20,5 @@ const userSchema = new mongoose.Schema({
         required: true,
     }
 });
+
+module.exports = mongoose.model('chatmessages', chatMessageSchema);

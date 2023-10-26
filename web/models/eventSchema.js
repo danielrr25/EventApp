@@ -1,16 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-
+const { Schema } = mongoose;
 const eventSchema = new mongoose.Schema({
-    eventID: {
-        type: Number,
-        required: true,
-        unique: true,
-        validate: {
-            validator:Number.isInteger,
-            message:"ID must be integer"
-        }
-    },
     eventName: {
         type: String,
         required: true,
@@ -29,7 +20,7 @@ const eventSchema = new mongoose.Schema({
         required: true,
     },
     listAntendees:[{
-        type: Number,
+        type: Schema.Types.ObjectId,
         ref: 'users',
         required: false,
     }],
@@ -37,11 +28,5 @@ const eventSchema = new mongoose.Schema({
     
 });
 
-eventSchema.plugin(autoIncrement.plugin, {
-    model: 'events',
-    field: '_id',
-    startAt: 1,
-    incrementBy: 1
-});
 
-module.exports = mongoose.model('events', userSchema);
+module.exports = mongoose.model('events', eventSchema);
