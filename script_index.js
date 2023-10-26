@@ -1,5 +1,3 @@
-const port = process.env.PORT || 5000;
-
 // LOGIN & REGISTER SECTION
 let register = document.querySelector(".register");
 let login = document.querySelector(".login");
