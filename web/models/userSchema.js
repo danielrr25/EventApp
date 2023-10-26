@@ -1,7 +1,17 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { Schema } = mongoose;
+const connection = mongoose.createConnection('mongodb://localhost/mydatabase'); // Replace with your MongoDB connection string
 
 const userSchema = new mongoose.Schema({
+    firstname: {
+        type: String,
+        required: true,
+    },
+    lastname: {
+        type: String,
+        required: true,
+    },
     username: {
         type: String,
         required: true,
@@ -11,10 +21,28 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    profilepicture: {
+        type: Buffer,
+        required: false,
+    },
+    bio: {
+        type: String,
+        required: false,
+    },
+    friendslist: [{
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        required: false,
+    }]
 });
 
-// Before saving the user, hash the password
-userSchema.pre('save', async function(next) {
+
+userSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 8);
     }

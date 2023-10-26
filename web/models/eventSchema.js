@@ -1,13 +1,32 @@
-// eventSchema.js
-
 const mongoose = require('mongoose');
-
+const bcrypt = require('bcryptjs');
+const { Schema } = mongoose;
 const eventSchema = new mongoose.Schema({
-  // Define your schema fields here
-  name: String,
-  date: Date,
-  description: String,
-  // ... other fields
+    eventName: {
+        type: String,
+        required: true,
+        unique:true,
+    },
+    eventDescription: {
+        type: String,
+        required: true,
+    },
+    eventDate: {
+        type: Date,
+        required: true,
+    },
+    eventLocation: {
+        type: String,
+        required: true,
+    },
+    listAntendees:[{
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        required: false,
+    }],
+
+    
 });
 
-module.exports = mongoose.model('Event', eventSchema);
+
+module.exports = mongoose.model('events', eventSchema);

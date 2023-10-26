@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+//todo
+// const mongoose = require('mongoose');
 
-const attendeeSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  event: { type: mongoose.Schema.Types.ObjectId, ref: 'Event' },
-});
+// const attendeeSchema = new mongoose.Schema({
 
-module.exports = mongoose.model('Attendee', attendeeSchema);
+// });
+
+// module.exports = mongoose.model('Attendee', attendeeSchema);
