@@ -8,6 +8,8 @@ const Register = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState('');
+
 
   const handleRegister = async (event) => {
     // Handle registration logic here
