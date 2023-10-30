@@ -1,0 +1,8 @@
+.background {
+  background-image: url('./Landing Page.jpg');
+  background-size: cover;
+}
+
+.spacer {
+  height: 4000px; /* Adjust the height as needed to trigger scrolling */
+}
