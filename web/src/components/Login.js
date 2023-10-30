@@ -1,18 +1,16 @@
-// src/components/Login.js
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-const Login = () => {
+function Login() {
 
   var loginName;
   var loginPassword;
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [message, setMessage] = useState('');
 
-
-  const handleLogin = async (event) => {
-    // Handle login logic here
+  const doLogin = async (event) => 
+  {
+    event.preventDefault();
+    
     var obj = {login:loginName.value,password:loginPassword.value};
     var js = JSON.stringify(obj);
 
@@ -32,7 +30,7 @@ const Login = () => {
        var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
        localStorage.setItem('user_data', JSON.stringify(user));
        setMessage('');
-       window.location.href = '/EventApp';
+       window.location.href = '/cards';
       }
     }
     catch(e)
@@ -43,25 +41,19 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button onClick={handleLogin}>Login</button>
+    <div id="loginDiv">
+      <form onSubmit={doLogin}>
+      <span id="inner-title">PLEASE LOG IN</span><br />
+      <input type="text" id="loginName" placeholder="Username"
+        ref={(c) => loginName = c}/><br />
+      <input type="password" id="loginPassword" placeholder="Password"
+         ref={(c) => loginPassword = c}/><br />
+      <input type="submit"id="loginButton" class="buttons" value="Do It" 
+        onClick={doLogin}/>
       </form>
+      <span id="loginResult">{message}</span>
     </div>
   );
-};
+}
 
 export default Login;
