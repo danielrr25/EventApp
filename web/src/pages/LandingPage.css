@@ -2,9 +2,9 @@
   background-image: url('./Landing Page.jpg');
   background-size: 100% auto;
   width: 100%;
-  height: 300vh; /* Set the height of the container to the viewport height */
-  max-height: 100%; /* Set a maximum height to match the original image height */
+  height: 300vh; /* Set the height of the container to auto for content-based height */
 }
+
 .spacer {
   height: 4000px; /* Adjust the height as needed to trigger scrolling */
 }
@@ -23,8 +23,8 @@
   color: #ffffff; 
   margin: 0px;
   margin-left: 950px;
-  line-height: 0; /* Adjust the line-height value as needed */
-  padding: 0px 0; /* Adjust the padding as needed to control spacing */
+  line-height: 0; 
+  padding: 0px 0; 
 }
 
 
@@ -39,4 +39,35 @@
   cursor: pointer;
   margin-top: 30px;
   margin-left: 1250px;
+}
+
+.text-team {
+  font-size: 68px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #e04ee0;
+  margin: 0px;
+  margin-left: 730px;
+  margin-top: 600px;
+  line-height: 0; 
+  padding: 0px 0;
+}
+
+.imgContainer {
+  font-size: 28px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #aa14aa;
+  display: inline-block;
+  margin: 10px; 
+  margin-top: 100px;
+  padding-left: 300px;
+}
+
+.imgContainer2{
+  font-size: 28px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #aa14aa;
+  display: inline-block;
+  margin: 10px; 
+  margin-top: 100px;
+  padding-left: 200px;
 }
