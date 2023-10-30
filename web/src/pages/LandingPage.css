@@ -1,9 +1,10 @@
 .background {
   background-image: url('./Landing Page.jpg');
-  background-size: 100% auto; /* 100% width and 100% height to cover the container */
-  width: 100%; /* Set the width of the container */
+  background-size: 100% auto;
+  width: 100%;
+  height: 300vh; /* Set the height of the container to the viewport height */
+  max-height: 100%; /* Set a maximum height to match the original image height */
 }
-
 .spacer {
   height: 4000px; /* Adjust the height as needed to trigger scrolling */
 }
