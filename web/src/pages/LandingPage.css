@@ -1,8 +1,41 @@
 .background {
   background-image: url('./Landing Page.jpg');
-  background-size: cover;
+  background-size: 100% auto; /* 100% width and 100% height to cover the container */
+  width: 100%; /* Set the width of the container */
 }
 
 .spacer {
   height: 4000px; /* Adjust the height as needed to trigger scrolling */
+}
+
+.logo {
+  width: 700px; 
+  height: auto; 
+  margin: 20px; 
+  margin-left: 1100px;
+  margin-top: 320px;
+}
+
+.text-under-logo {
+  font-size: 32px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #ffffff; 
+  margin: 0px;
+  margin-left: 950px;
+  line-height: 0; /* Adjust the line-height value as needed */
+  padding: 0px 0; /* Adjust the padding as needed to control spacing */
+}
+
+
+.cta-button {
+  background-color: #ffffff;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #ff00ff;
+  padding: 20px 80px;
+  font-size: 26px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 30px;
+  margin-left: 1250px;
 }
