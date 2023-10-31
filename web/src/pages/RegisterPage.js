@@ -8,7 +8,7 @@ const RegisterPage = () =>
     return(
         <div>
             <PageTitle />
-            <Login />
+            <Register />
         </div>
     );
 };
