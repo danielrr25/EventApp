@@ -2,50 +2,62 @@
 import React, { useState } from "react";
 
 const Register = () => {
-
-  var loginName;
-  var loginPassword;
-
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState('');
 
 
-  const handleRegister = async (event) => {
+  const handleRegister = async () => {
     // Handle registration logic here
-    var obj = {login:loginName.value,password:loginPassword.value};
-    var js = JSON.stringify(obj);
-
-    try
-    {
-      const response = await fetch('http://localhost:5000/api/login',
-        {method:'POST',body:js,headers:{'Content-Type':'application/json'}});
-
-      var res = JSON.parse(await response.text());
-      
-      if( res.id <= 0 )
-      {
-        setMessage('Invalid registeration');
+    try {
+        // Create a data object with the user's email and password
+        const data = {
+          email,
+          password,
+          firstName,
+          lastName,
+        };
+  
+        // Send a POST request to registration API endpoint
+        const response = await fetch('http://localhost:5050/api/register', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+  
+        if (response.ok) {
+          // Registration successful, you can redirect the user or show a success message
+          setMessage('Registeration successful!');
+        } else {
+          // Registration failed, handle errors
+          setMessage('Registration failed');
+        }
+      } catch (error) {
+        setMessage('An error occurred. Please try again.')
       }
-      else
-      {
-       var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
-       localStorage.setItem('user_data', JSON.stringify(user));
-       setMessage('');
-       window.location.href = '/EventApp';
-      }
-    }
-    catch(e)
-    {
-      alert(e.toString());
-      return;
-    }
   };
 
   return (
     <div>
       <h2>Register</h2>
       <form>
+        <input
+          type="firstName"
+          placeholder="First Name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+
+        <input
+          type="lastName"
+          placeholder="Last Name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
         <input
           type="email"
           placeholder="Email"
