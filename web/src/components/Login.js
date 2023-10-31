@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 
 function Login() {
 
@@ -16,7 +17,7 @@ function Login() {
 
     try
     {
-      const response = await fetch('http://localhost:5000/api/login',
+      const response = await fetch('http://localhost:5050/api/login',
         {method:'POST',body:js,headers:{'Content-Type':'application/json'}});
 
       var res = JSON.parse(await response.text());
@@ -43,13 +44,19 @@ function Login() {
   return (
     <div id="loginDiv">
       <form onSubmit={doLogin}>
-      <span id="inner-title">PLEASE LOG IN</span><br />
-      <input type="text" id="loginName" placeholder="Username"
+      <span id="inner-title">LOG IN</span><br />
+      <input type="text" id="loginName" placeholder="Enter email"
         ref={(c) => loginName = c}/><br />
       <input type="password" id="loginPassword" placeholder="Password"
          ref={(c) => loginPassword = c}/><br />
-      <input type="submit"id="loginButton" class="buttons" value="Do It" 
+      <input type="submit"id="loginButton" class="buttons" value="Enter" 
         onClick={doLogin}/>
+
+        {/* redirect to register page here */}
+        <Link to="/RegisterPage">
+          <button className="cta-button">New User? Sign Up Here</button>
+        </Link>
+
       </form>
       <span id="loginResult">{message}</span>
     </div>
