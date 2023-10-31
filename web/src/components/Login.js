@@ -53,8 +53,8 @@ function Login() {
         onClick={doLogin}/>
 
         {/* redirect to register page here */}
-        <Link to="/RegisterPage">
-          <button className="cta-button">New User? Sign Up Here</button>
+        <Link to="/register">
+          <button className="reg-button">New User? Sign Up Here</button>
         </Link>
 
       </form>
