@@ -11,6 +11,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginPage());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoginPage(),
+
+      // routes for navigating between different pages of app
+      // routes: {
+      //   '/registerpage': (context) => const RegisterPage(),
+      //   '/loginpage': (context) => LoginPage(),
+      //   '/forgotpage': (context) => ForgotPage(),
+      // }
+    );
   }
 }
