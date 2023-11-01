@@ -103,4 +103,51 @@ router.delete('/delete-event/:id', async (req, res) => {
   }
 });
 
+//attend event route
+router.post('/attendevent', async (req, res) => {
+  try {
+      const { eventName, userid } = req.body;
+      const event = await Event.findOne({ eventName });
+      
+      if (!event) {
+        return res.status(400).send({ error: 'Invalid event' });
+      }
+
+      if (event.listAttendees.includes(userid)){
+          return res.status(404).send({ error: 'Already attending event' });
+      }
+
+      event.listAttendees.push(userid);
+      await event.save();
+      res.status(201).send({ message: 'Event attended check' });
+  } catch (error) {
+      res.status(500).send(error);
+  }
+});
+
+//unattend event route
+router.post('/unattendevent', async (req, res) => {
+  try {
+      const { eventName, userid } = req.body;
+      const event = await Event.findOne({ eventName });
+
+      if (!event) {
+        return res.status(400).send({ error: 'Invalid event' });
+      }
+
+      if (!event.listAttendees.includes(userid)){
+          return res.status(404).send({ error: 'not attending event' });
+      }
+      const index = event.listAttendees.indexOf(userid);
+      if (index !== -1) {
+        event.listAttendees.splice(index, 1);
+      }
+      
+      await event.save();
+      res.status(201).send({ message: 'Event unattended check' });
+  } catch (error) {
+      res.status(500).send(error);
+  }
+});
+
 module.exports = router;
