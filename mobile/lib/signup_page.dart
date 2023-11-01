@@ -9,22 +9,24 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final url = "https://jsonplaceholder.typicode.com/posts";
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-
+  final url = "http://167.172.230.181:5000/users/register";
   // Place holders for sending data for now
   void createUser() async {
     try {
+      print("FOOO");
       final response = await post(Uri.parse(url),
-          body: {"title": "Anything", "body": "Post body", "userId": "1"});
+          body: {"username": "aheadkitchennn", "password": "foo1"});
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("You are all set!"),
         duration: Duration(milliseconds: 1500),
       ));
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
       // print(response.body);
     } catch (err) {
       print("An error has occurred");
