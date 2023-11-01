@@ -1,11 +1,19 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const { Schema } = mongoose;
 const eventSchema = new mongoose.Schema({
+    creatorID:{
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        required: true,
+    },
     eventName: {
         type: String,
         required: true,
         unique:true,
+    },
+    eventCategory: {
+        type: String,
+        required: true,
     },
     eventDescription: {
         type: String,
