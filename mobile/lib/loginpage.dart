@@ -13,14 +13,13 @@ class LoginPage extends StatelessWidget {
   final url = "http://167.172.230.181:5000/users/login";
   void signUserIn() async {
     try {
-      print("FOO");
       var response = await http.post(Uri.parse(url),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, String>{
-            "username": "Anything",
-            "password": "Post body"
+            "username": usernameController.text,
+            "password": passwordController.text,
           }));
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');

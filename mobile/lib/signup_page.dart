@@ -25,11 +25,11 @@ class _SignUpPageState extends State<SignUpPage> {
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, String>{
-            "username": "aheadkitchennnnnn1231231",
-            "password": "foo1",
-            "firstname": "oliver",
-            "lastname": "fritsche",
-            "email": "1231232131abcedef@gmail.com"
+            "username": _userController.text,
+            "password": _passwordController.text,
+            "firstname": _firstNameController.text,
+            "lastname": _lastNameController.text,
+            "email": _emailController.text
           }));
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("You are all set!"),
@@ -69,6 +69,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
+                  controller: _userController,
                   decoration: InputDecoration(
                       prefixIcon: const Align(
                         widthFactor: 1.0,
@@ -91,6 +92,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                       prefixIcon: const Align(
@@ -114,6 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
+                  controller: _firstNameController,
                   decoration: InputDecoration(
                       prefixIcon: const Align(
                         widthFactor: 1.0,
@@ -136,6 +139,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
+                  controller: _lastNameController,
                   decoration: InputDecoration(
                       prefixIcon: const Align(
                         widthFactor: 1.0,
@@ -158,6 +162,7 @@ class _SignUpPageState extends State<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                       prefixIcon: const Align(
                         widthFactor: 1.0,
