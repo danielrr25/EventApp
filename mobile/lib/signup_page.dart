@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -19,8 +20,17 @@ class _SignUpPageState extends State<SignUpPage> {
   void createUser() async {
     try {
       print("FOOO");
-      final response = await post(Uri.parse(url),
-          body: {"username": "aheadkitchennn", "password": "foo1"});
+      var response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            "username": "aheadkitchennnnnn1231231",
+            "password": "foo1",
+            "firstname": "oliver",
+            "lastname": "fritsche",
+            "email": "1231232131abcedef@gmail.com"
+          }));
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("You are all set!"),
         duration: Duration(milliseconds: 1500),

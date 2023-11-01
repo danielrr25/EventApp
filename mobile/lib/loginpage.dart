@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:mobile/components/text_field.dart';
 import 'package:mobile/signup_page.dart';
 
@@ -8,7 +10,25 @@ class LoginPage extends StatelessWidget {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void signUserIn() {}
+  final url = "http://167.172.230.181:5000/users/login";
+  void signUserIn() async {
+    try {
+      print("FOO");
+      var response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            "username": "Anything",
+            "password": "Post body"
+          }));
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +96,7 @@ class LoginPage extends StatelessWidget {
                     minimumSize: const Size(365, 50),
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)))),
-                onPressed: () {},
+                onPressed: signUserIn,
                 child: const Text('Log in', style: TextStyle(fontSize: 20)),
               ),
               const SizedBox(height: 20),
