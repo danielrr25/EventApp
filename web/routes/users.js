@@ -144,4 +144,37 @@ router.post('/removefriend', async (req, res) => {
     }
 });
 
+// search friend route
+router.post('/searchfriend', async (req, res) => {
+    
+    try {
+    const { myUsername, friendUsername } = req.body; 
+
+    const userQuery = {};
+    const friendQuery = {};
+
+    if (myUsername) userQuery.username = new RegExp(myUsername, 'i'); // 'i' for case-insensitive
+    const user = await User.findOne(userQuery);
+    if (friendUsername) friendQuery.username = new RegExp(friendUsername, 'i'); // 'i' for case-insensitive
+    const friend = await User.findOne(friendQuery);          
+        
+        if (!user) {
+            return res.status(400).send({ error: 'Invalid user' });
+        }
+
+        if (!friend) {
+            return res.status(404).send({ error: 'Username does not exist' });
+        }
+
+        if (!user.friendslist.includes(friend._id)){
+            return res.status(408).send({ error: 'Friend not in list' });
+        }
+        
+        res.status(201).json({ user, friend });
+        
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
 module.exports = router;
