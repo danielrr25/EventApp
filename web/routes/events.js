@@ -87,7 +87,7 @@ router.delete('/delete-event/:id', async (req, res) => {
     }
 
     // Check if the current user is the creator of the event
-    if (event.creatorID.toString() !== req.user.id) { // Assuming req.user is set by your auth middleware
+    if (event.creatorID.toString() !== req.user.id) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
