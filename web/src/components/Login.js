@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link
+import './Login.css'; // Import your CSS file
+import standard_logo from './PopOutGradient.png';
 
 function Login() {
 
@@ -12,27 +14,17 @@ function Login() {
   {
     event.preventDefault();
     
-    var obj = {login:loginName.value,password:loginPassword.value};
+    var obj = {username:loginName.value,password:loginPassword.value};
     var js = JSON.stringify(obj);
 
     try
     {
-      const response = await fetch('http://localhost:5050/api/login',
+      const response = await fetch('http://167.172.230.181:5000/users/login',
         {method:'POST',body:js,headers:{'Content-Type':'application/json'}});
 
       var res = JSON.parse(await response.text());
+      console.log(res);
       
-      if( res.id <= 0 )
-      {
-        setMessage('User/Password combination incorrect');
-      }
-      else
-      {
-       var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
-       localStorage.setItem('user_data', JSON.stringify(user));
-       setMessage('');
-       window.location.href = '/EventApp';
-      }
     }
     catch(e)
     {
@@ -42,23 +34,39 @@ function Login() {
   };
 
   return (
-    <div id="loginDiv">
+    <div className="login-container">
       <form onSubmit={doLogin}>
-      <span id="inner-title">LOG IN</span><br />
-      <input type="text" id="loginName" placeholder="Enter email"
-        ref={(c) => loginName = c}/><br />
-      <input type="password" id="loginPassword" placeholder="Password"
-         ref={(c) => loginPassword = c}/><br />
-      <input type="submit"id="loginButton" class="buttons" value="Enter" 
-        onClick={doLogin}/>
+        <h2 className="login-title">WELCOME TO</h2>
+        <img src={standard_logo} alt="Your Logo" className="standard_logo" />
+        <input
+          type="text"
+          id="loginName"
+          className="rounded-input"
+          placeholder="Enter email"
+          ref={(c) => (loginName = c)}
+        />
+        <input
+          type="password"
+          id="loginPassword"
+          className="rounded-input"
+          placeholder="Password"
+          ref={(c) => (loginPassword = c)}
+        />
+        <button type="submit" className="login-button">
+          Enter
+        </button>
 
-        {/* redirect to register page here */}
+        {/* Redirect to register page here */}
         <Link to="/register">
-          <button className="reg-button">New User? Sign Up Here</button>
+          <button className="reg-button">
+            <span className="new-user">New User?</span>
+            <span className="space">o</span>
+            <span className="sign-up-here">Sign Up Here</span>
+          </button>
         </Link>
 
       </form>
-      <span id="loginResult">{message}</span>
+      <span className="login-result">{message}</span>
     </div>
   );
 }
