@@ -1,27 +1,29 @@
-// src/components/Register.js
 import React, { useState } from "react";
+import './Register.css'; // Import your CSS file
+import standard_logo2 from './PopOutGradient.png';
 
 const Register = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
+  const [firstname, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState('');
-
 
   const handleRegister = async () => {
     // Handle registration logic here
     try {
         // Create a data object with the user's email and password
         const data = {
-          email,
+          username,
           password,
-          firstName,
-          lastName,
+          firstname,
+          lastname,
+          email,
         };
   
         // Send a POST request to registration API endpoint
-        const response = await fetch('http://localhost:5050/api/register', {
+        const response = await fetch('http://167.172.230.181:5000/users/register', {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -31,7 +33,7 @@ const Register = () => {
   
         if (response.ok) {
           // Registration successful, you can redirect the user or show a success message
-          setMessage('Registeration successful!');
+          setMessage('Registration successful!');
         } else {
           // Registration failed, handle errors
           setMessage('Registration failed');
@@ -42,35 +44,48 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <form>
+    <div className="register-container">
+      <h2 className="login-title2">WELCOME TO</h2>
+        <img src={standard_logo2} alt="Your Logo" className="standard_logo2" />
+      <h2 className="register-title">Register</h2>
+      <form className="register-form">
         <input
-          type="firstName"
+          type="username"
+          className="register-input"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="text"
+          className="register-input"
           placeholder="First Name"
-          value={firstName}
+          value={firstname}
           onChange={(e) => setFirstName(e.target.value)}
         />
 
         <input
-          type="lastName"
+          type="text"
+          className="register-input"
           placeholder="Last Name"
-          value={lastName}
+          value={lastname}
           onChange={(e) => setLastName(e.target.value)}
         />
         <input
           type="email"
+          className="register-input"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="password"
+          className="register-input"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button onClick={handleRegister}>Register</button>
+        <button className="register-button" onClick={handleRegister}>Register</button>
       </form>
     </div>
   );
