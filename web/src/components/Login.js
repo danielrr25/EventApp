@@ -23,7 +23,13 @@ function Login() {
         {method:'POST',body:js,headers:{'Content-Type':'application/json'}});
 
       var res = JSON.parse(await response.text());
-      console.log(res);
+
+      // verify login information from user
+      if(res.success){
+        setMessage('Login successful');
+      } else {
+        setMessage('Incorrect username or password')
+      }
       
     }
     catch(e)
