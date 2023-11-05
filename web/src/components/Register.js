@@ -11,6 +11,13 @@ const Register = () => {
   const [message, setMessage] = useState('');
 
   const handleRegister = async () => {
+
+    //verify all fields completed
+    if(!username || !password || !firstName || !lastName || !email){
+      setMessage('All fields required to register.')
+      return;
+    }
+    
     // Handle registration logic here
     try {
         // Create a data object with the user's email and password
