@@ -1,0 +1,63 @@
+.icon-selection {
+    margin-left: -1600px;
+    margin-top: -780px;
+    font-size: 30px;
+    font-family: 'Josefin Sans', sans-serif;
+    color: rgb(126, 121, 133);
+    text-align: center;
+}
+
+.icon_title {
+    margin-left: 250px;
+    padding-bottom: 10px;
+    margin-top: 15px;
+    font-size: 30px;
+    font-family: 'Josefin Sans', sans-serif;
+    color: rgb(120, 65, 192);
+}
+
+.grey-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: hsl(0, 0%, 94%);
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    border-radius: 20px;
+    height: 350px;
+    width: 350px;
+    margin-left: 250px;
+    margin-top: -15px;
+}
+
+.selected-icon {
+    margin: 20px 0;
+}
+
+.selected-icon img {
+    width: 350px;
+    height: 350px;
+    margin-left: 250px;
+    margin-top: -15px;
+    border: 0px;
+}
+
+.icon-options {
+    display: flex;
+    margin-left: 250px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.icon-options img {
+    max-width: 80px;
+    max-height: 80px;
+    cursor: pointer;
+}
+
+.icon-options img:hover {
+    border: 1px solid #923a92;
+    border-radius: 15px;
+}

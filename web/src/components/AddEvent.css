@@ -1,0 +1,157 @@
+#eventUIDiv {
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    text-align: center;
+    max-width: 1920px;
+    height: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    background: rgb(141,0,255);
+    background: linear-gradient(90deg, rgba(141,0,255,1) 0%, rgba(255,0,112,1) 100%);
+    width: 1920px;
+    height: 100px;
+}
+
+.logogradient {
+    height: 80px;
+    width: auto;
+    position: absolute;
+    left: 20px;
+    top: 10px;
+}
+
+.title {
+    text-align: center;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 20px;
+    color: white;
+    margin-left: 800px;
+}
+
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-group {
+    display: flex;
+    justify-content: space between;
+    margin: 10px 0;
+    margin-left: 600px;
+}
+
+.input-subgroup {
+    flex: 1;
+    margin: 0 10px;
+    font-size: 14px;
+    text-align: left;
+    font-family: 'Josefin Sans', sans-serif;
+    color: rgb(120, 65, 192);
+    
+}
+
+.input-subgroup input {
+    width: 600px;
+    height: 50px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 16px;
+    font-family: 'Josefin Sans', sans-serif;
+    transition: border-color 0.3s;
+}
+
+.input-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.input-subgroup input:focus,
+.input-group textarea:focus {
+    border: 1px solid purple !important;
+    outline: none; 
+}
+
+#addEventButton {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 40px;
+    width: 600px;
+    height: 80px;
+    padding: 10px;
+    margin: 10px 0;
+    margin-top: 50px;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    background: linear-gradient(120deg, rgb(35, 196, 224), rgb(220, 20, 170), rgb(255, 0, 119));
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    transition: background-position .5s;
+}
+
+#addEventButton:hover {
+    background-position: 0 0;
+}
+
+textarea {
+    resize: none;
+    border-radius: 20px !important;
+    padding-inline-start: 20px !important;
+    padding-top: 20px !important;
+    width: 1240px !important;
+    height: 200px !important;
+    margin-left: 590px;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.input-group.description {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.input-group.description .title {
+    font-size: 14px;
+    margin-left: -440px;
+    color: rgb(120, 65, 192);
+}
+
+.input-group.description textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#eventAddResult {
+    color: red;
+    margin: 10px 0;
+}
+
+input[type="date"] {
+    color: grey; 
+  }
+  
+  input[type="date"]:focus {
+    color: black;
+} 
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.5;
+  }

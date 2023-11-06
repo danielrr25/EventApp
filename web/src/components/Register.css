@@ -1,0 +1,66 @@
+.register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px; /* Adjust the gap between inputs */
+}
+
+.login-title2 {
+    font-family: 'Josefin Sans', sans-serif;    
+    color: #a81d8a;
+    font-size: 24px;
+    margin-left: 970px;
+  }
+
+  .standard_logo2 {
+    height: 90px;
+    width: auto;
+    margin-left: 900px;
+    margin-bottom: 0px;
+    margin-top: -20px;
+  }
+
+/* Style for input fields */
+.register-input {
+    font-family: 'Josefin Sans', sans-serif;    ;
+    width: 500px;
+    padding: 15px;
+    margin: 5px 0;
+    margin-left: 700px;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+}
+
+/* Style for the button */
+.register-button {
+    font-family: 'Josefin Sans', sans-serif;    ;
+    width: 400px;
+    height: 40px;
+    padding: 10px;
+    margin: 10px 0;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left:720px;
+    margin-top: 30px;
+    background: linear-gradient(120deg, rgb(35, 196, 224), rgb(220, 20, 170), rgb(255, 0, 119));
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    transition: background-position .5s;
+}
+
+.message {
+  background-color: #f8d7da;
+  color: #721c24; 
+  padding: 10px; 
+  border: 1px solid #721c24; 
+  border-radius: 5px; 
+  margin-top: 10px;
+  text-align: center; 
+}
+
+.register-button:hover {
+    background-position: 0 0;
+}
