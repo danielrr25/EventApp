@@ -51,6 +51,19 @@ const Register = () => {
       } catch (error) {
         setMessage('An error occurred. Please try again.')
       }
+
+
+        //verify registration information
+        if(response.status === 201){
+          setMessage('Registration successful')
+          navigate('/event');
+        } else if (response.status === 400){
+          setMessage('Username already exists');
+        } else if (response.status === 500){
+            setMessage('A server error has occurred.')
+        } else {
+          setMessage('Unknown error');
+        }
   };
 
   return (
