@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom'; // Import Link
+import { Link, useNavigate } from 'react-router-dom'; // Import Link
 import './Login.css'; // Import your CSS file
 import standard_logo from './PopOutGradient.png';
 
@@ -9,7 +9,7 @@ function Login() {
   var loginPassword;
 
   const [message, setMessage] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const doLogin = async (event) => 
   {
@@ -28,7 +28,7 @@ function Login() {
       // verify login information from user
       if(res.success){
         setMessage('Login successful');
-        history.push('/event'); //go to event page after successful login
+        navigate('/event'); //go to event page after successful login
       } else {
         setMessage('Incorrect username or password')
       }

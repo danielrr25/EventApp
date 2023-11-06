@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import './Register.css'; // Import your CSS file
 import standard_logo2 from './PopOutGradient.png';
+import { Link, useNavigate } from 'react-router-dom'; // Import Link
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -9,6 +10,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
 
@@ -41,6 +43,7 @@ const Register = () => {
         if (response.ok) {
           // Registration successful, you can redirect the user or show a success message
           setMessage('Registration successful!');
+          navigate('/event'); //redirect to event page
         } else {
           // Registration failed, handle errors
           setMessage('Registration failed');
