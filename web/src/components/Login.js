@@ -25,12 +25,17 @@ function Login() {
 
       var res = JSON.parse(await response.text());
 
-      // verify login information from user
-      if(res.success){
-        setMessage('Login successful');
-        navigate('/event'); //go to event page after successful login
+
+      //verify login information
+      if(response.status === 200){
+        setMessage('Login successful')
+        navigate('/event');
+      } else if (response.status === 400){
+        setMessage('Invalid login credentials');
+      } else if (response.status === 500){
+        setMessage('An error has occurred.')
       } else {
-        setMessage('Incorrect username or password')
+        setMessage('Unknown error');
       }
       
     }
