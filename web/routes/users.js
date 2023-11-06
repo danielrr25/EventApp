@@ -4,11 +4,21 @@ const User = require('../models/userSchema');
 
 const router = express.Router();
 
+
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
+
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
         const user = await User.findOne({ username });
-        
+        console.log(req.body);
         if (!user) {
             return res.status(400).send({ error: 'Invalid login credentials' });
         }
@@ -27,8 +37,8 @@ router.post('/login', async (req, res) => {
 
 router.post('/register', async (req, res) => {
   try {
-    const { firstname, lastname, username, password, email } = req.body;
-
+    const { username, password,  firstname, lastname,email} = req.body;
+    console.log(req.body);
     // Check if the user already exists
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
@@ -37,11 +47,11 @@ router.post('/register', async (req, res) => {
 
     // Create a new user
     const user = new User({
-      firstname,
-      lastname,
       username,
       password,
       email,
+      firstname,
+      lastname
     });
     await user.save();
 
@@ -55,11 +65,6 @@ router.post('/register', async (req, res) => {
 router.get('/user-info/:id', async (req, res) => {
     try {
       const { id } = req.params;
-  
-      // Validate the provided ID
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'Invalid user ID' });
-      }
   
       // Find the user by ID
       const user = await User.findById(id);
@@ -77,9 +82,9 @@ router.get('/user-info/:id', async (req, res) => {
 // delete user route
 router.post('/deleteuser', async (req, res) => {
     try {
-        const { username } = req.body;
-        const existingUser = await User.findOneAndRemove({ username });
-
+        const { id } = req.body;
+        const existingUser = await User.findOneAndRemove(id);
+        console.log(existingUser);
         if (!existingUser) {
             return res.status(400).send({ error: 'User does not exist' });
         }        
@@ -93,9 +98,9 @@ router.post('/deleteuser', async (req, res) => {
 //add friend route
 router.post('/addfriend', async (req, res) => {
     try {
-        const { myUsername, friendUsername } = req.body;
-        const user = await User.findOne({ username: myUsername });
-        const friend = await User.findOne({ username: friendUsername });
+        const { idUser, idFriend } = req.body;
+        const user = await User.findOne({ _id: idUser });
+        const friend = await User.findOne({ _id: idFriend });
 
         if (!user) {
             return res.status(400).send({ error: 'Invalid user' });
@@ -120,9 +125,9 @@ router.post('/addfriend', async (req, res) => {
 //remove friend route
 router.post('/removefriend', async (req, res) => {
     try {
-        const { myUsername, friendUsername } = req.body;
-        const user = await User.findOne({ username: myUsername });
-        const friend = await User.findOne({ username: friendUsername });
+        const { idUser, idFriend } = req.body;
+        const user = await User.findOne({ _id: idUser });
+        const friend = await User.findOne({ _id: idFriend });
 
         if (!user) {
             return res.status(400).send({ error: 'Invalid user' });
@@ -176,5 +181,5 @@ router.post('/searchfriend', async (req, res) => {
         res.status(500).send(error);
     }
 });
-
 module.exports = router;
+
