@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mobile/components/text_field.dart';
 import 'package:mobile/signup_page.dart';
+import 'package:mobile/home_page.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -95,7 +96,11 @@ class LoginPage extends StatelessWidget {
                     minimumSize: const Size(365, 50),
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)))),
-                onPressed: signUserIn,
+                // onPressed: signUserIn,
+                   onPressed: () => {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => HomePage()))
+                    },  
                 child: const Text('Log in', style: TextStyle(fontSize: 20)),
               ),
               const SizedBox(height: 20),
@@ -113,7 +118,7 @@ class LoginPage extends StatelessWidget {
                     onPressed: () => {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => SignUpPage()))
-                    },
+                    },  
                     child: const Text(
                       'Register Here',
                       style: TextStyle(
