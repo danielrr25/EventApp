@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
 
     Center(child: Text('Search Page')),
     Center(child: Text('Create Page')),
-    Center(child: Text('Messages Page')),
+    Center(child: Text('Events Page')),
     Center(child: Text('User Page')),
   ];
 
@@ -87,8 +87,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Create',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
+            icon: Icon(Icons.event),
+            label: 'Events attending',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
