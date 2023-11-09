@@ -1,6 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userSchema');
+const { genemailtoken } = require('../everification');
+const { sendemailv } = require('../emailtransport');
 
 const router = express.Router();
 
@@ -19,6 +21,7 @@ router.post('/login', async (req, res) => {
         const { username, password } = req.body;
         const user = await User.findOne({ username });
         console.log(req.body);
+        
         if (!user) {
             return res.status(400).send({ error: 'Invalid login credentials' });
         }
@@ -29,6 +32,10 @@ router.post('/login', async (req, res) => {
             return res.status(400).send({ error: 'Invalid login credentials' });
         }
 
+        if (user.isverified===false) {
+            return res.status(400).send({ error: 'Not verified yet' });
+        }
+      
         res.send({userID:user._id ,message: 'Logged in successfully' });
     } catch (error) {
         res.status(500).send(error);
@@ -45,16 +52,21 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'User already exists' });
     }
 
+    const emailvtoken = genemailtoken();
+    
     // Create a new user
     const user = new User({
       username,
       password,
       email,
       firstname,
-      lastname
+      lastname,
+      emailvtoken
     });
     await user.save();
 
+    sendemailv(user.email, emailvtoken);
+    
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error(error);
@@ -184,6 +196,29 @@ router.post('/searchfriend', async (req, res) => {
         res.status(500).send(error);
     }
 });
+
+router.post('/verifyemail', async (req, res) => {
+    try {
+        const { emailvtoken } = req.body;
+
+        const user = await User.findOne({emailvtoken });
+        
+        if (!user) {
+            return res.status(400).send('Invalid verification token');
+        }
+
+        // Mark the email as verified
+    user.isverified = true;
+    user.emailvtoken = null;
+    await user.save();
+
+    return res.status(201).send('Email verified successfully');
+    } catch (error) {
+        res.status(500).send(error);
+    }
+    });
+
+module.exports = router;
 
 module.exports = router;
 
