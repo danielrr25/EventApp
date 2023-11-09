@@ -2,11 +2,20 @@ const express = require('express');
 const router = express.Router();
 const Event = require('../models/eventSchema'); // Import your Event model
 
+
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
 router.post('/create-event', async (req, res) => {
   try {
       // Destructuring assignment to extract values from request body
       const { creatorID, eventName, eventCategory,eventDescription, eventDate, eventLocation } = req.body;
-
+      console.log(req.body);
       // Check if the event already exists
       let event = await Event.findOne({ eventName });
       if (event) {
@@ -21,9 +30,9 @@ router.post('/create-event', async (req, res) => {
           eventDescription,
           eventDate,
           eventLocation,
-          listAntendees: [] // Initializing as an empty array
+          listAttendees: [] // Initializing as an empty array
       });
-
+      console.log(event);
       // Save the event to the database
       await event.save();
 
@@ -38,26 +47,20 @@ router.post('/create-event', async (req, res) => {
 router.get('/get-event-info/:eventId', async (req, res) => {
   try {
       const { eventId } = req.params;
-
-      // Find the event by ID
-      const event = await Event.findById(eventId).populate("creatorID","eventName","eventCategory","eventDescription","eventDate","eventLocation","listAntendees");
-
+  
+      console.log(eventId);
+      // Find the user by ID
+      const event = await Event.findOne({_id:eventId});
       if (!event) {
-          return res.status(404).json({ msg: 'Event not found' });
+        return res.status(404).json({ error: 'Event not found' });
       }
-
-      res.json(event);
-  } catch (err) {
-      console.error(err.message);
-
-      // If the error is due to an invalid ObjectId, send a 400 Bad Request response.
-      if (err.kind === 'ObjectId') {
-          return res.status(400).json({ msg: 'Invalid event ID' });
-      }
-
-      res.status(500).send('Server Error');
-  }
-});
+  
+      res.status(200).json(event);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
 router.get('/search-events', async (req, res) => {
   const { name, category } = req.query;
@@ -106,47 +109,54 @@ router.delete('/delete-event/:id', async (req, res) => {
 //attend event route
 router.post('/attendevent', async (req, res) => {
   try {
-      const { eventName, userid } = req.body;
-      const event = await Event.findOne({ eventName });
-      
+      const { eventid, userid } = req.body;
+      const event = await Event.findById(eventid);
       if (!event) {
         return res.status(400).send({ error: 'Invalid event' });
       }
-
-      if (event.listAttendees.includes(userid)){
-          return res.status(404).send({ error: 'Already attending event' });
+      
+      
+      // Initialize listAttendees as an array if it doesn't exist
+      if (!Array.isArray(event.listAttendees)) {
+        event.listAttendees = [];
       }
-
+      
+      if (event.listAttendees.includes(userid)){
+          return res.status(409).send({ error: 'User already attending event' });
+      }
       event.listAttendees.push(userid);
       await event.save();
-      res.status(201).send({ message: 'Event attended check' });
+      res.status(201).send({ message: 'Event attendance confirmed' });
   } catch (error) {
-      res.status(500).send(error);
+      console.error('Error attending event:', error);
+      res.status(500).send({ error: 'Internal Server Error' });
   }
 });
 
 //unattend event route
 router.post('/unattendevent', async (req, res) => {
   try {
-      const { eventName, userid } = req.body;
-      const event = await Event.findOne({ eventName });
-
+      const { eventid, userid } = req.body;
+      const event = await Event.findById(eventid);
       if (!event) {
         return res.status(400).send({ error: 'Invalid event' });
       }
-
-      if (!event.listAttendees.includes(userid)){
-          return res.status(404).send({ error: 'not attending event' });
-      }
-      const index = event.listAttendees.indexOf(userid);
-      if (index !== -1) {
-        event.listAttendees.splice(index, 1);
+      
+      
+      // Initialize listAttendees as an array if it doesn't exist
+      if (!Array.isArray(event.listAttendees)) {
+        event.listAttendees = [];
       }
       
+      if (!event.listAttendees.includes(userid)){
+          return res.status(409).send({ error: 'User not attending event' });
+      }
+      event.listAttendees.pop(userid);
       await event.save();
-      res.status(201).send({ message: 'Event unattended check' });
+      res.status(201).send({ message: 'Event attendance remove' });
   } catch (error) {
-      res.status(500).send(error);
+      console.error('Error attending event:', error);
+      res.status(500).send({ error: 'Internal Server Error' });
   }
 });
 

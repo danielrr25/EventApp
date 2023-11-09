@@ -27,11 +27,13 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    listAntendees:[{
-        type: Schema.Types.ObjectId,
-        ref: 'users',
-        required: false,
+    listAttendees: [{
+    type: Schema.Types.ObjectId,
+    ref: 'users',
+    required: false,
     }],
+
+
 
     
 });
