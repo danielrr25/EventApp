@@ -14,7 +14,7 @@ router.use((req, res, next) => {
 router.post('/create-event', async (req, res) => {
   try {
       // Destructuring assignment to extract values from request body
-      const { creatorID, eventName, eventCategory,eventDescription, eventDate, eventLocation } = req.body;
+      const { creatorID, eventName, eventCategory,eventDescription, eventDate, eventLocation,eventIcon } = req.body;
       console.log(req.body);
       // Check if the event already exists
       let event = await Event.findOne({ eventName });
@@ -30,7 +30,8 @@ router.post('/create-event', async (req, res) => {
           eventDescription,
           eventDate,
           eventLocation,
-          listAttendees: [] // Initializing as an empty array
+          listAttendees: [] ,
+          eventIcon
       });
       console.log(event);
       // Save the event to the database
@@ -132,6 +133,7 @@ router.post('/attendevent', async (req, res) => {
       res.status(500).send({ error: 'Internal Server Error' });
   }
 });
+
 
 //unattend event route
 router.post('/unattendevent', async (req, res) => {

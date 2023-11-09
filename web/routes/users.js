@@ -1,68 +1,99 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userSchema');
-
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 
-
+const JWT_SECRET = "TheIndustrialRevolutionAndItsConsequencesHaveBeenADisasterForTheHumanRace";//change this to an evniroment variable later
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization,authorization');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
 
+const verifyToken = (req, res, next) => {
+    console.log(req.headers);
+    const token = req.headers['authorization']?.split(' ')[1]; // Bearer <token>
+    console.log(token);
+    if (token) {
+      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+          return res.status(401).json({ error: 'Unauthorized access: Invalid token' });
+        }
+        req.user = decoded; // Add the decoded token to the request for use in your routes
+        next();
+      });
+    } else {
+      res.status(403).json({ error: 'A token is required for authentication' });
+    }
+  };
+  
 
+// Login route
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
         const user = await User.findOne({ username });
-        console.log(req.body);
+
         if (!user) {
-            return res.status(400).send({ error: 'Invalid login credentials' });
+            return res.status(400).json({ error: 'User does not exist' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-
         if (!isMatch) {
-            return res.status(400).send({ error: 'Invalid login credentials' });
+            return res.status(400).json({ error: 'Invalid login credentials' });
         }
 
-        res.send({userID:user._id ,message: 'Logged in successfully' });
+        // Create a JWT token that expires in 1 hour
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({ token, userID: user._id, message: 'Logged in successfully' });
     } catch (error) {
-        res.status(500).send(error);
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
+// Register route
 router.post('/register', async (req, res) => {
-  try {
-    const { username, password,  firstname, lastname,email} = req.body;
-    console.log(req.body);
-    // Check if the user already exists
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-    if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
+    console.log("JWT SECRET: " + JWT_SECRET);
+    try {
+        const { username, password, firstname, lastname, email } = req.body;
+
+        let existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Username already taken' });
+        }
+
+        existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already registered' });
+        }
+
+        const newUser = new User({
+            username,
+            password,
+            firstname,
+            lastname,
+            email
+        });
+
+        await newUser.save();
+
+        // Create a JWT token that expires in 1 hour
+        const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(201).json({ token, message: 'User registered successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-
-    // Create a new user
-    const user = new User({
-      username,
-      password,
-      email,
-      firstname,
-      lastname
-    });
-    await user.save();
-
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
 });
 
-router.get('/user-info/:id', async (req, res) => {
+
+router.get('/user-info/:id',verifyToken, async (req, res) => {
     try {
       const { id } = req.params;
       console.log(id);
@@ -80,7 +111,7 @@ router.get('/user-info/:id', async (req, res) => {
   });
 
 // delete user route
-router.post('/deleteuser', async (req, res) => {
+router.post('/deleteuser',verifyToken, async (req, res) => {
     try {
         const { id } = req.body;
         const existingUser = await User.findOne({ _id: id });
@@ -96,7 +127,7 @@ router.post('/deleteuser', async (req, res) => {
 });
 
 //add friend route
-router.post('/addfriend', async (req, res) => {
+router.post('/addfriend',verifyToken, async (req, res) => {
     try {
         const { userid, idFriend } = req.body;
         const user = await User.findOne({ _id: userid });
@@ -123,7 +154,7 @@ router.post('/addfriend', async (req, res) => {
 });
 
 //remove friend route
-router.post('/removefriend', async (req, res) => {
+router.post('/removefriend',verifyToken, async (req, res) => {
      try {
         const { userid, idFriend } = req.body;
         const user = await User.findOne({ _id: userid });
@@ -150,7 +181,7 @@ router.post('/removefriend', async (req, res) => {
 });
 
 // search friend route
-router.post('/searchfriend', async (req, res) => {
+router.post('/searchfriend',verifyToken, async (req, res) => {
     
     try {
         const { userid , searchString } = req.body; 

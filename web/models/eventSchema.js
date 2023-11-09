@@ -32,6 +32,11 @@ const eventSchema = new mongoose.Schema({
     ref: 'users',
     required: false,
     }],
+    
+    eventIcon:{
+        type: String,
+        required: true,
+    }
 
 
 
