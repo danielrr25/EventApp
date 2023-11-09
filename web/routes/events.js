@@ -160,4 +160,30 @@ router.post('/unattendevent', async (req, res) => {
   }
 });
 
+router.post('/searchevent', async (req, res) => {
+    
+  try {
+      const { searchString } = req.body; 
+      const eventQuery = {};
+
+      if (searchString) {
+          // This will create a case-insensitive regex that matches any username containing the searchString
+          const searchRegex = new RegExp('.*' + searchString + '.*', 'i');
+          eventQuery.search = searchRegex;
+      }
+
+      //find all events that match the query
+      const events = await Event.find(eventQuery);
+  
+      if (events.length === 0) {
+          return res.status(404).send({ error: 'No Events' });
+      }
+      
+      res.status(201).json({events});
+      
+  } catch (error) {
+      res.status(500).send(error);
+  }
+});
+
 module.exports = router;

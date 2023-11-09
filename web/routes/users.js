@@ -164,7 +164,7 @@ router.post('/searchfriend', async (req, res) => {
             friendQuery.username = searchRegex;
         }
         const user = await User.findById(idUser); 
-        const friend = await User.findOne(friendQuery);          
+        const friends = await User.find(friendQuery);          
         
         if (!user) {
             return res.status(400).send({ error: 'Invalid user' });
