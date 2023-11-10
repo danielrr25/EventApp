@@ -1,0 +1,24 @@
+.header-container2 {
+    display: flex;
+    align-items: center;
+    background: rgb(141,0,255);
+    background: linear-gradient(90deg, rgba(141,0,255,1) 0%, rgba(255,0,112,1) 100%);
+    width: 1920px;
+    height: 100px;
+}
+
+.title2 {
+    text-align: center;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 20px;
+    color: rgb(255, 255, 255);
+    margin-left: 0px;
+    margin-top: -90px;
+}
+
+.account-page-container{
+    overflow: hidden;
+    background-image: url('./ProfilePage.png');
+    background-size: cover;
+    height:100vh;
+}

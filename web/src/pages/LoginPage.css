@@ -1,0 +1,54 @@
+
+
+.split-signup {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-image: url('./LoginPageBackground.png');
+    background-size: cover;
+}
+
+.form-container {
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow:  20px 20px 39px #2e1b7446;
+    padding: 20px;
+    position: relative;
+    height: 700px;
+    max-width: 1400px; 
+    margin-left:250px;
+    margin-top: 100px;
+}
+
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    background-image: url('./Half.jpg');
+    background-size: cover;
+    border-radius: 0 20px 20px 0;
+}
+
+.login_logo {
+    position: absolute;
+    top: 300px;
+    left: 1160px;
+    transform: translate(-50%, -50%);
+    width:450px !important;
+    height: auto !important; 
+}
+
+.logo-text {
+    font-family: 'Josefin Sans', sans-serif;    ;
+    color: white;
+    font-size: 22px;
+    position: absolute;
+    top: 500px; 
+    left:  360px;
+    width: 100%;
+    text-align: center;
+}
