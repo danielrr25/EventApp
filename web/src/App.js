@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage';
 import AddEventPage from './pages/AddEventPage';
 import AccountPage from './pages/AccountPage';
 import EventPage from './pages/EventPage';
+import EventInfoPage from './pages/EventInfoPage';
 
 import { UserProvider } from './components/UserContext'; // Import the UserProvider
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/addevent" element={<AddEventPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/event" element={<EventPage />} />
+          <Route path="/eventinfo" element={<EventInfoPage />} />
         </Routes>
       </UserProvider>
     </BrowserRouter>
