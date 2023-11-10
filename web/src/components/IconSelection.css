@@ -26,8 +26,8 @@
     padding: 20px;
     text-align: center;
     border-radius: 20px;
-    height: 350px;
-    width: 350px;
+    height: 300px;
+    width: 300px;
     margin-left: 250px;
     margin-top: -15px;
 }
@@ -46,7 +46,8 @@
 
 .icon-options {
     display: flex;
-    margin-left: 250px;
+    margin-left: 290px;
+    margin-bottom: 10px;
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -58,6 +59,6 @@
 }
 
 .icon-options img:hover {
-    border: 1px solid #923a92;
-    border-radius: 15px;
+    border: 3px solid #923a92;
+    border-radius: 16px;
 }

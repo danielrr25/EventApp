@@ -1,0 +1,26 @@
+
+
+.logout-button{
+    position: absolute;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 40px;
+    width: 350px;
+    height: 80px;
+    padding: 10px;
+    margin: 10px 0;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 20px;
+    background: linear-gradient(120deg, rgb(35, 196, 224), rgb(220, 20, 170), rgb(255, 0, 119));
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    transition: background-position .5s;
+    margin-left: 1040px;
+    margin-top: -90px;
+}
+
+.logout-button:hover {
+    background-position: 0 0;
+}

@@ -1,37 +1,46 @@
+// AddEvent.js
+
 import React, { useState } from 'react';
 import './AddEvent.css';
 import LogoGradient from './PopOut.png';
 import IconSelection from './IconSelection';
+import { useUser } from './UserContext';
+import {useNavigate } from 'react-router-dom';
 
 function AddEvent() {
-  var eventName = '';
-  var eventDescription = '';
-  var eventLocation = '';
-  var eventDate = '';
-  var eventCategory = '';
+  const { userID } = useUser();
+  var eventname = '';
+  var eventdescription = '';
+  var eventlocation = '';
+  var eventdate = '';
+  var eventcategory = '';
   var selectedIcon = '';
 
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+
   const handleIconSelection = (icon) => {
     selectedIcon = icon;
   };
 
+  console.log('ICON:', selectedIcon);
   const addEvent = async (event) => {
     event.preventDefault();
 
     var obj = {
-      eventName: eventName,
-      eventDescription: eventDescription,
-      eventLocation: eventLocation,
-      eventDate: eventDate,
-      eventCategory: eventCategory,
+      creatorID: userID,
+      eventName: eventname,
+      eventCategory: eventcategory,
+      eventDescription: eventdescription,
+      eventDate: eventdate,
+      eventLocation: eventlocation,
       eventIcon: selectedIcon,
     };
 
     var js = JSON.stringify(obj);
-
+    console.log('Data sent to server:', obj);
     try {
-      const response = await fetch('http://localhost:5000/api/addevent', {
+      const response = await fetch('http://167.172.230.181:5000/events/create-event', {
         method: 'POST',
         body: js,
         headers: { 'Content-Type': 'application/json' },
@@ -39,16 +48,18 @@ function AddEvent() {
 
       var txt = await response.text();
       var res = JSON.parse(txt);
+      console.log(res);
 
-      if (res.error.length > 0) {
-        setMessage('API Error: ' + res.error);
+      if (response.status === 200) {
+        setMessage('Event created successfully.');
+        navigate('/event');
       } else {
-        setMessage('Event has been added');
+        setMessage('Event already exists.');
       }
     } catch (e) {
       setMessage(e.toString());
     }
-  }
+  };
 
   return (
     <div id="eventUIDiv">
@@ -69,17 +80,17 @@ function AddEvent() {
             type="text"
             id="eventName"
             placeholder="Event Name"
-            onChange={(e) => (eventName = e.target.value)}
+            onChange={(e) => (eventname = e.target.value)}
           />
         </div>
         <div className="input-subgroup">
-    <div className="title_input">
-      <h1>Event Date</h1>
-    </div>
-    <input
-      type="date" // Use type="date" for date input
-      id="eventDate"
-      onChange={(e) => (eventDate = e.target.value)}
+          <div className="title_input">
+            <h1>Event Date</h1>
+          </div>
+          <input
+            type="date"
+            id="eventDate"
+            onChange={(e) => (eventdate = e.target.value)}
           />
         </div>
       </div>
@@ -93,7 +104,7 @@ function AddEvent() {
             type="text"
             id="eventLocation"
             placeholder="Event Location"
-            onChange={(e) => (eventLocation = e.target.value)}
+            onChange={(e) => (eventlocation = e.target.value)}
           />
         </div>
 
@@ -105,21 +116,21 @@ function AddEvent() {
             type="text"
             id="eventCategory"
             placeholder="Event Category"
-            onChange={(e) => (eventCategory = e.target.value)}
+            onChange={(e) => (eventcategory = e.target.value)}
           />
         </div>
       </div>
 
       <div className="input-group description">
-  <div className="title">
-    <h1>Event Description</h1>
-  </div>
-  <textarea
-    id="eventDescription"
-    placeholder="Event Description"
-    onChange={(e) => (eventDescription = e.target.value)}
-  />
-</div>
+        <div className="title">
+          <h1>Event Description</h1>
+        </div>
+        <textarea
+          id="eventDescription"
+          placeholder="Event Description"
+          onChange={(e) => (eventdescription = e.target.value)}
+        />
+      </div>
 
       <button
         type="button"
@@ -132,7 +143,7 @@ function AddEvent() {
       </button>
 
       <span id="eventAddResult">{message}</span>
-      <IconSelection onIconSelect={handleIconSelection} /> 
+      <IconSelection onIconSelect={handleIconSelection} />
     </div>
   );
 }

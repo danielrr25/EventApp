@@ -1,46 +1,43 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import Link
-import './Login.css'; // Import your CSS file
+import { Link, useNavigate } from 'react-router-dom';
+import './Login.css';
 import standard_logo from './PopOutGradient.png';
+import { useUser } from './UserContext'; // Import the useUser hook
 
 function Login() {
-
   var loginName;
   var loginPassword;
 
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const { setUserID } = useUser(); // Access the setUserID function from the context
 
-  const doLogin = async (event) => 
-  {
+  const doLogin = async (event) => {
     event.preventDefault();
-    
-    var obj = {username:loginName.value,password:loginPassword.value};
+
+    var obj = { username: loginName.value, password: loginPassword.value };
     var js = JSON.stringify(obj);
 
-    try
-    {
-      const response = await fetch('http://167.172.230.181:5000/users/login',
-        {method:'POST',body:js,headers:{'Content-Type':'application/json'}});
+    try {
+      const response = await fetch('http://167.172.230.181:5000/users/login', {
+        method: 'POST',
+        body: js,
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-      var res = JSON.parse(await response.text());
-
-
-      //verify login information
-      if(response.status === 200){
-        setMessage('Login successful')
+      if (response.status === 200) {
+        const data = await response.json(); // Parse the response JSON
+        setUserID(data.userID); // Set the userID in the UserContext
+        setMessage('Login successful');
         navigate('/event');
-      } else if (response.status === 400){
+      } else if (response.status === 400) {
         setMessage('Invalid login credentials');
-      } else if (response.status === 500){
-        setMessage('An error has occurred.')
+      } else if (response.status === 500) {
+        setMessage('An error has occurred.');
       } else {
         setMessage('Unknown error');
       }
-      
-    }
-    catch(e)
-    {
+    } catch (e) {
       alert(e.toString());
       return;
     }
@@ -69,7 +66,6 @@ function Login() {
           Enter
         </button>
 
-        {/* Redirect to register page here */}
         <Link to="/register">
           <button className="reg-button">
             <span className="new-user">New User?</span>
@@ -77,7 +73,6 @@ function Login() {
             <span className="sign-up-here">Sign Up Here</span>
           </button>
         </Link>
-
       </form>
       <span className="login-result">{message}</span>
     </div>

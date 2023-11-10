@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useEffect, useState } from 'react';
 
 const getIconPath = (iconName) => {
   try {
@@ -11,13 +10,13 @@ const getIconPath = (iconName) => {
   }
 };
 
-function LoadEvents() {
+function LoadEvents({ searchTerm }) {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('http://167.172.230.181:5000/events/search-events');
+        const response = await fetch(`http://167.172.230.181:5000/events/search-events?name=${searchTerm}`);
         const eventsData = await response.json();
         setEvents(eventsData);
       } catch (error) {
@@ -26,8 +25,9 @@ function LoadEvents() {
     };
 
     fetchEvents();
-  }, []);
-
+  }, [searchTerm]);
+  
+  
   return (
     <div id="eventUIDiv">
       <div className="header-container">

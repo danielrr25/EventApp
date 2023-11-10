@@ -1,0 +1,76 @@
+/* UserProfile.css */
+.user-profile-container {
+    display: flex;
+    flex-direction: column;
+    font-size: 34px;
+    text-align: center;
+    font-family: 'Josefin Sans', sans-serif;
+    color: rgb(120, 65, 192);
+  }
+  
+  .rounded-box {
+    background-color: #ffffff;
+    border-radius: 20px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 1000px;
+    height: 50px;
+    margin-left: 450px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+  }
+  
+  .name-container {
+    display: flex;
+    margin: 10px;
+  }
+  
+  .name-box {
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid #ffffff;
+    width: 480px;
+    height: 70px;
+    border-radius: 20px;
+    margin-left: 30px;
+    margin-bottom :-10px;
+  }
+  
+  .box-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .box-content {
+    margin: 0;
+    text-align: center;
+    font-family: 'Josefin Sans', sans-serif;
+    color: rgb(129, 129, 129);
+    padding-top: 10px;
+  }
+  
+  .name-box2 {
+    background-color: #ffffff;
+    border-radius: 20px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 480px;
+    height: 50px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+  }
+
+  .name-container{
+    margin-left: 440px;
+    text-align: center;
+  }
+
+  .box-title2 {
+    font-weight: bold;
+    margin-bottom: 0px;
+
+    text-align: center;
+  }
+  

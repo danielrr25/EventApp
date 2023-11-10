@@ -8,6 +8,9 @@ function Event() {
       <Link to="/addevent">
         <button>Add Event</button>
       </Link>
+      <Link to="/account">
+        <button>Account</button>
+      </Link>
     </div>
   );
 }

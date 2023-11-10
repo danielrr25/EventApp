@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
+import { useUser } from './UserContext'; // Import the useUser hoo
+import { useNavigate } from 'react-router-dom';
+import './DeleteAccount.css';
 
 function DeleteAccount() {
   const [message, setMessage] = useState('');
-  var loginName;
-
+  const { userID } = useUser(); // Access the userID from the context
+  const navigate = useNavigate();
+  
   const handleDeleteAccount = async () => {
+      console.log('UserID:', userID); // Log the userID
     const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
     if (confirmed) {
       try {
-        const username = loginName;
-        const obj = { username };
-        const js = JSON.stringify(obj);
+        var obj = { id:userID }; // Include the userID in the request object
+        var js = JSON.stringify(obj);
 
         const response = await fetch('http://167.172.230.181:5000/users/deleteuser', {
           method: 'POST',
@@ -24,6 +28,7 @@ function DeleteAccount() {
 
         if (response.status === 201) {
           setMessage('Account deleted successfully.');
+          navigate('/login');
         } else {
           setMessage('Account deletion failed.');
         }
@@ -35,11 +40,9 @@ function DeleteAccount() {
 
   return (
     <div className="delete-account-container">
-      <h2 className="delete-account-title">DELETE YOUR ACCOUNT</h2>
-      <p className="delete-account-info">
-        Are you sure you want to delete your account? This action cannot be undone.
-      </p>
-      <button onClick={handleDeleteAccount} className="delete-account-button">
+      <h2 className="delete-account-title">Delete Account</h2>
+      <h2 className="logout-title">Logout</h2>
+      <button onClick={handleDeleteAccount} id="delete-account-button">
         Delete Account
       </button>
 
