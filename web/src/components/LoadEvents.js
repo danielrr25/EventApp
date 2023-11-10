@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const getIconPath = (iconName) => {
   try {
@@ -26,8 +27,7 @@ function LoadEvents({ searchTerm }) {
 
     fetchEvents();
   }, [searchTerm]);
-  
-  
+
   return (
     <div id="eventUIDiv">
       <div className="header-container">
@@ -37,16 +37,20 @@ function LoadEvents({ searchTerm }) {
       </div>
 
       <div id="events-container" className="input-group">
-        {events.map(event => (
+        {events.map((event) => (
           <div key={event._id} className="event">
             <strong>Name:</strong> {event.eventName}<br />
+            <strong>ID:</strong> {event._id}<br />
             <strong>Date:</strong> {event.eventDate}<br />
             <strong>Category:</strong> {event.eventCategory}<br />
             <strong>Location:</strong> {event.eventLocation}<br />
             {event.eventIcon && (
               <div>
                 <strong>Icon:</strong>
-                <img src={getIconPath(event.eventIcon)} alt="Event Icon" />
+                {/* Use Link to make the icon clickable and pass the event ID as a parameter */}
+                <Link to={`/eventinfo/${event._id}`}>
+                  <img src={getIconPath(event.eventIcon)} alt="Event Icon" />
+                </Link>
               </div>
             )}
           </div>
