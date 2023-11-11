@@ -10,7 +10,9 @@ import AccountPage from './pages/AccountPage';
 import EventPage from './pages/EventPage';
 import EventInfoPage from './pages/EventInfoPage';
 
+
 import { UserProvider } from './components/UserContext'; // Import the UserProvider
+import FriendPage from './pages/FriendPage';
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
           <Route path="/account" element={<AccountPage />} />
           <Route path="/event" element={<EventPage />} />
           <Route path="/eventinfo" element={<EventInfoPage />} />
+          <Route path="/friend" element={<FriendPage />} />
         </Routes>
       </UserProvider>
     </BrowserRouter>
