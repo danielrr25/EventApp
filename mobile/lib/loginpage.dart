@@ -5,27 +5,48 @@ import 'package:mobile/components/text_field.dart';
 import 'package:mobile/signup_page.dart';
 import 'package:mobile/home_page.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-
   final url = "http://167.172.230.181:5000/users/login";
+
+  String errorMessage = "";
+
   void signUserIn() async {
-    try {
-      var response = await http.post(Uri.parse(url),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            "username": usernameController.text,
-            "password": passwordController.text,
-          }));
+    var response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "username": usernameController.text,
+          "password": passwordController.text,
+        }));
+
+    if (response.statusCode == 200) {
+      if (context.mounted) {
+        errorMessage = "";
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const HomePage()));
+            
+      }
+
       print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    } catch (error) {
-      print(error);
+      print('Response status: ${response.body}');
+    } else if (response.statusCode == 400) {
+      setState(() {
+        errorMessage = "INVALID LOGIN AND USERNAME";
+      });
+    } else {
+      setState(() {
+        errorMessage = "INTERNAL SERVER ERROR";
+      });
     }
   }
 
@@ -58,7 +79,11 @@ class LoginPage extends StatelessWidget {
                   fontSize: 20,
                 ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
+              Text(errorMessage,
+                  style:
+                      const TextStyle(color: Color.fromARGB(255, 243, 4, 4))),
+              const SizedBox(height: 15),
               MyTextField(
                 controller: usernameController,
                 hintText: 'Enter Username',
@@ -96,11 +121,7 @@ class LoginPage extends StatelessWidget {
                     minimumSize: const Size(365, 50),
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)))),
-                // onPressed: signUserIn,
-                   onPressed: () => {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HomePage()))
-                    },  
+                onPressed: signUserIn,
                 child: const Text('Log in', style: TextStyle(fontSize: 20)),
               ),
               const SizedBox(height: 20),
@@ -115,10 +136,15 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => SignUpPage()))
-                    },  
+                    onPressed: () {
+                      setState(() {
+                        errorMessage = "";
+                      });
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUpPage()));
+                    },
                     child: const Text(
                       'Register Here',
                       style: TextStyle(
