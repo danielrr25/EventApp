@@ -5,6 +5,8 @@ import 'package:mobile/components/text_field.dart';
 import 'package:mobile/signup_page.dart';
 import 'package:mobile/home_page.dart';
 
+String userID = '';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -30,15 +32,19 @@ class _LoginPageState extends State<LoginPage> {
         }));
 
     if (response.statusCode == 200) {
+      // takes login API response and decodes it to access the data sent.
+      dynamic parsedJson = jsonDecode(response.body);
+      userID = parsedJson['userID'];
+      print(userID);
+
       if (context.mounted) {
         errorMessage = "";
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const HomePage()));
-            
       }
 
-      print('Response status: ${response.statusCode}');
-      print('Response status: ${response.body}');
+      // print('Response status: ${response.statusCode}');
+      // print('Response status: ${response.body}');
     } else if (response.statusCode == 400) {
       setState(() {
         errorMessage = "INVALID LOGIN AND USERNAME";
