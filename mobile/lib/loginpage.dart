@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mobile/components/text_field.dart';
+import 'package:mobile/forgot_password.dart';
 import 'package:mobile/signup_page.dart';
 import 'package:mobile/home_page.dart';
 
@@ -134,23 +135,29 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
                 textIcon: const Icon(Icons.lock_sharp),
               ),
-              const SizedBox(height: 12),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 23.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 23.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(
-                      "Forgot Password?",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 63, 61, 61),
-                        fontSize: 16,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ResetPassword()));
+                      },
+                      child: const Text(
+                        "Forgot Password?",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 29, 71, 98),
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
