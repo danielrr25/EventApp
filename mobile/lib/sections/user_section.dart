@@ -38,7 +38,7 @@ class _UserSettingsState extends State<UserSettings> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                  'Name: ${currentUser.firstname} ${currentUser.lastname} \nUsername: ${currentUser.username}',
+                  'Name: ${currentUser.firstname} ${currentUser.lastname} \nUsername: ${currentUser.username} \nEmail: ${currentUser.email}',
                   style: const TextStyle(
                       fontSize: 30, fontWeight: FontWeight.bold)),
             ],
