@@ -1,6 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userSchema');
+const { genemailtoken } = require('../everification');
+const { sendemailv } = require('../emailtransport');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
@@ -215,6 +217,29 @@ router.post('/searchfriend',verifyToken, async (req, res) => {
         res.status(500).send(error);
     }
 });
+
+router.post('/verifyemail', async (req, res) => {
+    try {
+        const { emailvtoken } = req.body;
+
+        const user = await User.findOne({emailvtoken });
+        
+        if (!user) {
+            return res.status(400).send('Invalid verification token');
+        }
+
+        // Mark the email as verified
+    user.isverified = true;
+    user.emailvtoken = null;
+    await user.save();
+
+    return res.status(201).send('Email verified successfully');
+    } catch (error) {
+        res.status(500).send(error);
+    }
+    });
+
+module.exports = router;
 
 module.exports = router;
 
