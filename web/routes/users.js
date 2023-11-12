@@ -6,6 +6,8 @@ const { sendemailv } = require('../emailtransport');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
+
+
 const JWT_SECRET = "TheIndustrialRevolutionAndItsConsequencesHaveBeenADisasterForTheHumanRace";//change this to an evniroment variable later
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
