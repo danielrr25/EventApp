@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/sections/home_section.dart';
-
+import 'package:mobile/sections/user_section.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-
     HomeSection(),
-
     Center(child: Text('Search Page')),
     Center(child: Text('Create Page')),
     Center(child: Text('Events Page')),
-    Center(child: Text('User Page')),
+    const UserSettings(),
   ];
 
   @override

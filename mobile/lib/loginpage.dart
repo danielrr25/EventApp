@@ -5,7 +5,24 @@ import 'package:mobile/components/text_field.dart';
 import 'package:mobile/signup_page.dart';
 import 'package:mobile/home_page.dart';
 
-String userID = '';
+User currentUser =
+    User(userID: "", firstname: "", lastname: "", username: "", email: "");
+
+class User {
+  final String userID;
+  final String firstname;
+  final String lastname;
+  final String username;
+  final String email;
+
+  User({
+    required this.userID,
+    required this.firstname,
+    required this.lastname,
+    required this.username,
+    required this.email,
+  });
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,18 +50,16 @@ class _LoginPageState extends State<LoginPage> {
 
     if (response.statusCode == 200) {
       // takes login API response and decodes it to access the data sent.
+      String userID = '';
       dynamic parsedJson = jsonDecode(response.body);
       userID = parsedJson['userID'];
-      print(userID);
+      getUserData(userID);
 
       if (context.mounted) {
         errorMessage = "";
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const HomePage()));
       }
-
-      // print('Response status: ${response.statusCode}');
-      // print('Response status: ${response.body}');
     } else if (response.statusCode == 400) {
       setState(() {
         errorMessage = "INVALID LOGIN AND USERNAME";
@@ -54,6 +69,22 @@ class _LoginPageState extends State<LoginPage> {
         errorMessage = "INTERNAL SERVER ERROR";
       });
     }
+  }
+
+  void getUserData(userID) async {
+    // ignore: unnecessary_brace_in_string_interps
+    String url = "http://167.172.230.181:5000/users/user-info/${userID}";
+    final response = await http.get(Uri.parse(url));
+    var responseData = jsonDecode(response.body);
+    print(userID);
+
+    currentUser = User(
+      userID: responseData['_id'],
+      firstname: responseData['firstname'],
+      lastname: responseData['lastname'],
+      username: responseData['username'],
+      email: responseData['email'],
+    );
   }
 
   @override
