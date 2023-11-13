@@ -220,6 +220,65 @@ router.post('/searchfriend',verifyToken, async (req, res) => {
     }
 });
 
+router.post('/resetpassword', async (req, res) => {
+    try {
+        const { email } = req.body;
+      
+        // Find the user by ID
+        const user = await User.findOne({email});
+      
+        if (!user) {
+          return res.status(404).json({ error: 'Invalid email' });
+        }
+
+        const passwordtoken = gentoken();
+        user.passwordvtoken=passwordtoken;
+        sendpasswordv(user.email, passwordtoken);
+        return res.status(201).send('Email sent successfully');
+        } catch (error) {
+          res.status(500).send(error);
+        }
+});
+
+router.post('/resetpasswordentercode', async (req, res) => {
+    try {
+        const { code } = req.body;
+          
+        // Find the user by ID
+        const user = await User.findOne({passwordvtoken:code});
+          
+        if (!user) {
+          return res.status(404).json({ error: 'Invalid code' });
+        }
+        user.passwordvtoken=null;
+        await user.save();
+
+        return res.status(201).send('Correct code');
+        } catch (error) {
+          res.status(500).send(error);
+        }
+});
+
+router.post('/changepassword', async (req, res) => {
+    try {
+        const { id, newpassword, confirmpassword } = req.body;
+        
+        const user = await User.findOne({_id:id});
+
+        if (newpassword != confirmpassword){
+            return res.status(400).send('passwords do not match');
+        }
+                
+        // Mark the email as verified
+        user.password = newpassword;           
+        await user.save();
+        
+        return res.status(201).send('Password changed successfully');
+        } catch (error) {
+            res.status(500).send(error);
+        }
+});
+
 router.post('/verifyemail', async (req, res) => {
     try {
         const { emailvtoken } = req.body;
