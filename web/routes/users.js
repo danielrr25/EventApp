@@ -1,9 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userSchema');
-const { genemailtoken } = require('../everification');
+const { gentoken } = require('../verification');
 const { sendemailv } = require('../emailtransport');
 const jwt = require('jsonwebtoken');
+const { sendpasswordv } = require('../pemailtransport');
 const router = express.Router();
 
 
@@ -76,16 +77,20 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'Email already registered' });
         }
 
+        const emailvtoken = gentoken();
+      
         const newUser = new User({
             username,
             password,
             firstname,
             lastname,
-            email
+            email,
+            emailvtoken
         });
 
         await newUser.save();
 
+        sendemailv(user.email, emailvtoken);
         // Create a JWT token that expires in 1 hour
         const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '1h' });
 
