@@ -1,10 +1,10 @@
 const { v4: uuidv4 } = require('uuid');
 
-const genemailtoken = () => {
+const gentoken = () => {
     const emailToken = uuidv4();
     return emailToken;
 };
 
 module.exports = {
-    genemailtoken,
+    gentoken,
 };
