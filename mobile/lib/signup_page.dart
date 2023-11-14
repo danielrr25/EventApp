@@ -1,6 +1,8 @@
+// ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:mobile/email_verification.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -16,10 +18,10 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final url = "http://167.172.230.181:5000/users/register";
+  bool passwordToggle = true;
   // Place holders for sending data for now
   void createUser() async {
     try {
-      print("FOOO");
       var response = await http.post(Uri.parse(url),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
@@ -31,15 +33,17 @@ class _SignUpPageState extends State<SignUpPage> {
             "lastname": _lastNameController.text,
             "email": _emailController.text
           }));
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("You are all set!"),
-        duration: Duration(milliseconds: 1500),
-      ));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("You are all set!"),
+          duration: Duration(milliseconds: 1500),
+        ));
+      }
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       // print(response.body);
     } catch (err) {
-      print("An error has occurred");
+      print(err);
     }
   }
 
@@ -50,165 +54,177 @@ class _SignUpPageState extends State<SignUpPage> {
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
-            child: Column(children: [
-              Image.asset(
-                'assets/icon/no_background_logo.jpg',
-                height: 150,
-                width: 150,
-              ),
-              const SizedBox(height: 30),
-              const Text(
-                "Sign Up",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
+            child: Form(
+              child: Column(children: [
+                const SizedBox(height: 10),
+                const Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 25),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: _userController,
-                  decoration: InputDecoration(
-                      prefixIcon: const Align(
-                        widthFactor: 1.0,
-                        heightFactor: 1.0,
-                        child: Icon(Icons.account_circle_outlined),
-                      ),
-                      hintText: 'Username',
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      fillColor: const Color.fromARGB(255, 252, 250, 250),
-                      filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500])),
+                const Text(
+                  "Create a New Account",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    fontSize: 20,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      prefixIcon: const Align(
-                        widthFactor: 1.0,
-                        heightFactor: 1.0,
-                        child: Icon(Icons.lock_sharp),
-                      ),
-                      hintText: 'Password',
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      fillColor: const Color.fromARGB(255, 252, 250, 250),
-                      filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500])),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: _firstNameController,
-                  decoration: InputDecoration(
+                const SizedBox(height: 25),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.name,
+                    controller: _firstNameController,
+                    decoration: InputDecoration(
+                      labelText: "First Name",
                       prefixIcon: const Align(
                         widthFactor: 1.0,
                         heightFactor: 1.0,
                         child: Icon(Icons.sentiment_satisfied_alt_rounded),
                       ),
-                      hintText: 'First Name',
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
+                      border: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                       ),
                       fillColor: const Color.fromARGB(255, 252, 250, 250),
                       filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500])),
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: _lastNameController,
-                  decoration: InputDecoration(
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.name,
+                    controller: _lastNameController,
+                    decoration: InputDecoration(
+                      labelText: "Last Name",
                       prefixIcon: const Align(
                         widthFactor: 1.0,
                         heightFactor: 1.0,
                         child: Icon(Icons.sentiment_satisfied_alt_rounded),
                       ),
-                      hintText: 'Last name',
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
+                      border: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                       ),
                       fillColor: const Color.fromARGB(255, 252, 250, 250),
                       filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500])),
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.name,
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: "Email",
                       prefixIcon: const Align(
                         widthFactor: 1.0,
                         heightFactor: 1.0,
                         child: Icon(Icons.email_rounded),
                       ),
-                      hintText: 'Email',
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
+                      border: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                       ),
                       fillColor: const Color.fromARGB(255, 252, 250, 250),
                       filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500])),
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 23.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(width: 60),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black),
-                        onPressed: createUser,
-                        // onPressed: () {
-
-                        //   ScaffoldMessenger.of(context)
-                        //       .showSnackBar(const SnackBar(
-                        //     content: Text("You are all set!"),
-                        //     duration: Duration(milliseconds: 1500),
-                        //   ));
-                        // },
-                        child: const Text("Register")),
-                    TextButton(
-                        style: TextButton.styleFrom(),
-                        onPressed: () => {Navigator.pop(context)},
-                        child: const Text('Get me back'))
-                  ],
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.name,
+                    controller: _userController,
+                    decoration: InputDecoration(
+                      labelText: "Username",
+                      prefixIcon: const Align(
+                        widthFactor: 1.0,
+                        heightFactor: 1.0,
+                        child: Icon(Icons.account_circle_outlined),
+                      ),
+                      border: const OutlineInputBorder(),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                      ),
+                      fillColor: const Color.fromARGB(255, 252, 250, 250),
+                      filled: true,
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                    ),
+                  ),
                 ),
-              ),
-            ]),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.name,
+                    controller: _passwordController,
+                    obscureText: passwordToggle,
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      prefixIcon: const Align(
+                        widthFactor: 1.0,
+                        heightFactor: 1.0,
+                        child: Icon(Icons.lock),
+                      ),
+                      border: const OutlineInputBorder(),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue),
+                      ),
+                      fillColor: const Color.fromARGB(255, 252, 250, 250),
+                      filled: true,
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          setState(() {
+                            passwordToggle = !passwordToggle;
+                          });
+                        },
+                        child: Icon(passwordToggle
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 25),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(365, 50),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8)))),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const EmailVerification()));
+                      createUser();
+                    },
+                    child:
+                        const Text('Sign Up', style: TextStyle(fontSize: 20))),
+                const SizedBox(height: 10),
+                TextButton(
+                  style: TextButton.styleFrom(),
+                  onPressed: () => {Navigator.pop(context)},
+                  child: const Text('Back to Login',
+                      style: TextStyle(fontSize: 20)),
+                )
+              ]),
+            ),
           ),
         ));
   }

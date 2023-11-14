@@ -52,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
         }));
 
     responseCode = response.statusCode;
-    print("STATUS CODE INSIDE SIGNIN: ${responseCode}");
 
     if (response.statusCode == 200) {
       // takes login API response and decodes it to access the data sent.
@@ -76,7 +75,6 @@ class _LoginPageState extends State<LoginPage> {
     String url = "http://167.172.230.181:5000/users/user-info/${userID}";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
-    print(userID);
 
     currentUser = User(
       userID: responseData['_id'],
@@ -195,7 +193,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       validator: (value) {
-                        print("STATUS CODE IN VALIDATION: ${responseCode}");
                         if (value!.isEmpty) {
                           setState(() {
                             errorMessage = "INVALID USERNAME AND PASSWORD";
