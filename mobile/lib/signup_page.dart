@@ -12,6 +12,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _formfield = GlobalKey<FormState>();
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
@@ -55,6 +56,7 @@ class _SignUpPageState extends State<SignUpPage> {
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Form(
+              key: _formfield,
               child: Column(children: [
                 const SizedBox(height: 10),
                 const Text(
@@ -212,7 +214,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => const EmailVerification()));
-                      createUser();
+                      // createUser();
                     },
                     child:
                         const Text('Sign Up', style: TextStyle(fontSize: 20))),
