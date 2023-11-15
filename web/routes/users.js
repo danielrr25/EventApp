@@ -7,7 +7,7 @@ const verifyToken  = require('../utils/jwt');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { sendpasswordv } = require('../pemailtransport');
-const router = express.Router();
+
 
 
 

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Event = require('../models/eventSchema'); // Import your Event model
-
-
+const jwt = require('jsonwebtoken');
+const verifyToken  = require('../utils/jwt');
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
