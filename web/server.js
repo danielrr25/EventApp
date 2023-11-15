@@ -13,12 +13,12 @@ mongoose.connect('mongodb+srv://BigProject:TryG6F2BdhCa14KB@cluster1.uorvble.mon
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => {
-  console.log('Connected to MongoDB Atlas');
-})
-.catch((err) => {
-  console.error('Error connecting to MongoDB Atlas:', err);
-});
+// .then(() => {
+//   console.log('Connected to MongoDB Atlas');
+// })
+// .catch((err) => {
+//   console.error('Error connecting to MongoDB Atlas:', err);
+// });
 
 // Import and use your route files here
 const usersRouter = require('./routes/users');
@@ -36,3 +36,6 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+module.exports = app;
+

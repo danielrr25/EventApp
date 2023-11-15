@@ -15,7 +15,6 @@ router.post('/create-event', async (req, res) => {
   try {
       // Destructuring assignment to extract values from request body
       const { creatorID, eventName, eventCategory,eventDescription, eventDate, eventLocation,eventIcon } = req.body;
-      console.log(req.body);
       // Check if the event already exists
       let event = await Event.findOne({ eventName });
       if (event) {
@@ -33,7 +32,6 @@ router.post('/create-event', async (req, res) => {
           listAttendees: [] ,
           eventIcon
       });
-      console.log(event);
       // Save the event to the database
       await event.save();
 
