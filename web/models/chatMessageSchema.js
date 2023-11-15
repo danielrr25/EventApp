@@ -1,24 +1,10 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const chatMessageSchema = new mongoose.Schema({
-    EventId: {
-      type: Schema.Types.ObjectId,
-      ref: 'events',
-      required: true,
-    },
-    SenderId: {
-      type: Schema.Types.ObjectId,
-      ref: 'users',
-      required: true,
-  },
-    Tmestamp: {
-        type: Date,
-        required: true,
-    },
-    body: {
-        type: String, 
-        required: true,
-    }
+  user: { type: Schema.Types.ObjectId, ref: 'users' },
+  event: { type: Schema.Types.ObjectId, ref: 'events' },
+  message: String,
+  timestamp: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('chatmessages', chatMessageSchema);
+module.exports = mongoose.model('ChatMessage', chatMessageSchema);

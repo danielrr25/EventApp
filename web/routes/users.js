@@ -3,36 +3,21 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userSchema');
 const { genemailtoken } = require('../everification');
 const { sendemailv } = require('../emailtransport');
-const jwt = require('jsonwebtoken');
+const verifyToken  = require('../utils/jwt');
 const router = express.Router();
-
+const jwt = require('jsonwebtoken');
 
 
 const JWT_SECRET = "TheIndustrialRevolutionAndItsConsequencesHaveBeenADisasterForTheHumanRace";//change this to an evniroment variable later
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization,authorization');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS,Bearer');
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
 
-const verifyToken = (req, res, next) => {
-    console.log(req.headers);
-    const token = req.headers['authorization']?.split(' ')[1]; // Bearer <token>
-    console.log(token);
-    if (token) {
-      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) {
-          return res.status(401).json({ error: 'Unauthorized access: Invalid token' });
-        }
-        req.user = decoded; // Add the decoded token to the request for use in your routes
-        next();
-      });
-    } else {
-      res.status(403).json({ error: 'A token is required for authentication' });
-    }
-  };
+
   
 
 // Login route
@@ -85,9 +70,6 @@ router.post('/register', async (req, res) => {
         });
 
         await newUser.save();
-
-        // Create a JWT token that expires in 1 hour
-        const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '1h' });
 
         res.status(201).json({ token, message: 'User registered successfully' });
     } catch (error) {

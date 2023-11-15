@@ -11,10 +11,11 @@ router.use((req, res, next) => {
   next();
 });
 
-router.post('/create-event', async (req, res) => {
+router.post('/create-event',verifyToken, async (req, res) => {
   try {
       // Destructuring assignment to extract values from request body
       const { creatorID, eventName, eventCategory,eventDescription, eventDate, eventLocation,eventIcon } = req.body;
+      console.log(req.body);
       // Check if the event already exists
       let event = await Event.findOne({ eventName });
       if (event) {
@@ -32,6 +33,7 @@ router.post('/create-event', async (req, res) => {
           listAttendees: [] ,
           eventIcon
       });
+      console.log(event);
       // Save the event to the database
       await event.save();
 
@@ -43,7 +45,7 @@ router.post('/create-event', async (req, res) => {
 });
 
 // GET route to get event details
-router.get('/get-event-info/:eventId', async (req, res) => {
+router.get('/get-event-info/:eventId',verifyToken, async (req, res) => {
   try {
       const { eventId } = req.params;
   
@@ -60,8 +62,39 @@ router.get('/get-event-info/:eventId', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+  
+// GET route to get events created by a user
+router.get('/get-created-events/:userId',verifyToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
 
-router.get('/search-events', async (req, res) => {
+    // Find events created by the user
+    const createdEvents = await Event.find({ creatorID: userId });
+
+    res.status(200).json(createdEvents);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+// GET route to get events that a user is attending
+router.get('/get-attending-events/:userId',verifyToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find events where the user is in the list of attendees
+    const attendingEvents = await Event.find({ listAttendees: userId });
+
+    res.status(200).json(attendingEvents);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/search-events',verifyToken, async (req, res) => {
   const { name, category } = req.query;
   
   try {
@@ -80,21 +113,16 @@ router.get('/search-events', async (req, res) => {
 });
 
 // Delete event route
-router.delete('/delete-event/:id', async (req, res) => {
+router.get('/delete-event/:id',verifyToken, async (req, res) => {
   try {
     // Find the event by ID
     const event = await Event.findById(req.params.id);
     if (!event) {
       return res.status(404).json({ msg: 'Event not found' });
     }
-
-    // Check if the current user is the creator of the event
-    if (event.creatorID.toString() !== req.user.id) { // Assuming req.user is set by your auth middleware
-      return res.status(401).json({ msg: 'User not authorized' });
-    }
-
+  
     // Delete the event
-    await event.remove();
+    await Event.deleteOne({ _id: req.params.id });
     res.json({ msg: 'Event removed' });
   } catch (err) {
     console.error(err.message);
@@ -106,7 +134,7 @@ router.delete('/delete-event/:id', async (req, res) => {
 });
 
 //attend event route
-router.post('/attendevent', async (req, res) => {
+router.post('/attendevent',verifyToken, async (req, res) => {
   try {
       const { eventid, userid } = req.body;
       const event = await Event.findById(eventid);
@@ -134,7 +162,7 @@ router.post('/attendevent', async (req, res) => {
 
 
 //unattend event route
-router.post('/unattendevent', async (req, res) => {
+router.post('/unattendevent',verifyToken, async (req, res) => {
   try {
       const { eventid, userid } = req.body;
       const event = await Event.findById(eventid);
@@ -160,7 +188,7 @@ router.post('/unattendevent', async (req, res) => {
   }
 });
 
-router.post('/searchevent', async (req, res) => {
+router.post('/searchevent',verifyToken, async (req, res) => {
     
   try {
       const { searchString } = req.body; 
