@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/loginpage.dart';
 
-class EmailVerification extends StatefulWidget {
-  const EmailVerification({super.key});
+class NewPassword extends StatefulWidget {
+  const NewPassword({super.key});
 
   @override
-  State<EmailVerification> createState() => _EmailVerificationState();
+  State<NewPassword> createState() => _NewPasswordState();
 }
 
-class _EmailVerificationState extends State<EmailVerification> {
+class _NewPasswordState extends State<NewPassword> {
   final _formfield = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passCodeController = TextEditingController();
-  String errorMessage = "";
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
+  String errorMessage = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +34,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                     ),
                     const SizedBox(height: 20),
                     const Text(
-                      "Email Verification",
+                      "New Password",
                       style: TextStyle(
                         color: Color.fromARGB(255, 0, 0, 0),
                         fontSize: 40,
@@ -41,49 +42,37 @@ class _EmailVerificationState extends State<EmailVerification> {
                       ),
                     ),
                     const Text(
-                      "Enter the Passcode We Sent to Your Email",
+                      "Enter Your New Password",
                       style: TextStyle(
                         color: Color.fromARGB(255, 0, 0, 0),
                         fontSize: 20,
                       ),
                     ),
+                    const SizedBox(height: 10),
                     Text(errorMessage,
                         style: const TextStyle(
                             color: Color.fromARGB(255, 243, 4, 4))),
+                    const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: TextFormField(
                         keyboardType: TextInputType.emailAddress,
-                        controller: _emailController,
+                        controller: _passwordController,
                         decoration: InputDecoration(
-                            labelText: "Email",
-                            prefixIcon: const Align(
-                              widthFactor: 1.0,
-                              heightFactor: 1.0,
-                              child: Icon(Icons.email_rounded),
-                            ),
-                            border: const OutlineInputBorder(),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue),
-                            ),
-                            fillColor: const Color.fromARGB(255, 252, 250, 250),
-                            filled: true,
-                            hintStyle: TextStyle(color: Colors.grey[500]),
-                            suffixIcon: TextButton(
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                  minimumSize: Size.zero,
-                                  padding: const EdgeInsets.only(right: 10),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap),
-                              child: const Text(
-                                'Send Code',
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 25, 90, 131),
-                                  fontSize: 16,
-                                ),
-                              ),
-                            )),
+                          labelText: "New Password",
+                          prefixIcon: const Align(
+                            widthFactor: 1.0,
+                            heightFactor: 1.0,
+                            child: Icon(Icons.lock_outline_rounded),
+                          ),
+                          border: const OutlineInputBorder(),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                          fillColor: const Color.fromARGB(255, 252, 250, 250),
+                          filled: true,
+                          hintStyle: TextStyle(color: Colors.grey[500]),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -91,9 +80,9 @@ class _EmailVerificationState extends State<EmailVerification> {
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: TextFormField(
                         keyboardType: TextInputType.number,
-                        controller: _passCodeController,
+                        controller: _confirmPasswordController,
                         decoration: InputDecoration(
-                          labelText: "Passcode",
+                          labelText: "Confirm New Password",
                           prefixIcon: const Align(
                             widthFactor: 1.0,
                             heightFactor: 1.0,
@@ -126,7 +115,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                           return false;
                         });
                       },
-                      child: const Text('Verify Email',
+                      child: const Text('Change Password',
                           style: TextStyle(fontSize: 20)),
                     ),
                     const SizedBox(height: 20),
