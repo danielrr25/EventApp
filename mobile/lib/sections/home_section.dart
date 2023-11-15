@@ -62,7 +62,7 @@ class HomeSection extends StatelessWidget {
               CategoryCircle(
                 icon: Icons.school,
                 isSelected: true,
-                onPressed: ()  {
+                onPressed: () {
                   // Add logic for music category.
                 },
                 label: 'Greek',
@@ -70,7 +70,7 @@ class HomeSection extends StatelessWidget {
               CategoryCircle(
                 icon: Icons.food_bank,
                 isSelected: true,
-                onPressed: ()  {
+                onPressed: () {
                   // Add logic for music category.
                 },
                 label: 'Food',
