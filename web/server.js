@@ -36,3 +36,38 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+
+//Chat information
+let messages = [];
+
+app.use(cors());
+app.use(bodyParser.json());
+
+//serve static files
+app.use(express.static('public'));
+
+//endpoint to get all messages
+app.get('/messages', (req, res) => {
+    res.json(messages);
+});
+
+//endpoint to handle incoming messages
+app.post('/messages', (req, res) => {
+    const { message, sender } = req.body;
+
+    if (message && sender) {
+        // Store the message in the in-memory storage
+        messages.push({ message, sender });
+
+        // Send a success response
+        res.status(201).json({ status: 'success', message: 'Message sent successfully.' });
+    } else {
+        // Send a bad request response if the message or sender is missing
+        res.status(400).json({ status: 'error', message: 'Invalid request. Message or sender is missing.' });
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
