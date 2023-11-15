@@ -34,7 +34,7 @@ router.post('/login', async (req, res) => {
         }
 
         if (!user.isverified) {
-            return res.status(400).send({ error: 'Invalid login credentials' });
+            return res.status(400).send({ error: 'Not verified via email' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
