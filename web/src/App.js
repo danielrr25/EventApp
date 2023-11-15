@@ -15,8 +15,28 @@ import { UserProvider } from './components/UserContext'; // Import the UserProvi
 import FriendPage from './pages/FriendPage';
 
 function App() {
+
+  //chat functionality
+    const [chatVisible, setChatVisible] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [userInput, setUserInput] = useState('');
+  
+    const toggleChat = () => {
+      setChatVisible(!chatVisible);
+    };
+  
+    const sendMessage = () => {
+      if (userInput.trim() === '') {
+        return;
+      }
+  
+      setMessages([...messages, userInput]);
+      setUserInput('');
+    };
+
+
   return (
-    <BrowserRouter>
+    <><BrowserRouter>
       <UserProvider> {/* Wrap your entire app with UserProvider */}
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -30,6 +50,30 @@ function App() {
         </Routes>
       </UserProvider>
     </BrowserRouter>
+    
+    {/* chat implementation */}
+    <div className="App">
+        <div id="chat-popup" style={{ display: chatVisible ? 'block' : 'none' }}>
+          <div id="chat-header">
+            <span id="chat-title">Chat</span>
+            <button id="close-btn" onClick={toggleChat}>×</button>
+          </div>
+          <div id="chat-body">
+            <div id="chat-messages">
+              {messages.map((message, index) => (
+                <div key={index}>{message}</div>
+              ))}
+            </div>
+            <input
+              type="text"
+              id="user-input"
+              placeholder="Type your message..."
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)} />
+            <button onClick={sendMessage}>Send</button>
+          </div>
+        </div>
+      </div></>
   );
 }
 
