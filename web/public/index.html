@@ -43,4 +43,22 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+
+
+  <title>Simple Chat</title>
+    <style>
+        /* Add CSS styles here */
+    </style>
+</head>
+<body>
+
+<button id="open-chat-btn">Open Chat</button>
+
+<script>
+    document.getElementById('open-chat-btn').addEventListener('click', function () {
+        // Open the chat window when the button is clicked
+        window.open('chat.html', 'Chat Window', 'width=400,height=400');
+    });
+</script>
+</body>
 </html>
