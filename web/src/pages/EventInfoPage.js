@@ -12,7 +12,6 @@ function EventInfoPage() {
       <h2>Event Information Page</h2>
       <p>Event ID: {eventId}</p>
       <EventInfo eventId={eventId} />
-      <button id="open-chat-btn">Open Chat</button>
     </div>
   );
 }

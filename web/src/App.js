@@ -17,26 +17,27 @@ import FriendPage from './pages/FriendPage';
 function App() {
 
   //chat functionality
-    const [chatVisible, setChatVisible] = useState(false);
-    const [messages, setMessages] = useState([]);
-    const [userInput, setUserInput] = useState('');
-  
-    const toggleChat = () => {
-      setChatVisible(!chatVisible);
-    };
-  
-    const sendMessage = () => {
-      if (userInput.trim() === '') {
-        return;
-      }
-  
-      setMessages([...messages, userInput]);
-      setUserInput('');
-    };
+  const [chatVisible, setChatVisible] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [userInput, setUserInput] = useState('');
+
+  const toggleChat = () => {
+    setChatVisible(!chatVisible);
+  };
+
+  const sendMessage = () => {
+    if (userInput.trim() === '') {
+      return;
+    }
+
+    setMessages([...messages, userInput]);
+    setUserInput('');
+  };
 
 
   return (
-    <><BrowserRouter>
+    <div className="App">
+    <BrowserRouter>
       <UserProvider> {/* Wrap your entire app with UserProvider */}
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -45,18 +46,24 @@ function App() {
           <Route path="/addevent" element={<AddEventPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/event" element={<EventPage />} />
-          <Route path="/eventinfo" element={<EventInfoPage />} />
+          <Route
+            path="/eventinfo"
+            element={<><EventInfoPage toggleChat={toggleChat}/><button id="chatbtn" onClick={toggleChat}>
+              Toggle Chat
+            </button></>}
+          />
           <Route path="/friend" element={<FriendPage />} />
         </Routes>
       </UserProvider>
     </BrowserRouter>
     
-    {/* chat implementation */}
-    <div className="App">
-        <div id="chat-popup" style={{ display: chatVisible ? 'block' : 'none' }}>
+    {chatVisible && (
+        <div id="chat-popup">
           <div id="chat-header">
             <span id="chat-title">Chat</span>
-            <button id="close-btn" onClick={toggleChat}>×</button>
+            <button id="close-btn" onClick={toggleChat}>
+              ×
+            </button>
           </div>
           <div id="chat-body">
             <div id="chat-messages">
@@ -69,11 +76,13 @@ function App() {
               id="user-input"
               placeholder="Type your message..."
               value={userInput}
-              onChange={(e) => setUserInput(e.target.value)} />
+              onChange={(e) => setUserInput(e.target.value)}
+            />
             <button onClick={sendMessage}>Send</button>
           </div>
         </div>
-      </div></>
+      )}
+    </div>
   );
 }
 
