@@ -29,6 +29,18 @@ const userSchema = new mongoose.Schema({
         type: Buffer,
         required: false,
     },
+    emailvtoken: {
+        type: String,
+        required: false,
+    },
+    passwordvtoken: {
+        type: String,
+        required: false,
+    },
+    isverified: {
+        type: Boolean,
+        required: false,
+    },
     bio: {
         type: String,
         required: false,

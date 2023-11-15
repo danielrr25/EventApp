@@ -8,24 +8,24 @@ const sender = nodemailer.createTransport({
     },
 });
 
-const sendemailv = (recipientemail, vtoken) => {
+const sendpasswordv = (recipientemail, ptoken) => {
     const maildraft = {
         from: 'popoutlife@gmail.com',
         to: recipientemail,
-        subject: 'Email Verification',
-        text: 'Please use the following code to verify your account: '+ vtoken,
+        subject: 'Password change code',
+        text: 'Please use the following code to continue to password verification: ' +  ptoken,
     };
 
     sender.sendMail(maildraft, (error) => {
         if (error) {
-            console.error('verification email not sent', error);
+            console.error('password token email not sent', error);
         } else {
-            console.log('verification email sent');
+            console.log('password token email sent');
         }
     });
 };
 
 module.exports = {
     sender, 
-    sendemailv,
+    sendpasswordv,
 };

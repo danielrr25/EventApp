@@ -1,11 +1,14 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userSchema');
-const { genemailtoken } = require('../everification');
+const { gentoken } = require('../verification');
 const { sendemailv } = require('../emailtransport');
 const verifyToken  = require('../utils/jwt');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const { sendpasswordv } = require('../pemailtransport');
+const router = express.Router();
+
 
 
 const JWT_SECRET = "TheIndustrialRevolutionAndItsConsequencesHaveBeenADisasterForTheHumanRace";//change this to an evniroment variable later
@@ -28,6 +31,10 @@ router.post('/login', async (req, res) => {
 
         if (!user) {
             return res.status(400).json({ error: 'User does not exist' });
+        }
+
+        if (!user.isverified) {
+            return res.status(400).send({ error: 'Invalid login credentials' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -61,15 +68,22 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'Email already registered' });
         }
 
+        const emailvtoken = gentoken();
+      
         const newUser = new User({
             username,
             password,
             firstname,
             lastname,
-            email
+            email,
+            emailvtoken
         });
 
         await newUser.save();
+
+        sendemailv(user.email, emailvtoken);
+        // Create a JWT token that expires in 1 hour
+        const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '1h' });
 
         res.status(201).json({ token, message: 'User registered successfully' });
     } catch (error) {
@@ -202,6 +216,65 @@ router.post('/searchfriend',verifyToken, async (req, res) => {
     }
 });
 
+router.post('/resetpassword', async (req, res) => {
+    try {
+        const { email } = req.body;
+      
+        // Find the user by ID
+        const user = await User.findOne({email});
+      
+        if (!user) {
+          return res.status(404).json({ error: 'Invalid email' });
+        }
+
+        const passwordtoken = gentoken();
+        user.passwordvtoken=passwordtoken;
+        sendpasswordv(user.email, passwordtoken);
+        return res.status(201).send('Email sent successfully');
+        } catch (error) {
+          res.status(500).send(error);
+        }
+});
+
+router.post('/resetpasswordentercode', async (req, res) => {
+    try {
+        const { code } = req.body;
+          
+        // Find the user by ID
+        const user = await User.findOne({passwordvtoken:code});
+          
+        if (!user) {
+          return res.status(404).json({ error: 'Invalid code' });
+        }
+        user.passwordvtoken=null;
+        await user.save();
+
+        return res.status(201).send('Correct code');
+        } catch (error) {
+          res.status(500).send(error);
+        }
+});
+
+router.post('/changepassword', async (req, res) => {
+    try {
+        const { id, newpassword, confirmpassword } = req.body;
+        
+        const user = await User.findOne({_id:id});
+
+        if (newpassword != confirmpassword){
+            return res.status(400).send('passwords do not match');
+        }
+                
+        // Mark the email as verified
+        user.password = newpassword;           
+        await user.save();
+        
+        return res.status(201).send('Password changed successfully');
+        } catch (error) {
+            res.status(500).send(error);
+        }
+});
+
 router.post('/verifyemail', async (req, res) => {
     try {
         const { emailvtoken } = req.body;
@@ -223,6 +296,4 @@ router.post('/verifyemail', async (req, res) => {
     }
     });
 
-
 module.exports = router;
-
