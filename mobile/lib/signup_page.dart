@@ -21,6 +21,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final url = "http://167.172.230.181:5000/users/register";
   bool passwordToggle = true;
   String jwtToken = '';
+  String errorMessage = '';
   // Creates new User account
   Future<int> createUser() async {
     var response = await http.post(Uri.parse(url),
@@ -38,6 +39,12 @@ class _SignUpPageState extends State<SignUpPage> {
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     return response.statusCode;
+  }
+
+  bool emailValidator(email) {
+    return RegExp(
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(email);
   }
 
   @override
@@ -66,6 +73,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     fontSize: 20,
                   ),
                 ),
+                Text(errorMessage,
+                    style:
+                        const TextStyle(color: Color.fromARGB(255, 243, 4, 4))),
                 const SizedBox(height: 25),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -116,81 +126,100 @@ class _SignUpPageState extends State<SignUpPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.name,
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      prefixIcon: const Align(
-                        widthFactor: 1.0,
-                        heightFactor: 1.0,
-                        child: Icon(Icons.email_rounded),
+                      keyboardType: TextInputType.name,
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: "Email",
+                        prefixIcon: const Align(
+                          widthFactor: 1.0,
+                          heightFactor: 1.0,
+                          child: Icon(Icons.email_rounded),
+                        ),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        fillColor: const Color.fromARGB(255, 252, 250, 250),
+                        filled: true,
+                        hintStyle: TextStyle(color: Colors.grey[500]),
                       ),
-                      border: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      fillColor: const Color.fromARGB(255, 252, 250, 250),
-                      filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                    ),
-                  ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter Email";
+                        }
+
+                        if (emailValidator(value) == false) {
+                          return "Enter Valid Email Address";
+                        }
+                        return null;
+                      }),
                 ),
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.name,
-                    controller: _userController,
-                    decoration: InputDecoration(
-                      labelText: "Username",
-                      prefixIcon: const Align(
-                        widthFactor: 1.0,
-                        heightFactor: 1.0,
-                        child: Icon(Icons.account_circle_outlined),
+                      keyboardType: TextInputType.name,
+                      controller: _userController,
+                      decoration: InputDecoration(
+                        labelText: "Username",
+                        prefixIcon: const Align(
+                          widthFactor: 1.0,
+                          heightFactor: 1.0,
+                          child: Icon(Icons.account_circle_outlined),
+                        ),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        fillColor: const Color.fromARGB(255, 252, 250, 250),
+                        filled: true,
+                        hintStyle: TextStyle(color: Colors.grey[500]),
                       ),
-                      border: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      fillColor: const Color.fromARGB(255, 252, 250, 250),
-                      filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                    ),
-                  ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter Username";
+                        }
+                        return null;
+                      }),
                 ),
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.name,
-                    controller: _passwordController,
-                    obscureText: passwordToggle,
-                    decoration: InputDecoration(
-                      labelText: "Password",
-                      prefixIcon: const Align(
-                        widthFactor: 1.0,
-                        heightFactor: 1.0,
-                        child: Icon(Icons.lock),
+                      keyboardType: TextInputType.name,
+                      controller: _passwordController,
+                      obscureText: passwordToggle,
+                      decoration: InputDecoration(
+                        labelText: "Password",
+                        prefixIcon: const Align(
+                          widthFactor: 1.0,
+                          heightFactor: 1.0,
+                          child: Icon(Icons.lock),
+                        ),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        fillColor: const Color.fromARGB(255, 252, 250, 250),
+                        filled: true,
+                        hintStyle: TextStyle(color: Colors.grey[500]),
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            setState(() {
+                              passwordToggle = !passwordToggle;
+                            });
+                          },
+                          child: Icon(passwordToggle
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                        ),
                       ),
-                      border: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      fillColor: const Color.fromARGB(255, 252, 250, 250),
-                      filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      suffixIcon: InkWell(
-                        onTap: () {
-                          setState(() {
-                            passwordToggle = !passwordToggle;
-                          });
-                        },
-                        child: Icon(passwordToggle
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                      ),
-                    ),
-                  ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter Password";
+                        }
+                        return null;
+                      }),
                 ),
                 const SizedBox(height: 25),
                 ElevatedButton(
@@ -202,18 +231,25 @@ class _SignUpPageState extends State<SignUpPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8)))),
                     onPressed: () async {
-                      int statusCode = await createUser();
-                      if (statusCode == 201) {
-                        // String userID = await getUserID();
-                        // await getUserData(userID);
-                        // print(currentUser.emailVerifyToken);
-
-                        if (context.mounted) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const EmailVerification()));
+                      if (_formfield.currentState!.validate()) {
+                        int statusCode = await createUser();
+                        if (statusCode == 201) {
+                          if (context.mounted) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const EmailVerification()));
+                          }
+                        } else if (statusCode == 400) {
+                          setState(() {
+                            errorMessage = 'Username or Email Already In Use';
+                          });
+                        } else {
+                          setState(() {
+                            errorMessage =
+                                'Internal Server Error: Try Again Later';
+                          });
                         }
                       }
                     },
