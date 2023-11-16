@@ -20,32 +20,24 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final url = "http://167.172.230.181:5000/users/register";
   bool passwordToggle = true;
-  // Place holders for sending data for now
-  void createUser() async {
-    try {
-      var response = await http.post(Uri.parse(url),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            "username": _userController.text,
-            "password": _passwordController.text,
-            "firstname": _firstNameController.text,
-            "lastname": _lastNameController.text,
-            "email": _emailController.text
-          }));
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("You are all set!"),
-          duration: Duration(milliseconds: 1500),
-        ));
-      }
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      // print(response.body);
-    } catch (err) {
-      print(err);
-    }
+  String jwtToken = '';
+  // Creates new User account
+  Future<int> createUser() async {
+    var response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "username": _userController.text,
+          "password": _passwordController.text,
+          "firstname": _firstNameController.text,
+          "lastname": _lastNameController.text,
+          "email": _emailController.text
+        }));
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    return response.statusCode;
   }
 
   @override
@@ -209,12 +201,21 @@ class _SignUpPageState extends State<SignUpPage> {
                         shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8)))),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const EmailVerification()));
-                      // createUser();
+                    onPressed: () async {
+                      int statusCode = await createUser();
+                      if (statusCode == 201) {
+                        // String userID = await getUserID();
+                        // await getUserData(userID);
+                        // print(currentUser.emailVerifyToken);
+
+                        if (context.mounted) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EmailVerification()));
+                        }
+                      }
                     },
                     child:
                         const Text('Sign Up', style: TextStyle(fontSize: 20))),
