@@ -15,7 +15,7 @@ function Chat() {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch('http://167.172.230.181:5000/events/chatmessages');
+      const response = await fetch('http://167.172.230.181:5000/chatmessages');
       const data = await response.json();
       setMessages(data);
     } catch (error) {
@@ -29,7 +29,7 @@ function Chat() {
     }
 
     try {
-      await fetch('http://167.172.230.181:5000/events/chatmessages', {
+      await fetch('http://167.172.230.181:5000/chatmessages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
