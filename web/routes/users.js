@@ -33,9 +33,9 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'User does not exist' });
         }
 
-        // if (!user.isverified) {
-        //     return res.status(400).send({ error: 'Invalid login credentials' });
-        // }
+        if (!user.isverified) {
+            return res.status(400).send({ error: 'Not verified via email' });
+        }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
