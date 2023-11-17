@@ -66,6 +66,7 @@ class _LoginPageState extends State<LoginPage> {
       dynamic parsedJson = jsonDecode(response.body);
       userID = parsedJson['userID'];
       jwtToken = parsedJson['token'];
+      print("HERE IS JWTTOKEN: ${jwtToken}");
       await getUserData(userID);
       print(userID);
 
@@ -82,7 +83,10 @@ class _LoginPageState extends State<LoginPage> {
   Future<int> getUserData(userID) async {
     // ignore: unnecessary_brace_in_string_interps
     String url = "http://167.172.230.181:5000/users/user-info/${userID}";
-    final response = await http.get(Uri.parse(url));
+    var response = await http.get(
+      Uri.parse(url),
+      headers: <String, String>{"Authorization": jwtToken},
+    );
     var responseData = jsonDecode(response.body);
 
     currentUser = User(

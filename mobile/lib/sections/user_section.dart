@@ -17,13 +17,25 @@ class _UserSettingsState extends State<UserSettings> {
     var response = await http.post(Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          // 'authorization':
+          'Authorization': currentUser.jwtToken,
         },
-        body: jsonEncode(<String, String>{"id": currentUser.userID}));
+        body: jsonEncode(<String, String>{
+          "id": currentUser.userID,
+        }));
     print("RESPONSE CODE: ${response.statusCode}");
     print("RESPONSE BODY: ${response.body}");
     if (response.statusCode == 201) {
       if (context.mounted) {
+        Navigator.pop(context);
+      }
+    }
+
+    if (response.statusCode == 222) {
+      print("Session Token Expired. Please Login Again");
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Session Token Expired. Please Login Again"),
+            duration: Duration(milliseconds: 1500)));
         Navigator.pop(context);
       }
     }
