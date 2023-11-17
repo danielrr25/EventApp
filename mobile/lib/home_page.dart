@@ -3,17 +3,19 @@ import 'package:intl/intl.dart';
 import 'package:mobile/sections/create_event.dart';
 import 'package:mobile/sections/home_section.dart';
 import 'package:mobile/sections/user_section.dart';
+import 'package:mobile/sections/search_bar.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
+<<<<<<< HEAD
   final List<Widget> _pages = [
     HomeSection(), // index 0
     Center(child: Text('Search Page')), // index 1
@@ -22,48 +24,23 @@ class _HomePageState extends State<HomePage> {
     const UserSettings(), // index 4
   ];
 
+=======
+>>>>>>> 9b9d334bc6f0db6530446123903baf4608a2935f
   @override
   Widget build(BuildContext context) {
-    // Get the current date
-    String currentDate = DateFormat('MM/dd/yy').format(DateTime.now());
-
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              margin: EdgeInsets.only(right: 10),
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    currentDate,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Icon(
-                    Icons.search,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-            ),
-          ],
+        title: Text(
+          _selectedIndex == 1 ? 'Search Page' : 'Popout',
         ),
+<<<<<<< HEAD
         actions: const [
           // Add any other action buttons here
         ],
+=======
+>>>>>>> 9b9d334bc6f0db6530446123903baf4608a2935f
       ),
-      // Display the selected page content.
-      body: _pages[_selectedIndex],
-      // Create a bottom navigation bar with icons and labels.
+      body: _buildPageContent(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
@@ -78,10 +55,10 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.search),
+          //   label: 'Search',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
             label: 'Create Event',
@@ -97,5 +74,20 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  Widget _buildPageContent() {
+    switch (_selectedIndex) {
+      case 0:
+        return HomeSection();
+      case 1:
+        return Center(child: Text('Create Page'));
+      case 2:
+        return Center(child: Text('Events Page'));
+      case 3:
+        return const UserSettings();
+      default:
+        return Center(child: Text('Unknown Page'));
+    }
   }
 }

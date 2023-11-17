@@ -5,6 +5,7 @@ class CategoryCircle extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onPressed;
   final String label;
+  
 
   CategoryCircle({
     required this.icon,
