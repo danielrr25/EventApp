@@ -15,17 +15,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-<<<<<<< HEAD
-  final List<Widget> _pages = [
-    HomeSection(), // index 0
-    Center(child: Text('Search Page')), // index 1
-    createEvent(), // index 2
-    Center(child: Text('Events Page')), // index 3
-    const UserSettings(), // index 4
-  ];
-
-=======
->>>>>>> 9b9d334bc6f0db6530446123903baf4608a2935f
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,12 +22,6 @@ class _HomePageState extends State<HomePage> {
         title: Text(
           _selectedIndex == 1 ? 'Search Page' : 'Popout',
         ),
-<<<<<<< HEAD
-        actions: const [
-          // Add any other action buttons here
-        ],
-=======
->>>>>>> 9b9d334bc6f0db6530446123903baf4608a2935f
       ),
       body: _buildPageContent(),
       bottomNavigationBar: BottomNavigationBar(

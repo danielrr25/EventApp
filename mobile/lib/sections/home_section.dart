@@ -15,7 +15,6 @@ class _HomeSectionState extends State<HomeSection> {
   List<EventData> eventDataList = [];
   List<EventData> filteredEventData = [];
 
-
   @override
   void initState() {
     super.initState();
@@ -32,82 +31,6 @@ class _HomeSectionState extends State<HomeSection> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: SearchName(onSearch: _handleSearch),
           ),
-
-<<<<<<< HEAD
-    return Column(
-      children: [
-        // Add your CategoryCircle widgets here for different event types.
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              CategoryCircle(
-                icon: Icons.music_note,
-                isSelected: true,
-                onPressed: () {
-                  // Add logic for music category.
-                },
-                label: 'Music',
-              ),
-              CategoryCircle(
-                icon: Icons.sports,
-                isSelected: true,
-                onPressed: () {
-                  // Add logic for sports category.
-                },
-                label: 'Sports',
-              ),
-              CategoryCircle(
-                icon: Icons.local_bar,
-                isSelected: true,
-                onPressed: () {
-                  // Add logic for clubbing category.
-                },
-                label: 'Clubbing',
-              ),
-              CategoryCircle(
-                icon: Icons.school,
-                isSelected: true,
-                onPressed: () {
-                  // Add logic for school category.
-                },
-                label: 'School',
-              ),
-              CategoryCircle(
-                icon: Icons.school,
-                isSelected: true,
-                onPressed: () {
-                  // Add logic for music category.
-                },
-                label: 'Greek',
-              ),
-              CategoryCircle(
-                icon: Icons.food_bank,
-                isSelected: true,
-                onPressed: () {
-                  // Add logic for music category.
-                },
-                label: 'Food',
-              ),
-              CategoryCircle(
-                icon: Icons.music_note,
-                isSelected: true,
-                onPressed: () {
-                  // Add logic for music category.
-                },
-                label: 'Music',
-              ),
-              CategoryCircle(
-                icon: Icons.more,
-                isSelected: true,
-                onPressed: () {
-                  // Add logic for more category.
-                },
-                label: 'More',
-              ),
-            ],
-=======
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: SingleChildScrollView(
@@ -120,8 +43,9 @@ class _HomeSectionState extends State<HomeSection> {
                     isSelected: true,
                     onPressed: () {
                       setState(() {
-                        filteredEventData = CategoryHandler.filterEventsByCategory(
-                            eventDataList, 'Sports');
+                        filteredEventData =
+                            CategoryHandler.filterEventsByCategory(
+                                eventDataList, 'Sports');
                       });
                     },
                     label: 'Sports',
@@ -131,8 +55,9 @@ class _HomeSectionState extends State<HomeSection> {
                     isSelected: true,
                     onPressed: () {
                       setState(() {
-                        filteredEventData = CategoryHandler.filterEventsByCategory(
-                            eventDataList, 'Music');
+                        filteredEventData =
+                            CategoryHandler.filterEventsByCategory(
+                                eventDataList, 'Music');
                       });
                     },
                     label: 'Music',
@@ -142,8 +67,9 @@ class _HomeSectionState extends State<HomeSection> {
                     isSelected: true,
                     onPressed: () {
                       setState(() {
-                        filteredEventData = CategoryHandler.filterEventsByCategory(
-                            eventDataList, 'Education');
+                        filteredEventData =
+                            CategoryHandler.filterEventsByCategory(
+                                eventDataList, 'Education');
                       });
                     },
                     label: 'Education',
@@ -153,8 +79,9 @@ class _HomeSectionState extends State<HomeSection> {
                     isSelected: true,
                     onPressed: () {
                       setState(() {
-                        filteredEventData = CategoryHandler.filterEventsByCategory(
-                            eventDataList, 'Parties');
+                        filteredEventData =
+                            CategoryHandler.filterEventsByCategory(
+                                eventDataList, 'Parties');
                       });
                     },
                     label: 'Parties',
@@ -164,8 +91,9 @@ class _HomeSectionState extends State<HomeSection> {
                     isSelected: true,
                     onPressed: () {
                       setState(() {
-                        filteredEventData = CategoryHandler.filterEventsByCategory(
-                            eventDataList, 'Art');
+                        filteredEventData =
+                            CategoryHandler.filterEventsByCategory(
+                                eventDataList, 'Art');
                       });
                     },
                     label: 'Art',
@@ -175,8 +103,9 @@ class _HomeSectionState extends State<HomeSection> {
                     isSelected: true,
                     onPressed: () {
                       setState(() {
-                        filteredEventData = CategoryHandler.filterEventsByCategory(
-                            eventDataList, 'Social');
+                        filteredEventData =
+                            CategoryHandler.filterEventsByCategory(
+                                eventDataList, 'Social');
                       });
                     },
                     label: 'Social',
@@ -186,21 +115,19 @@ class _HomeSectionState extends State<HomeSection> {
                     isSelected: true,
                     onPressed: () {
                       setState(() {
-                        filteredEventData = CategoryHandler.filterEventsByCategory(
-                            eventDataList, 'More');
+                        filteredEventData =
+                            CategoryHandler.filterEventsByCategory(
+                                eventDataList, 'More');
                       });
                     },
                     label: 'More',
                   ),
                   ElevatedButton(
-            onPressed: _resetFilters,
-            child: Text('Reset Filters'),
->>>>>>> 9b9d334bc6f0db6530446123903baf4608a2935f
-          ),
+                    onPressed: _resetFilters,
+                    child: Text('Reset Filters'),
+                  ),
                 ],
-                
               ),
-              
             ),
           ),
           Padding(
@@ -226,52 +153,50 @@ class _HomeSectionState extends State<HomeSection> {
     );
   }
 
-
   void _fetchEventData(String userId) async {
-  try {
-    final response = await http.post(
-      Uri.parse('http://167.172.230.181:5000/events/searchevent'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({'searchString': ' '}),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse('http://167.172.230.181:5000/events/searchevent'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'searchString': ' '}),
+      );
 
-    if (response.statusCode == 200) {
-      // Parse the JSON response
-      List<dynamic> jsonData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+        List<dynamic> jsonData = json.decode(response.body);
 
-      // Create a list of EventData objects from the JSON data
-      List<EventData> events = jsonData.map((data) {
-        return EventData(
-          eventName: data['eventName'],
-          eventDescription: data['eventDescription'],
-          attendeesCount: data['attendeesCount'],
-          eventCategory: data['eventCategory'],
-          listAttendees: List<String>.from(data['listAttendees']),
-          eventLocation: data['eventLocation'],
-          creatorID: data['creatorID'],
-          id: data['_id'],
-          eventDate: DateTime.parse(data['eventDate']),
-        );
-      }).toList();
+        // Create a list of EventData objects from the JSON data
+        List<EventData> events = jsonData.map((data) {
+          return EventData(
+            eventName: data['eventName'],
+            eventDescription: data['eventDescription'],
+            attendeesCount: data['attendeesCount'],
+            eventCategory: data['eventCategory'],
+            listAttendees: List<String>.from(data['listAttendees']),
+            eventLocation: data['eventLocation'],
+            creatorID: data['creatorID'],
+            id: data['_id'],
+            eventDate: DateTime.parse(data['eventDate']),
+          );
+        }).toList();
 
-      setState(() {
-        eventDataList = events;
-        filteredEventData = List.from(eventDataList);
-      });
-    } else {
-      // Print the response body for debugging purposes
-      //print('Response Body: ${response.body}');
-      // Handle error
-      print('Yessir. Status code: ${response.statusCode}');
+        setState(() {
+          eventDataList = events;
+          filteredEventData = List.from(eventDataList);
+        });
+      } else {
+        // Print the response body for debugging purposes
+        //print('Response Body: ${response.body}');
+        // Handle error
+        print('Yessir. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle exceptions
+      print('Error: $e');
     }
-  } catch (e) {
-    // Handle exceptions
-    print('Error: $e');
   }
-}
-
 
   // Reset filters function
   void _resetFilters() {
@@ -313,7 +238,6 @@ class EventData {
     required this.eventDate,
   });
 }
-
 
 class EventCard extends StatelessWidget {
   final String eventName;
