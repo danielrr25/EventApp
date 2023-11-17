@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
       dynamic parsedJson = jsonDecode(response.body);
       userID = parsedJson['userID'];
       jwtToken = parsedJson['token'];
-      getUserData(userID);
+      await getUserData(userID);
       print(userID);
 
       if (context.mounted) {
@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
     return response.body;
   }
 
-  void getUserData(userID) async {
+  Future<int> getUserData(userID) async {
     // ignore: unnecessary_brace_in_string_interps
     String url = "http://167.172.230.181:5000/users/user-info/${userID}";
     final response = await http.get(Uri.parse(url));
@@ -93,6 +93,8 @@ class _LoginPageState extends State<LoginPage> {
       email: responseData['email'],
       jwtToken: jwtToken,
     );
+
+    return response.statusCode;
   }
 
   @override

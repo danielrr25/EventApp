@@ -7,8 +7,10 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/loginpage.dart';
 
 class HomeSection extends StatefulWidget {
+  const HomeSection({super.key});
+
   @override
-  _HomeSectionState createState() => _HomeSectionState();
+  State<HomeSection> createState() => _HomeSectionState();
 }
 
 class _HomeSectionState extends State<HomeSection> {
@@ -134,7 +136,7 @@ class _HomeSectionState extends State<HomeSection> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: GridView.builder(
               shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
               ),
               itemBuilder: (context, index) {
@@ -156,12 +158,9 @@ class _HomeSectionState extends State<HomeSection> {
   void _fetchEventData(String userId) async {
     try {
       final response = await http.get(
-        //Uri.parse('http://167.172.230.181:5000/events/searchevent'),
-        Uri.parse('http://167.172.230.181:5000/get-attending-events/$userId'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
+          //Uri.parse('http://167.172.230.181:5000/events/searchevent'),
+          Uri.parse(
+              'http://167.172.230.181:5000/events/get-attending-events/${userId}'));
       print('User ID: ${currentUser.userID}');
 
       print('Response Body: ${response.body}'); // Print response here
@@ -199,6 +198,8 @@ class _HomeSectionState extends State<HomeSection> {
       // Handle exceptions
       print('Error: $e');
     }
+
+    // Handle exceptions
   }
 
   // Reset filters function
