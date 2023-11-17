@@ -28,7 +28,7 @@ class _EmailVerificationState extends State<EmailVerification> {
     if (response.statusCode == 201) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("You are all set!"),
+          content: Text("Email Successfully Verified! You May Now Login"),
           duration: Duration(milliseconds: 1500),
         ));
       }
@@ -77,7 +77,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
                       child: TextFormField(
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.emailAddress,
                         controller: _passCodeController,
                         decoration: InputDecoration(
                           labelText: "Passcode",

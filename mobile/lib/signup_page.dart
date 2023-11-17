@@ -36,6 +36,15 @@ class _SignUpPageState extends State<SignUpPage> {
           "email": _emailController.text
         }));
 
+    if (response.statusCode == 201) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Verification Code Sent To Email"),
+          duration: Duration(milliseconds: 1500),
+        ));
+      }
+    }
+
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
     return response.statusCode;
@@ -45,6 +54,10 @@ class _SignUpPageState extends State<SignUpPage> {
     return RegExp(
             r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         .hasMatch(email);
+  }
+
+  bool passwordValidator(password) {
+    return RegExp(r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)").hasMatch(password);
   }
 
   @override
@@ -203,6 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         fillColor: const Color.fromARGB(255, 252, 250, 250),
                         filled: true,
                         hintStyle: TextStyle(color: Colors.grey[500]),
+                        errorMaxLines: 2,
                         suffixIcon: InkWell(
                           onTap: () {
                             setState(() {
@@ -218,6 +232,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         if (value!.isEmpty) {
                           return "Enter Password";
                         }
+                        if (passwordValidator(value) == false) {
+                          return "Password Must Have a Capital and Lowercase Letter, a Number, and a Special Symbol (Like !, #, @, etc.)";
+                        }
                         return null;
                       }),
                 ),
@@ -231,6 +248,10 @@ class _SignUpPageState extends State<SignUpPage> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8)))),
                     onPressed: () async {
+                      setState(() {
+                        errorMessage = '';
+                      });
+
                       if (_formfield.currentState!.validate()) {
                         int statusCode = await createUser();
                         if (statusCode == 201) {
@@ -248,7 +269,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         } else {
                           setState(() {
                             errorMessage =
-                                'Internal Server Error: Try Again Later';
+                                'Internal Server Error. Try Again Later';
                           });
                         }
                       }
