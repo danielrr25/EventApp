@@ -17,6 +17,7 @@ class _UserSettingsState extends State<UserSettings> {
     var response = await http.post(Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          // 'authorization':
         },
         body: jsonEncode(<String, String>{"id": currentUser.userID}));
     print("RESPONSE CODE: ${response.statusCode}");

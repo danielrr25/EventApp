@@ -20,32 +20,44 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final url = "http://167.172.230.181:5000/users/register";
   bool passwordToggle = true;
-  // Place holders for sending data for now
-  void createUser() async {
-    try {
-      var response = await http.post(Uri.parse(url),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            "username": _userController.text,
-            "password": _passwordController.text,
-            "firstname": _firstNameController.text,
-            "lastname": _lastNameController.text,
-            "email": _emailController.text
-          }));
+  String jwtToken = '';
+  String errorMessage = '';
+  // Creates new User account
+  Future<int> createUser() async {
+    var response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "username": _userController.text,
+          "password": _passwordController.text,
+          "firstname": _firstNameController.text,
+          "lastname": _lastNameController.text,
+          "email": _emailController.text
+        }));
+
+    if (response.statusCode == 201) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("You are all set!"),
+          content: Text("Verification Code Sent To Email"),
           duration: Duration(milliseconds: 1500),
         ));
       }
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      // print(response.body);
-    } catch (err) {
-      print(err);
     }
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    return response.statusCode;
+  }
+
+  bool emailValidator(email) {
+    return RegExp(
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(email);
+  }
+
+  bool passwordValidator(password) {
+    return RegExp(r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)").hasMatch(password);
   }
 
   @override
@@ -74,6 +86,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     fontSize: 20,
                   ),
                 ),
+                Text(errorMessage,
+                    style:
+                        const TextStyle(color: Color.fromARGB(255, 243, 4, 4))),
                 const SizedBox(height: 25),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -124,81 +139,104 @@ class _SignUpPageState extends State<SignUpPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.name,
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      prefixIcon: const Align(
-                        widthFactor: 1.0,
-                        heightFactor: 1.0,
-                        child: Icon(Icons.email_rounded),
+                      keyboardType: TextInputType.name,
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: "Email",
+                        prefixIcon: const Align(
+                          widthFactor: 1.0,
+                          heightFactor: 1.0,
+                          child: Icon(Icons.email_rounded),
+                        ),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        fillColor: const Color.fromARGB(255, 252, 250, 250),
+                        filled: true,
+                        hintStyle: TextStyle(color: Colors.grey[500]),
                       ),
-                      border: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      fillColor: const Color.fromARGB(255, 252, 250, 250),
-                      filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                    ),
-                  ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter Email";
+                        }
+
+                        if (emailValidator(value) == false) {
+                          return "Enter Valid Email Address";
+                        }
+                        return null;
+                      }),
                 ),
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.name,
-                    controller: _userController,
-                    decoration: InputDecoration(
-                      labelText: "Username",
-                      prefixIcon: const Align(
-                        widthFactor: 1.0,
-                        heightFactor: 1.0,
-                        child: Icon(Icons.account_circle_outlined),
+                      keyboardType: TextInputType.name,
+                      controller: _userController,
+                      decoration: InputDecoration(
+                        labelText: "Username",
+                        prefixIcon: const Align(
+                          widthFactor: 1.0,
+                          heightFactor: 1.0,
+                          child: Icon(Icons.account_circle_outlined),
+                        ),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        fillColor: const Color.fromARGB(255, 252, 250, 250),
+                        filled: true,
+                        hintStyle: TextStyle(color: Colors.grey[500]),
                       ),
-                      border: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      fillColor: const Color.fromARGB(255, 252, 250, 250),
-                      filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                    ),
-                  ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter Username";
+                        }
+                        return null;
+                      }),
                 ),
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.name,
-                    controller: _passwordController,
-                    obscureText: passwordToggle,
-                    decoration: InputDecoration(
-                      labelText: "Password",
-                      prefixIcon: const Align(
-                        widthFactor: 1.0,
-                        heightFactor: 1.0,
-                        child: Icon(Icons.lock),
+                      keyboardType: TextInputType.name,
+                      controller: _passwordController,
+                      obscureText: passwordToggle,
+                      decoration: InputDecoration(
+                        labelText: "Password",
+                        prefixIcon: const Align(
+                          widthFactor: 1.0,
+                          heightFactor: 1.0,
+                          child: Icon(Icons.lock),
+                        ),
+                        border: const OutlineInputBorder(),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                        fillColor: const Color.fromARGB(255, 252, 250, 250),
+                        filled: true,
+                        hintStyle: TextStyle(color: Colors.grey[500]),
+                        errorMaxLines: 2,
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            setState(() {
+                              passwordToggle = !passwordToggle;
+                            });
+                          },
+                          child: Icon(passwordToggle
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                        ),
                       ),
-                      border: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                      ),
-                      fillColor: const Color.fromARGB(255, 252, 250, 250),
-                      filled: true,
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      suffixIcon: InkWell(
-                        onTap: () {
-                          setState(() {
-                            passwordToggle = !passwordToggle;
-                          });
-                        },
-                        child: Icon(passwordToggle
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                      ),
-                    ),
-                  ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter Password";
+                        }
+                        if (passwordValidator(value) == false) {
+                          return "Password Must Have a Capital and Lowercase Letter, a Number, and a Special Symbol (Like !, #, @, etc.)";
+                        }
+                        return null;
+                      }),
                 ),
                 const SizedBox(height: 25),
                 ElevatedButton(
@@ -209,12 +247,32 @@ class _SignUpPageState extends State<SignUpPage> {
                         shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8)))),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const EmailVerification()));
-                      // createUser();
+                    onPressed: () async {
+                      setState(() {
+                        errorMessage = '';
+                      });
+
+                      if (_formfield.currentState!.validate()) {
+                        int statusCode = await createUser();
+                        if (statusCode == 201) {
+                          if (context.mounted) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const EmailVerification()));
+                          }
+                        } else if (statusCode == 400) {
+                          setState(() {
+                            errorMessage = 'Username or Email Already In Use';
+                          });
+                        } else {
+                          setState(() {
+                            errorMessage =
+                                'Internal Server Error. Try Again Later';
+                          });
+                        }
+                      }
                     },
                     child:
                         const Text('Sign Up', style: TextStyle(fontSize: 20))),

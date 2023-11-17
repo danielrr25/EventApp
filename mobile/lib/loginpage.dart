@@ -5,8 +5,13 @@ import 'package:mobile/forgot_password.dart';
 import 'package:mobile/signup_page.dart';
 import 'package:mobile/home_page.dart';
 
-User currentUser =
-    User(userID: "", firstname: "", lastname: "", username: "", email: "");
+User currentUser = User(
+    userID: "",
+    firstname: "",
+    lastname: "",
+    username: "",
+    email: "",
+    jwtToken: "");
 
 class User {
   final String userID;
@@ -14,14 +19,15 @@ class User {
   final String lastname;
   final String username;
   final String email;
+  final String jwtToken;
 
-  User({
-    required this.userID,
-    required this.firstname,
-    required this.lastname,
-    required this.username,
-    required this.email,
-  });
+  User(
+      {required this.userID,
+      required this.firstname,
+      required this.lastname,
+      required this.username,
+      required this.email,
+      required this.jwtToken});
 }
 
 class LoginPage extends StatefulWidget {
@@ -38,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
   final url = "http://167.172.230.181:5000/users/login";
   bool passToggle = true;
   int responseCode = 0;
+  String jwtToken = '';
 
   String errorMessage = "";
 
@@ -58,7 +65,9 @@ class _LoginPageState extends State<LoginPage> {
       String userID = '';
       dynamic parsedJson = jsonDecode(response.body);
       userID = parsedJson['userID'];
+      jwtToken = parsedJson['token'];
       getUserData(userID);
+      print(userID);
 
       if (context.mounted) {
         errorMessage = "";
@@ -82,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
       lastname: responseData['lastname'],
       username: responseData['username'],
       email: responseData['email'],
+      jwtToken: jwtToken,
     );
   }
 
