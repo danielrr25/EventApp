@@ -229,6 +229,7 @@ router.post('/resetpassword', async (req, res) => {
 
         const passwordtoken = gentoken();
         user.passwordvtoken=passwordtoken;
+      await user.save();
         sendpasswordv(user.email, passwordtoken);
         return res.status(201).send('Email sent successfully');
         } catch (error) {
@@ -257,10 +258,14 @@ router.post('/resetpasswordentercode', async (req, res) => {
 
 router.post('/changepassword', async (req, res) => {
     try {
-        const { id, newpassword, confirmpassword } = req.body;
+        const { username, newpassword, confirmpassword } = req.body;
         
-        const user = await User.findOne({_id:id});
+        const user = await User.findOne({username: username});
 
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      
         if (newpassword != confirmpassword){
             return res.status(400).send('passwords do not match');
         }
