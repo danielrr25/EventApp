@@ -141,13 +141,14 @@ class _HomeSectionState extends State<HomeSection> {
               ),
               itemBuilder: (context, index) {
                 return EventCard(
-                  eventName: eventDataList[index].eventName,
-                  eventDescription: eventDataList[index].eventDescription,
-                  attendeesCount: eventDataList[index].attendeesCount,
-                  eventCategory: eventDataList[index].eventCategory,
+                  eventData: filteredEventData[index],
+                  // eventName: filteredEventData[index].eventName,
+                  // eventDescription: filteredEventData[index].eventDescription,
+                  // attendeesCount: filteredEventData[index].attendeesCount,
+                  // eventCategory: filteredEventData[index].eventCategory,
                 );
               },
-              itemCount: eventDataList.length,
+              itemCount: filteredEventData.length,
             ),
           ),
         ],
@@ -157,11 +158,13 @@ class _HomeSectionState extends State<HomeSection> {
 
   void _fetchEventData(String userId) async {
     try {
-      final response = await http.get(
-          //Uri.parse('http://167.172.230.181:5000/events/searchevent'),
-          Uri.parse(
-              'http://167.172.230.181:5000/events/get-attending-events/${userId}'));
-      print('User ID: ${currentUser.userID}');
+      final response = await http.post(
+        Uri.parse('http://167.172.230.181:5000/events/searchevent'),
+        //Uri.parse('http://167.172.230.181:5000/get-attending-events/$userId'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
 
       print('Response Body: ${response.body}'); // Print response here
 
@@ -244,16 +247,18 @@ class EventData {
 }
 
 class EventCard extends StatelessWidget {
-  final String eventName;
-  final String eventDescription;
-  final int attendeesCount;
-  final String eventCategory;
+  // final String eventName;
+  // final String eventDescription;
+  // final int attendeesCount;
+  // final String eventCategory;
+  final EventData eventData;
 
   EventCard({
-    required this.eventName,
-    required this.eventDescription,
-    required this.attendeesCount,
-    required this.eventCategory,
+    required this.eventData,
+    // required this.eventName,
+    // required this.eventDescription,
+    // required this.attendeesCount,
+    // required this.eventCategory,
   });
 
   @override
@@ -262,12 +267,21 @@ class EventCard extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            title: Text(eventName),
-            subtitle: Text(eventDescription),
+            title: Text(eventData.eventName),
+            subtitle: Text(eventData.eventLocation),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Attendees: $attendeesCount'),
+            //child: Text('Attendees: $attendeesCount'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Category: ${eventData.eventCategory}'),
+                Text('Location: ${eventData.eventLocation}'),
+                Text('Date: ${eventData.eventDate.toLocal()}'),
+                Text('Attendees: ${eventData.attendeesCount}'),
+              ],
+            ),
           ),
         ],
       ),
