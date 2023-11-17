@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:mobile/sections/categories.dart';
 import 'package:mobile/sections/categories_handler.dart';
 import 'package:mobile/sections/search_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/loginpage.dart';
 
 class HomeSection extends StatefulWidget {
   @override
@@ -19,7 +19,7 @@ class _HomeSectionState extends State<HomeSection> {
   void initState() {
     super.initState();
     // Fetch event data when the widget is initialized
-    _fetchEventData('userId');
+    _fetchEventData(currentUser.userID);
   }
 
   @override
@@ -139,13 +139,13 @@ class _HomeSectionState extends State<HomeSection> {
               ),
               itemBuilder: (context, index) {
                 return EventCard(
-                  eventName: filteredEventData[index].eventName,
-                  eventDescription: filteredEventData[index].eventDescription,
-                  attendeesCount: filteredEventData[index].attendeesCount,
-                  eventCategory: filteredEventData[index].eventCategory,
+                  eventName: eventDataList[index].eventName,
+                  eventDescription: eventDataList[index].eventDescription,
+                  attendeesCount: eventDataList[index].attendeesCount,
+                  eventCategory: eventDataList[index].eventCategory,
                 );
               },
-              itemCount: filteredEventData.length,
+              itemCount: eventDataList.length,
             ),
           ),
         ],
@@ -155,13 +155,16 @@ class _HomeSectionState extends State<HomeSection> {
 
   void _fetchEventData(String userId) async {
     try {
-      final response = await http.post(
-        Uri.parse('http://167.172.230.181:5000/events/searchevent'),
+      final response = await http.get(
+        //Uri.parse('http://167.172.230.181:5000/events/searchevent'),
+        Uri.parse('http://167.172.230.181:5000/get-attending-events/$userId'),
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({'searchString': ' '}),
       );
+      print('User ID: ${currentUser.userID}');
+
+      print('Response Body: ${response.body}'); // Print response here
 
       if (response.statusCode == 200) {
         // Parse the JSON response
@@ -188,7 +191,7 @@ class _HomeSectionState extends State<HomeSection> {
         });
       } else {
         // Print the response body for debugging purposes
-        //print('Response Body: ${response.body}');
+        print('Response Body: ${response.body}');
         // Handle error
         print('Yessir. Status code: ${response.statusCode}');
       }
