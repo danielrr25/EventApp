@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return HomeSection();
       case 1:
-        return Center(child: Text('Create Page'));
+        return createEvent();
       case 2:
         return Center(child: Text('Events Page'));
       case 3:

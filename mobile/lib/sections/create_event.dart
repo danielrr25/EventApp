@@ -40,13 +40,13 @@ class _createEventState extends State<createEvent> {
           },
           body: jsonEncode(<String, String>{
             "creatorID": eventCreator,
-            "eventName": "foo",
-            "eventCategory": "MUSIC", // hardcoded for now
-            "eventDescription": "foo",
-            "eventDate": "99",
-            "eventLocation": "foo",
-            "listAtendees": categories.toString(),
-            "eventIcon": "artIcon",
+            "eventName": "UCF hackaton",
+            "eventCategory": "Education", // hardcoded for now
+            "eventDescription": "CS department hackaton",
+            "eventDate": "2024-02-15",
+            "eventLocation": "UCF main campus",
+            "listAtendees": "100",
+            "eventIcon": "educationIcon",
           }));
 
       if (context.mounted) {
