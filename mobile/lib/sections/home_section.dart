@@ -122,10 +122,10 @@ class _HomeSectionState extends State<HomeSection> {
                     },
                     label: 'More',
                   ),
-                  ElevatedButton(
-                    onPressed: _resetFilters,
-                    child: Text('Reset Filters'),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: _resetFilters,
+                  //   child: Text('Reset Filters'),
+                  // ),
                 ],
               ),
             ),
