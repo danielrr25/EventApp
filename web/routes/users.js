@@ -1,12 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userSchema');
-const { gentoken } = require('../verification');
-const { sendemailv } = require('../emailtransport');
+const { gentoken } = require('../routes_help/verification');
+const { sendemailv } = require('../routes_help/emailtransport');
+const { sendpasswordv } = require('../routes_help/pemailtransport');
 const verifyToken  = require('../utils/jwt');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { sendpasswordv } = require('../pemailtransport');
 
 
 
@@ -216,23 +216,27 @@ router.post('/searchfriend',verifyToken, async (req, res) => {
     }
 });
 
+//reset password route that sends email with code to user
 router.post('/resetpassword', async (req, res) => {
     try {
+        //console.log(code);
         const { email } = req.body;
       
         // Find the user by ID
         const user = await User.findOne({email});
-      
+        console.log(user);
         if (!user) {
           return res.status(404).json({ error: 'Invalid email' });
         }
 
         const passwordtoken = gentoken();
         user.passwordvtoken=passwordtoken;
-      await user.save();
+        await user.save();
         sendpasswordv(user.email, passwordtoken);
+
         return res.status(201).send('Email sent successfully');
         } catch (error) {
+          console.log(error);
           res.status(500).send(error);
         }
 });
@@ -256,20 +260,24 @@ router.post('/resetpasswordentercode', async (req, res) => {
         }
 });
 
+//change password route
 router.post('/changepassword', async (req, res) => {
     try {
         const { username, newpassword, confirmpassword } = req.body;
         
-        const user = await User.findOne({username: username});
-
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      
+        const user = await User.findOne({username});
+        if (!user) {
+          return res.status(404).json({ error: 'username does not exist' });
+        }
         if (newpassword != confirmpassword){
             return res.status(400).send('passwords do not match');
         }
-                
+        const isMatch = await bcrypt.compare(confirmpassword, user.password);
+        
+        if (isMatch){
+            return res.status(408).send({error: 'cannot repeat a past password '});
+        }     
+        //if (confirmpassword  
         // Mark the email as verified
         user.password = newpassword;           
         await user.save();
@@ -280,6 +288,7 @@ router.post('/changepassword', async (req, res) => {
         }
 });
 
+//email verification route
 router.post('/verifyemail', async (req, res) => {
     try {
         const { emailvtoken } = req.body;
