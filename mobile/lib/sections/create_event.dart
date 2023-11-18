@@ -35,6 +35,7 @@ class _createEventState extends State<createEvent> {
       var response = await http.post(Uri.parse(url), // POST REQUEST
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': currentUser.jwtToken
           },
           body: jsonEncode(<String, String>{
             "creatorID": eventCreator,
