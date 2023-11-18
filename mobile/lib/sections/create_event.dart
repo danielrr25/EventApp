@@ -27,12 +27,10 @@ class _createEventState extends State<createEvent> {
   final TextEditingController _eventLocation = TextEditingController();
   final TextEditingController _eventDescription = TextEditingController();
 
-  // TODO: Change this url accordingly. Check with API
   final url = "http://167.172.230.181:5000/events/create-event";
 
   void createUser() async {
-    print("FOO");
-    print(eventCreator);
+    print("Event creator ID: " + eventCreator);
     try {
       var response = await http.post(Uri.parse(url), // POST REQUEST
           headers: <String, String>{
@@ -40,13 +38,13 @@ class _createEventState extends State<createEvent> {
           },
           body: jsonEncode(<String, String>{
             "creatorID": eventCreator,
-            "eventName": "UCF hackaton",
-            "eventCategory": "Education", // hardcoded for now
-            "eventDescription": "CS department hackaton",
-            "eventDate": "2024-02-15",
-            "eventLocation": "UCF main campus",
-            "listAtendees": "100",
-            "eventIcon": "educationIcon",
+            "eventName": _eventName.text,
+            "eventCategory": dropdownValue.toString(), // hardcoded for now
+            "eventDescription": _eventDescription.text,
+            "eventDate": _dateTime.toString(),
+            "eventLocation": _eventLocation.text,
+            // "listAtendees": "100",
+            "eventIcon": "partyIcon",
           }));
 
       if (context.mounted) {
@@ -92,9 +90,11 @@ class _createEventState extends State<createEvent> {
         body: Container(
           decoration: const BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('assets/icon/no_background_logo.jpg'))),
-          // image: AssetImage('assets/icon/opac.jpg'),
-          // fit: BoxFit.cover)),
+                  // image: AssetImage('assets/icon/no_background_logo.jpg'))),
+                  // image: AssetImage('assets/icon/opac.jpg'),
+                  // fit: BoxFit.cover)),
+                  image: AssetImage('assets/icon/opac2.jpg'),
+                  fit: BoxFit.cover)),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
