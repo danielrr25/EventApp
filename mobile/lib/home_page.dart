@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/sections/create_event.dart';
 import 'package:mobile/sections/home_section.dart';
+import 'package:mobile/sections/search_event.dart';
 import 'package:mobile/sections/user_section.dart';
-import 'package:mobile/sections/search_bar.dart';
+// import 'package:mobile/sections/search_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,8 +20,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          _selectedIndex == 1 ? 'Search Page' : 'Popout',
+        title: const Text(
+          // _selectedIndex == 1 ? 'Search Page' : 'Popout',
+          'Popout',
         ),
       ),
       body: _buildPageContent(),
@@ -38,10 +40,10 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.search),
-          //   label: 'Search',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
             label: 'Create Event',
@@ -64,10 +66,12 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return HomeSection();
       case 1:
-        return createEvent();
+        return Search();
       case 2:
-        return Center(child: Text('Events Page'));
+        return createEvent();
       case 3:
+        return Center(child: Text('Events Page'));
+      case 4:
         return const UserSettings();
       default:
         return Center(child: Text('Unknown Page'));
