@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mobile/loginpage.dart';
+import 'package:mobile/sections/search_event_utils.dart';
 
 const url = "http://167.172.230.181:5000/events/searchevent";
 
-Future<List<Event>> fetchEventList() async {
+Future<List<Event>> fetchEventList({String? query}) async {
   final response = await http.post(Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': currentUser.jwtToken
       },
       body: jsonEncode(<String, String>{
-        "searchString": "",
+        "searchString": query ?? "",
       }));
 
   // print("Response BODY: ");
@@ -30,17 +31,19 @@ Future<List<Event>> fetchEventList() async {
     Map<String, dynamic> responseData = json.decode(response.body);
     List<dynamic> eventsData = responseData['events'];
     return eventsData.map((e) => Event.fromJson(e)).toList();
-
-    // results = data.map((e) => Event.fromJson(e)).toList();
-    // List<dynamic> eventsData = json.decode(response.body);
-    // return eventsData.map((e) => Event.fromJson(e)).toList();
-    // return Event.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
   } else if (response.statusCode == 404) {
     print("NO EVENTS FOUND WITH THE STRING PROVIDED");
   } else if (response.statusCode == 500) {
     print("EXTRANGE ERROR OCCURRED IN SEARCH");
   }
   throw Exception("Failed to load events");
+}
+
+List<Event> filterEvents(List<Event> events, String query) {
+  return events
+      .where((event) =>
+          event.eventName.toLowerCase().contains(query.toLowerCase()))
+      .toList();
 }
 
 class Search extends StatefulWidget {
@@ -55,16 +58,21 @@ class _Search extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fetching Events',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
-      ),
-      home: Scaffold(
+    return SafeArea(
+      child: Scaffold(
         appBar: AppBar(
-          title: const Text('Fetch events data'),
+          automaticallyImplyLeading: false,
+          title: const Text('Events list'),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showSearch(context: context, delegate: SearchEvent());
+                },
+                icon: const Icon(Icons.search_rounded))
+          ],
         ),
-        body: Center(
+        body: Container(
+            padding: const EdgeInsets.all(10),
             child: FutureBuilder<List<Event>>(
                 future: _eventList,
                 builder: (context, snapshot) {
@@ -72,9 +80,27 @@ class _Search extends State<Search> {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(snapshot.data![index].eventName),
-                          subtitle: (Text(snapshot.data![index].eventLocation)),
+                        DateTime date =
+                            DateTime.parse(snapshot.data![index].eventDate);
+                        return Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              // date = snapshot.data![index].eventDate as DateTime;
+                              title: Text(
+                                snapshot.data![index].eventName,
+                                style: const TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                '${snapshot.data![index].eventLocation}\nDate: ${date.day}/${date.month}/${date.year}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              // trailing: Text('When?$date'),
+                            ),
+                          ),
                         );
                       },
                     );
