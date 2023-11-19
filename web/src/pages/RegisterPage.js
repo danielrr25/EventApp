@@ -9,7 +9,7 @@ const RegisterPage = () => {
         <div className="split-signup2">
             <div className="form-container2 register-container2">
                 <Register />
-                <div className="logo-container">
+                <div className="logo-container-register">
                     <img src={register_logo} alt="Your Logo" className="register_logo" />
                     <div className="logo-text2">
                        Register to discover events that intrest you.

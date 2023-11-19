@@ -22,3 +22,11 @@
     background-size: cover;
     height:100vh;
 }
+
+.logogradientaccount {
+  height: 80px;
+  width: auto;
+  position: absolute;
+  left: 20px;
+  top: 10px;
+}

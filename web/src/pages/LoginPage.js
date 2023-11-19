@@ -8,7 +8,7 @@ const LoginPage = () => {
         <div className="split-signup">
             <div className="form-container">
                 <Login />
-                <div className="logo-container">
+                <div className="logo-container-login">
                     <img src={login_logo} alt="Your Logo" className="login_logo" />
                     <div className="logo-text">
                        Log in to discover new events that intrest you.
