@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getCookie } from './cookieUtils';
 
-function Chat() {
+function Chat({eventId}) {
   const [chatVisible, setChatVisible] = useState(false);
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
-  const [eventId, setEventId] = useState(null);
   const storedToken = getCookie('token');
+  const storedUserID = getCookie('userID');
+  const userID = storedUserID || '';
 
   useEffect(() => {
     if (chatVisible && eventId !== null) {
@@ -22,9 +23,14 @@ function Chat() {
     try {
       const response = await fetch(`http://167.172.230.181:5000/chatmessages/getchatmessages/${eventId}`, {
         headers: {
-          Authorization: storedToken, // Include the JWT token in the headers
+          'Authorization': storedToken, // Include the JWT token in the headers
         },
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch messages');
+      }
+
       const data = await response.json();
       setMessages(data.map(message => ({ ...message, type: 'received' })));
       console.log('Received messages:', data);
@@ -39,14 +45,19 @@ function Chat() {
     }
 
     try {
-      await fetch('http://167.172.230.181:5000/chatmessages/addchatmessage', {
+      const timestamp = new Date().toISOString();
+      const response = await fetch('http://167.172.230.181:5000/chatmessages/addchatmessage', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: storedToken, // Include the JWT token in the headers
+          'Authorization': storedToken, // Include the JWT token in the headers
         },
-        body: JSON.stringify({ message: userInput }),
+        body: JSON.stringify({ message: userInput , userID: userID, timestamp: timestamp}),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
 
       setUserInput('');
       fetchMessages(); // Update messages after sending a new message
