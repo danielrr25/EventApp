@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getCookie } from './cookieUtils';
 
-function Chat({eventId}) {
+function Chat({ eventId }) {
   const [chatVisible, setChatVisible] = useState(false);
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
@@ -23,7 +23,7 @@ function Chat({eventId}) {
     try {
       const response = await fetch(`http://167.172.230.181:5000/chatmessages/getchatmessages/${eventId}`, {
         headers: {
-          'Authorization': storedToken, // Include the JWT token in the headers
+          'Authorization': storedToken,
         },
       });
 
@@ -50,10 +50,11 @@ function Chat({eventId}) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': storedToken, // Include the JWT token in the headers
+          'Authorization': storedToken,
         },
-        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput}),
+        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput }),
       });
+      console.log(userID, eventId, timestamp, message);
 
       if (!response.ok) {
         throw new Error('Failed to send message');
@@ -83,11 +84,14 @@ function Chat({eventId}) {
           <div id="chat-body">
           <div id="chat-messages">
             {messages.map((message, index) => (
-              <div key={index} className={message.type === 'received' ? 'received' : 'sent'}>
-                {message.message} {/* Use the correct property name (message.message) */}
-          </div>
-              ))}
+            <div
+              key={index}
+              className={message.type === 'received' ? 'received' : 'sent'}>
+              {message.message}
             </div>
+            ))}
+        </div>
+
             <input
               type="text"
               id="user-input"
