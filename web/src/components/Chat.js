@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { getCookie } from './cookieUtils';
 
 function Chat() {
   const [chatVisible, setChatVisible] = useState(false);
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
+  const [eventId, setEventId] = useState(null);
+  const storedToken = getCookie('token');
 
   useEffect(() => {
-    fetchMessages();
-  }, []);
+    if (chatVisible && eventId !== null) {
+      fetchMessages();
+    }
+  }, [chatVisible, eventId]);
 
   const toggleChat = () => {
     setChatVisible(!chatVisible);
@@ -15,7 +20,11 @@ function Chat() {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch('http://167.172.230.181:5000/chatmessages/getchatmessages');
+      const response = await fetch(`http://167.172.230.181:5000/getchatmessages?eventId=${eventId}`, {
+        headers: {
+          Authorization: storedToken, // Include the JWT token in the headers
+        },
+      });
       const data = await response.json();
       setMessages(data);
     } catch (error) {
@@ -29,10 +38,11 @@ function Chat() {
     }
 
     try {
-      await fetch('http://167.172.230.181:5000/chatmessages/getchatmessages', {
+      await fetch('http://167.172.230.181:5000/addchatmessage', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: storedToken, // Include the JWT token in the headers
         },
         body: JSON.stringify({ message: userInput }),
       });
