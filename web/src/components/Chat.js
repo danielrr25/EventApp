@@ -19,7 +19,7 @@ function Chat(eventId) {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://167.172.230.181:5000/getchatmessages?eventId=${eventId}`, {
+      const response = await fetch(`http://167.172.230.181:5000/chatmessages/getchatmessages?eventId=${eventId}`, {
         headers: {
           Authorization: storedToken, // Include the JWT token in the headers
         },
@@ -40,7 +40,7 @@ function Chat(eventId) {
       const timestamp = new Date().toISOString(); // Get current timestamp
       const senderId = getUserId(); // Replace this with the function to get the sender's ID
   
-      await fetch('http://167.172.230.181:5000/addchatmessage', {
+      await fetch('http://167.172.230.181:5000/chatmessages/addchatmessage', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
