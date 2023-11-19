@@ -13,7 +13,7 @@ const sendemailv = (recipientemail, vtoken) => {
         from: 'popoutlife@gmail.com',
         to: recipientemail,
         subject: 'Email Verification',
-        text: 'Please use the following code to verify your account: '+ vtoken,
+        text: 'Please use the following code to verify your account: ' + vtoken,
     };
 
     sender.sendMail(maildraft, (error) => {
