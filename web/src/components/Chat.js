@@ -73,9 +73,13 @@ function Chat({ eventId }) {
         throw new Error('Failed to send message');
       }
 
+
+      const newMessage = await response.json();
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+
       setUserInput('');
       console.log('Message sent successfully');
-      fetchMessages(); // Update messages after sending a new message
+      // fetchMessages(); // Update messages after sending a new message
     } catch (error) {
       console.error('Error sending chat message:', error);
     }
