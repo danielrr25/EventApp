@@ -55,6 +55,7 @@ class Search extends StatefulWidget {
 
 class _Search extends State<Search> {
   late final Future<List<Event>> _eventList = fetchEventList();
+  final bool _customIcon = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,20 +86,26 @@ class _Search extends State<Search> {
                         return Card(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: ListTile(
-                              // date = snapshot.data![index].eventDate as DateTime;
-                              title: Text(
-                                snapshot.data![index].eventName,
-                                style: const TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(
-                                '${snapshot.data![index].eventLocation}\nDate: ${date.day}/${date.month}/${date.year}',
-                                style: const TextStyle(
-                                  fontSize: 18,
+                            child: InkWell(
+                              onTap: () {
+                                print('clicked instance: ${index}');
+                              },
+                              child: ListTile(
+                                // date = snapshot.data![index].eventDate as DateTime;
+                                title: Text(
+                                  snapshot.data![index].eventName,
+                                  style: const TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
                                 ),
+                                subtitle: Text(
+                                  '${snapshot.data![index].eventLocation}\nDate: ${date.day}/${date.month}/${date.year}',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                // trailing: Text('When?$date'),
                               ),
-                              // trailing: Text('When?$date'),
                             ),
                           ),
                         );
@@ -118,18 +125,25 @@ class Event {
   final String eventName;
   final String eventLocation;
   final String eventDate;
+  final String eventId;
+  final String eventCategory;
+  final String eventDescription;
 
-  const Event({
-    required this.eventName,
-    required this.eventLocation,
-    required this.eventDate,
-  });
+  const Event(
+      {required this.eventName,
+      required this.eventLocation,
+      required this.eventDate,
+      required this.eventId,
+      required this.eventCategory,
+      required this.eventDescription});
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
-      eventName: json['eventName'] as String,
-      eventLocation: json['eventLocation'] as String,
-      eventDate: json['eventDate'] as String,
-    );
+        eventName: json['eventName'] as String,
+        eventLocation: json['eventLocation'] as String,
+        eventDate: json['eventDate'] as String,
+        eventId: json['_id'] as String,
+        eventDescription: json['eventDescription'] as String,
+        eventCategory: json['eventCategory'] as String);
   }
 }
