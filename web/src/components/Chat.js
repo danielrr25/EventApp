@@ -59,7 +59,7 @@ function Chat({ eventId }) {
           'Content-Type': 'application/json',
           'Authorization': storedToken,
         },
-        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput.toString() }),
+        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput.toString(), type: 'sent' }),
       });
 
       console.log('User ID:', userID);
@@ -100,7 +100,7 @@ function Chat({ eventId }) {
               {messages.map((message, index) => (
                 <div
                   key={index}
-                  className={message.type === 'received' ? 'received' : 'sent'}>
+                  className={message.type === 'sent' ? 'sent' : 'received'}>
                   {message.message}
                 </div>
               ))}
