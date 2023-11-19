@@ -54,7 +54,7 @@ function Chat({ eventId }) {
         },
         body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput }),
       });
-      console.log(userID, eventId, timestamp, message);
+      console.log(userID, eventId, timestamp, messages);
 
       if (!response.ok) {
         throw new Error('Failed to send message');
