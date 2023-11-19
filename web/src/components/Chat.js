@@ -32,8 +32,8 @@ function Chat({eventId}) {
       }
 
       const data = await response.json();
-      setMessages(data.map(message => ({ ...message, type: 'received' })));
-      console.log('Received messages:', data);
+      setMessages(data);
+      console.log('Received messages:', data.toString);
     } catch (error) {
       console.error('Error fetching chat messages:', error);
     }
@@ -86,7 +86,6 @@ function Chat({eventId}) {
               <div key={index} className={message.type === 'received' ? 'received' : 'sent'}>
                 {message.message} {/* Use the correct property name (message.message) */}
           </div>
-
               ))}
             </div>
             <input
