@@ -19,7 +19,7 @@ function Chat({ eventId }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error response from server:', errorData);
+        console.error('Error response from server (fetchMessages):', errorData);
         throw new Error('Failed to fetch messages');
       }
 
@@ -27,9 +27,9 @@ function Chat({ eventId }) {
 
       if (Array.isArray(data)) {
         setMessages(data);
-        console.log('Received messages:', data.toString());
+        console.log('Received messages:', data);
       } else {
-        console.error('Invalid data structure received from server:', data);
+        console.error('Invalid data structure received from server (fetchMessages):', data);
       }
     } catch (error) {
       console.error('Error fetching chat messages:', error);
@@ -69,11 +69,12 @@ function Chat({ eventId }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error response from server:', errorData);
+        console.error('Error response from server (sendMessage):', errorData);
         throw new Error('Failed to send message');
       }
 
       setUserInput('');
+      console.log('Message sent successfully');
       fetchMessages(); // Update messages after sending a new message
     } catch (error) {
       console.error('Error sending chat message:', error);
