@@ -26,11 +26,13 @@ function Chat({ eventId }) {
           'Authorization': storedToken,
         },
       });
-
+  
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error response from server:', errorData);
         throw new Error('Failed to fetch messages');
       }
-
+  
       const data = await response.json();
       setMessages(data);
       console.log('Received messages:', data);
@@ -38,6 +40,7 @@ function Chat({ eventId }) {
       console.error('Error fetching chat messages:', error);
     }
   };
+  
 
   const sendMessage = async () => {
     if (userInput.trim() === '') {
@@ -54,7 +57,7 @@ function Chat({ eventId }) {
         },
         body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput }),
       });
-      console.log(userID, eventId, timestamp, userInput);
+      console.log(userID, eventId, timestamp, userInput.toString);
       console.log("this is user input:" + userInput);
 
       if (!response.ok) {
