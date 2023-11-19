@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getCookie } from './cookieUtils';
 
-function Chat(eventId) {
+function Chat({ eventId }) {
   const [chatVisible, setChatVisible] = useState(false);
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
@@ -10,7 +10,7 @@ function Chat(eventId) {
   const userID = storedUserID || '';
 
   useEffect(() => {
-    if (chatVisible && eventId !== null) {
+    if (chatVisible && eventId) {
       fetchMessages();
     }
   }, [chatVisible, eventId]);
@@ -23,11 +23,21 @@ function Chat(eventId) {
     try {
       const response = await fetch(`http://167.172.230.181:5000/chatmessages/getchatmessages/${eventId}`, {
         headers: {
-          Authorization: storedToken, // Include the JWT token in the headers
+          Authorization: storedToken,
         },
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch messages');
+      }
+
       const data = await response.json();
-      setMessages(data);
+
+      if (Array.isArray(data)) {
+        setMessages(data);
+      } else {
+        console.error('Invalid data structure received from server:', data);
+      }
     } catch (error) {
       console.error('Error fetching chat messages:', error);
     }
@@ -37,15 +47,15 @@ function Chat(eventId) {
     if (userInput.trim() === '') {
       return;
     }
-  
+
     try {
-      const timestamp = new Date().toISOString(); // Get current timestamp
-  
-      await fetch('http://167.172.230.181:5000/chatmessages/addchatmessage', {
+      const timestamp = new Date().toISOString();
+
+      const response = await fetch('http://167.172.230.181:5000/chatmessages/addchatmessage', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: storedToken, // Include the JWT token in the headers
+          Authorization: storedToken,
         },
         body: JSON.stringify({
           message: userInput,
@@ -53,14 +63,17 @@ function Chat(eventId) {
           timestamp: timestamp,
         }),
       });
-  
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
       setUserInput('');
       fetchMessages(); // Update messages after sending a new message
     } catch (error) {
       console.error('Error sending chat message:', error);
     }
   };
-  
 
   return (
     <div className="ChatClass">
@@ -79,7 +92,7 @@ function Chat(eventId) {
           <div id="chat-body">
             <div id="chat-messages">
               {messages.map((message, index) => (
-                <div key={index}>{message}</div>
+                <div key={index}>{message.text}</div>
               ))}
             </div>
             <input
