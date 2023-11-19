@@ -1,15 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:mobile/sections/home_section.dart';
+import 'package:flutter/material.dart'; // Add this import
 
 class CategoryHandler {
   static IconData getIconForCategory(String category) {
-    // You can implement logic to return the appropriate icon based on the category
-    // For now, let's return a default icon (you may want to update this)
-    return Icons.category;
+    // Placeholder logic to return icons based on the category
+    switch (category.toLowerCase()) {
+      case 'sports':
+        return Icons.sports_soccer;
+      case 'music':
+        return Icons.music_note;
+      // Add other cases for each category
+      default:
+        return Icons.category; // Default icon if no match
+    }
   }
 
-  static List<EventData> filterEventsByCategory(
-      List<EventData> eventDataList, String category) {
-    return eventDataList.where((event) => event.eventCategory == category).toList();
+  static List<Event> filterEventsByCategory(
+      List<Event> eventDataList, String category) {
+    return eventDataList
+        .where((event) => event.eventCategory.toLowerCase() == category.toLowerCase())
+        .toList();
   }
 }
