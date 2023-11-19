@@ -1,29 +1,35 @@
 import React, { useState } from 'react';
-import { useUser } from './UserContext'; // Import the useUser hoo
+import { useUser } from './UserContext';
 import { useNavigate } from 'react-router-dom';
+import { getCookie } from './cookieUtils'; // Import getCookie utility
 import './DeleteAccount.css';
 
 function DeleteAccount() {
   const [message, setMessage] = useState('');
-  const { userID } = useUser(); // Access the userID from the context
+  const { userID } = useUser();
   const navigate = useNavigate();
-  
+
+  // Retrieve the token from the cookie
+  const storedToken = getCookie('token');
+
   const handleDeleteAccount = async () => {
-      console.log('UserID:', userID); // Log the userID
+    console.log('UserID:', userID);
     const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+    
     if (confirmed) {
       try {
-        var obj = { id:userID }; // Include the userID in the request object
+        var obj = { id: userID }; // Include the userID in the request object
         var js = JSON.stringify(obj);
 
         const response = await fetch('http://167.172.230.181:5000/users/deleteuser', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': storedToken, // Include the token in the headers
           },
           body: js,
         });
-        
+
         console.log(response);
 
         if (response.status === 201) {

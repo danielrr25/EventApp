@@ -1,12 +1,12 @@
 // IconSelection.js
 import React, { useState } from 'react';
 import './IconSelection.css';
-import icon1 from './icon1.png';
-import icon2 from './icon2.png';
-import icon3 from './icon3.png';
-import icon4 from './icon4.png';
-import icon5 from './icon5.png';
-import icon6 from './icon6.png';
+import socialIcon from './socialIcon.png';
+import sportsIcon from './sportsIcon.png';
+import partiesIcon from './partiesIcon.png';
+import musicIcon from './musicIcon.png';
+import educationIcon from './educationIcon.png';
+import artIcon from './artIcon.png';
 
 function IconSelection({ onIconSelect }) {
   const [selectedIcon, setSelectedIcon] = useState(null);
@@ -20,7 +20,7 @@ function IconSelection({ onIconSelect }) {
     }
   };
 
-  const icons = [icon1, icon2, icon3, icon4, icon5, icon6];
+  const icons = [socialIcon, sportsIcon, partiesIcon, musicIcon, educationIcon, artIcon];
 
   const iconsTop = icons.slice(0, 3);
   const iconsBottom = icons.slice(3);

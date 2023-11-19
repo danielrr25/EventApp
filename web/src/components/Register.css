@@ -2,65 +2,245 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px; /* Adjust the gap between inputs */
+  gap: 10px;
+
+  .password-strength {
+    margin-left: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Josefin Sans', sans-serif;
+    color: #a81d8a;
+    margin-bottom: 20px;
+
+    progress {
+      width: 80%;
+      height: 20px;
+      margin-bottom: 15px;
+    }
+
+    span {
+      font-size: 14px;
+      font-family: 'Josefin Sans', sans-serif;
+      color: #a81d8a;
+    }
+  }
 }
 
 .login-title2 {
-    font-family: 'Josefin Sans', sans-serif;    
-    color: #a81d8a;
-    font-size: 24px;
-    margin-left: 970px;
-  }
-
-  .standard_logo2 {
-    height: 90px;
-    width: auto;
-    margin-left: 900px;
-    margin-bottom: 0px;
-    margin-top: -20px;
-  }
-
-/* Style for input fields */
-.register-input {
-    font-family: 'Josefin Sans', sans-serif;    ;
-    width: 500px;
-    padding: 15px;
-    margin: 5px 0;
-    margin-left: 700px;
-    border: 1px solid #ccc;
-    border-radius: 50px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #a81d8a;
+  font-size: 24px;
+  margin-left: 970px;
 }
 
+.standard_logo2 {
+  height: 90px;
+  width: auto;
+  margin-left: 900px;
+  margin-bottom: 0px;
+  margin-top: -20px;
+}
+
+/* Style for input fields */
+.input-container {
+  position: relative;
+}
+
+.register-input {
+  font-family: 'Josefin Sans', sans-serif;
+  width: 500px;
+  padding: 15px;
+  margin: 5px 0;
+  margin-left: 700px;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  outline: none;
+}
+
+.input-container.error .register-input {
+  border-color: red;
+}
+
+.register-input:focus {
+  border: 1px solid purple !important;
+  outline: none;
+}
 /* Style for the button */
 .register-button {
-    font-family: 'Josefin Sans', sans-serif;    ;
-    width: 400px;
-    height: 40px;
-    padding: 10px;
-    margin: 10px 0;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-left:720px;
-    margin-top: 30px;
-    background: linear-gradient(120deg, rgb(35, 196, 224), rgb(220, 20, 170), rgb(255, 0, 119));
-    background-size: 200% 100%;
-    background-position: 100% 0;
-    transition: background-position .5s;
+  font-family: 'Josefin Sans', sans-serif;
+  width: 400px;
+  height: 40px;
+  padding: 10px;
+  margin: 10px 0;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 720px;
+  margin-top: 80px;
+  background: linear-gradient(120deg, rgb(35, 196, 224), rgb(220, 20, 170), rgb(255, 0, 119));
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  transition: background-position .5s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .message {
   background-color: #f8d7da;
-  color: #721c24; 
-  padding: 10px; 
-  border: 1px solid #721c24; 
-  border-radius: 5px; 
+  color: #721c24;
+  padding: 10px;
+  border: 1px solid #721c24;
+  border-radius: 5px;
   margin-top: 10px;
-  text-align: center; 
+  text-align: center;
 }
 
 .register-button:hover {
-    background-position: 0 0;
+  background-position: 0 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 2;
+  display: none;
+  opacity: 0;
+  animation: fadeIn 1.3s ease both;
+  backdrop-filter: blur(20px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+.verification-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  z-index: 999;
+  width: 400px;
+  height: 260px;
+  font-size: 18px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: rgb(120, 65, 192);
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.verification-popup.active {
+  display: block;
+}
+
+.verification-popup h2 {
+  margin-bottom: 10px;
+}
+
+.verification-popup form {
+  display: flex;
+  flex-direction: column;
+}
+
+.verification-popup input {
+  margin-top: 10px;
+  font-family: 'Josefin Sans', sans-serif;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  height: 30px;
+  outline: none;
+  width: 350px;
+  margin-left: 10px;
+}
+
+.verification-popup button {
+  font-family: 'Josefin Sans', sans-serif;
+  width: 300px;
+  height: 40px;
+  padding: 10px;
+  margin-top: 60px;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 16px;
+  background: linear-gradient(120deg, rgb(35, 196, 224), rgb(220, 20, 170), rgb(255, 0, 119));
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  transition: background-position .5s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin-left: 50px;
+}
+
+.verification-popup button:hover {
+  background-position: 0 0;
+}
+
+.message2 {
+  position: absolute;
+  font-size: 16px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: red;
+  margin-left: 730px;
+  margin-top: -20px;
+}
+
+.message4 {
+  position: absolute;
+  font-size: 16px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: red;
+  margin-left: 750px;
+  margin-top: 400px;
+}
+
+.message3 {
+  font-size: 14px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: red;
+  z-index: 99;
+}
+
+.error-message {
+  position: absolute;
+  font-size: 16px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: red;
+  margin-left: calc(50% + 100px); 
+  margin-top: -120px;
+  width: 30%;
+  text-align: center;
+}
+
+.error-message2 {
+  position: absolute;
+  font-size: 16px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: red;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: -100px; /* Adjust as needed */
+  width: 30%;
+  text-align: center;
 }

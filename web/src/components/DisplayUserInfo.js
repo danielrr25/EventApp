@@ -1,15 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from './UserContext'; // Import the useUser hook
-import './UserProfile.css'; // Import your CSS file for styling
+import { useUser } from './UserContext';
+import { getCookie } from './cookieUtils';
+import './UserProfile.css';
 
 function UserProfile() {
   const [userData, setUserData] = useState({});
-  const { userID } = useUser(); // Access the userID from the context
+  const { userID, setUserID } = useUser();
+  
+  const storedToken = getCookie('token');
 
   useEffect(() => {
+    const storedUserID = getCookie('userID');
+
+    if (storedUserID) {
+      setUserID(storedUserID);
+    }
+
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://167.172.230.181:5000/users/user-info/${userID}`);
+        const response = await fetch(`http://167.172.230.181:5000/users/user-info/${userID}`, {
+          headers: {
+            'Authorization': storedToken,
+          },
+        });
         if (response.status === 200) {
           const data = await response.json();
           setUserData(data);
@@ -22,7 +35,7 @@ function UserProfile() {
     };
 
     fetchUserData();
-  }, [userID]);
+  }, [userID, setUserID, storedToken]);
 
   return (
     <div className="user-profile-container">
@@ -46,6 +59,12 @@ function UserProfile() {
           <p className="box-content">{userData.lastname}</p>
         </div>
       </div>
+      <div className="user-profile-container">
+      <p className="box-title">Email</p>
+      <div className="rounded-box">
+        <p className="box-content">{userData.email}</p>
+      </div>
+    </div>
     </div>
   );
 }

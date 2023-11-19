@@ -1,0 +1,33 @@
+
+.SearchCategoryIcons {
+  display: flex;
+  margin-left: 450px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.CategoryIcon {
+  text-align: center;
+  margin: 5px;
+  margin-right: 100px;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 20px;
+}
+
+.CategoryIcon:hover {
+  opacity: 1;
+}
+
+.CategoryIcon.clicked {
+  opacity: 1;
+}
+
+.CategoryIcon img {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 5px;
+  
+}

@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { getCookie } from './cookieUtils';
 
-function Chat(eventId) {
+function Chat() {
   const [chatVisible, setChatVisible] = useState(false);
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
-  const storedToken = getCookie('token');
 
   useEffect(() => {
-    if (chatVisible && eventId !== null) {
-      fetchMessages();
-    }
-  }, [chatVisible, eventId]);
+    fetchMessages();
+  }, []);
 
   const toggleChat = () => {
     setChatVisible(!chatVisible);
@@ -19,11 +15,7 @@ function Chat(eventId) {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://167.172.230.181:5000/chatmessages/getchatmessages?eventId=${eventId}`, {
-        headers: {
-          Authorization: storedToken, // Include the JWT token in the headers
-        },
-      });
+      const response = await fetch('http://167.172.230.181:5000/chatmessages/getchatmessages');
       const data = await response.json();
       setMessages(data);
     } catch (error) {
@@ -35,31 +27,22 @@ function Chat(eventId) {
     if (userInput.trim() === '') {
       return;
     }
-  
+
     try {
-      const timestamp = new Date().toISOString(); // Get current timestamp
-      const senderId = getUserId(); // Replace this with the function to get the sender's ID
-  
-      await fetch('http://167.172.230.181:5000/chatmessages/addchatmessage', {
+      await fetch('http://167.172.230.181:5000/chatmessages/getchatnessages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: storedToken, // Include the JWT token in the headers
         },
-        body: JSON.stringify({
-          message: userInput,
-          senderId: senderId,
-          timestamp: timestamp,
-        }),
+        body: JSON.stringify({ message: userInput }),
       });
-  
+
       setUserInput('');
       fetchMessages(); // Update messages after sending a new message
     } catch (error) {
       console.error('Error sending chat message:', error);
     }
   };
-  
 
   return (
     <div className="ChatClass">

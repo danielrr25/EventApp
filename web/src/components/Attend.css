@@ -1,0 +1,56 @@
+/* Add these styles to your Attend.css file */
+
+.attend-container {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  margin-top: -120px;
+  margin-left: 700px;
+  border-radius: 20px;
+}
+
+.attend-button {
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  outline: none; /* Remove focus outline */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.attend-button.attend,
+.attend-button.unattend {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 20px;
+  width: 600px;
+  height: 80px;
+  padding: 10px;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-position .5s, background-color .5s; 
+}
+
+.attend-button.attend {
+  background: linear-gradient(120deg, rgb(35, 196, 224), rgb(220, 20, 170), rgb(255, 0, 119));
+  background-size: 200% 100%;
+  background-position: 100% 0;
+}
+
+.attend-button.unattend {
+  background: linear-gradient(120deg, rgb(224, 35, 35), rgb(220, 20, 153), rgb(255, 0, 0));
+  background-size: 200% 100%;
+  background-position: 100% 0;
+}
+
+.attend-button.attend:hover {
+  background-position: 0 0;
+
+}
+
+.attend-button.unattend:hover {
+  background-position: 0 0;
+}
+

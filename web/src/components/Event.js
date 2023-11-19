@@ -1,15 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link from React Router
+import { Link } from "react-router-dom";
+import UserIcon from "./User.png";
+import "./Events.css"; // Import the CSS file
+import NewLogo from './PopOutNew.png';
 
 function Event() {
   return (
     <div>
-      <h1 id="title">Event Page</h1>
-      <Link to="/addevent">
-        <button>Add Event</button>
-      </Link>
+    <div className="logo-container">
+          <img src={NewLogo} alt="Your Logo" className="new_logo" />
+        </div>
+        
       <Link to="/account">
-        <button>Account</button>
+        <img src={UserIcon} alt="User" className="UserIcon" />
       </Link>
     </div>
   );

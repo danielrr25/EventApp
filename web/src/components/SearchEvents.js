@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import SearchIcon from './Search.png'; // Adjust the path to the actual location of the icon
+import './SearchEvents.css';
 
-const SearchEvents = ({ onSearch }) => {
+const SearchBar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = (e) => {
@@ -9,16 +11,22 @@ const SearchEvents = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSearch}>
-      <input
-        type="text"
-        placeholder="Search by name"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <button type="submit">Search</button>
-    </form>
+    <div>
+      <form className="SearchBar" onSubmit={handleSearch}>
+        <input
+          className="SearchInput"
+          type="text"
+          placeholder="Search by name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button className="SearchButton" type="submit">
+          <img src={SearchIcon} alt="Search" />
+        </button>
+      </form>
+      <div className="GreyLine"></div>
+    </div>
   );
 };
 
-export default SearchEvents;
+export default SearchBar;

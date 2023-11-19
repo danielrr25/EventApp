@@ -1,70 +1,91 @@
-// AddEvent.js
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AddEvent.css';
 import LogoGradient from './PopOut.png';
 import IconSelection from './IconSelection';
 import { useUser } from './UserContext';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { getCookie } from './cookieUtils';
 
 function AddEvent() {
-  const { userID } = useUser();
-  var eventname = '';
-  var eventdescription = '';
-  var eventlocation = '';
-  var eventdate = '';
-  var eventcategory = '';
-  var selectedIcon = '';
+  const { setUserID } = useUser();
+  const [eventname, setEventName] = useState('');
+  const [eventdescription, setEventDescription] = useState('');
+  const [eventlocation, setEventLocation] = useState('');
+  const [eventdate, setEventDate] = useState('');
+  const [eventcategory, setEventCategory] = useState('');
+  const [selectedIcon, setSelectedIcon] = useState('');
 
   const [message, setMessage] = useState('');
+  const [selectedCategoryColor, setSelectedCategoryColor] = useState('grey');
   const navigate = useNavigate();
 
   const handleIconSelection = (icon) => {
-    selectedIcon = icon;
+    setSelectedIcon(icon);
   };
 
-  console.log('ICON:', selectedIcon);
-  const addEvent = async (event) => {
-    event.preventDefault();
+  const handleCategoryChange = (e) => {
+    setEventCategory(e.target.value);
+    setSelectedCategoryColor('black');
+  };
 
-    var obj = {
-      creatorID: userID,
-      eventName: eventname,
-      eventCategory: eventcategory,
-      eventDescription: eventdescription,
-      eventDate: eventdate,
-      eventLocation: eventlocation,
-      eventIcon: selectedIcon,
-    };
+  const storedUserID = getCookie('userID');
 
-    var js = JSON.stringify(obj);
-    console.log('Data sent to server:', obj);
-    try {
-      const response = await fetch('http://167.172.230.181:5000/events/create-event', {
-        method: 'POST',
-        body: js,
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      var txt = await response.text();
-      var res = JSON.parse(txt);
-      console.log(res);
-
-      if (response.status === 200) {
-        setMessage('Event created successfully.');
-        navigate('/event');
-      } else {
-        setMessage('Event already exists.');
-      }
-    } catch (e) {
-      setMessage(e.toString());
+  useEffect(() => {
+    if (storedUserID) {
+      setUserID(storedUserID);
     }
+  }, [setUserID, storedUserID]);
+
+  const addEvent = async (event) => {
+  event.preventDefault();
+
+  console.log(selectedIcon);
+  
+  var obj = {
+    creatorID: storedUserID, 
+    eventName: eventname,
+    eventCategory: eventcategory,
+    eventDescription: eventdescription,
+    eventDate: eventdate,
+    eventLocation: eventlocation,
+    eventIcon: selectedIcon,
   };
+
+  var js = JSON.stringify(obj);
+
+  try {
+    const storedToken = getCookie('token'); 
+
+    const response = await fetch('http://167.172.230.181:5000/events/create-event', {
+      method: 'POST',
+      body: js,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': storedToken,
+      },
+    });
+
+    if (response.status === 200) {
+      setMessage('Event created successfully.');
+      navigate('/event');
+    } else {
+      setMessage('Event already exists.');
+    }
+  } catch (e) {
+    setMessage(e.toString());
+  }
+};
+
+  const categories = ["Sports", "Music", "Education", "Parties", "Art", "Social", "Other"];
+
+  useEffect(() => {
+    setSelectedCategoryColor('grey');
+  }, [eventcategory]);
 
   return (
     <div id="eventUIDiv">
       <div className="header-container">
-        <div className="logo-container">
+        <div className="logo-container2">
           <img src={LogoGradient} alt="Your Logo" className="logogradient" />
         </div>
         <div className="title">
@@ -80,7 +101,7 @@ function AddEvent() {
             type="text"
             id="eventName"
             placeholder="Event Name"
-            onChange={(e) => (eventname = e.target.value)}
+            onChange={(e) => setEventName(e.target.value)}
           />
         </div>
         <div className="input-subgroup">
@@ -90,7 +111,7 @@ function AddEvent() {
           <input
             type="date"
             id="eventDate"
-            onChange={(e) => (eventdate = e.target.value)}
+            onChange={(e) => setEventDate(e.target.value)}
           />
         </div>
       </div>
@@ -104,7 +125,7 @@ function AddEvent() {
             type="text"
             id="eventLocation"
             placeholder="Event Location"
-            onChange={(e) => (eventlocation = e.target.value)}
+            onChange={(e) => setEventLocation(e.target.value)}
           />
         </div>
 
@@ -112,12 +133,25 @@ function AddEvent() {
           <div className="title_input">
             <h1>Event Category</h1>
           </div>
-          <input
-            type="text"
+          <select
             id="eventCategory"
-            placeholder="Event Category"
-            onChange={(e) => (eventcategory = e.target.value)}
-          />
+            onChange={handleCategoryChange}
+            style={{
+              height: '70px',
+              padding: '8px',
+              fontSize: '16px',
+              color: selectedCategoryColor,
+            }}
+          >
+            <option value="" disabled selected hidden>
+              Select One
+            </option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -128,7 +162,7 @@ function AddEvent() {
         <textarea
           id="eventDescription"
           placeholder="Event Description"
-          onChange={(e) => (eventdescription = e.target.value)}
+          onChange={(e) => setEventDescription(e.target.value)}
         />
       </div>
 

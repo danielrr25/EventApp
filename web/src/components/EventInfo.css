@@ -1,0 +1,260 @@
+
+
+
+.logogradient10 {
+  height: 80px;
+  width: auto;
+  position: absolute;
+  left: 20px;
+  top: 10px;
+}
+
+.title_for_event {
+  text-align: center;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 20px;
+  color: white;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.input-group2 {
+  margin-left: 600px;
+  display: flex;
+}
+
+.input-subgroup2 {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.title_input2 {
+  text-align: left;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 16px;
+  color: rgb(120, 65, 192);
+}
+
+.title_input3 {
+  text-align: left;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 17px;
+  color: rgb(120, 65, 192);
+  margin-left: -1300px;
+  margin-top: -310px;
+}
+
+.rounded-box2 {
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding-top: 30px;
+  padding-left: 20px;
+  margin-top: 10px;
+  width: 600px;
+  height: 50px;
+  font-size: 23px;
+  font-family: 'Josefin Sans', sans-serif;
+  text-align: left;
+  background-color: white;
+}
+
+.description2 {
+  margin-top: 20px;
+}
+
+.rounded-box3 {
+  position: absolute;
+  margin-left: -900px;
+  margin-top: -370px;
+  scale: 54%;
+}
+
+.attendees-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.rounded-box-attendees {
+  position: absolute;
+  margin-left: -1300px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 10px;
+  margin-top: -240px;
+  width: 400px;
+  min-height: 200px; 
+  max-height: 200px; 
+  overflow-y: auto; 
+  border: 1px solid #ccc;
+}
+
+.attendees-list {
+  list-style-type: none;
+  font-size: 23px;
+  font-family: 'Josefin Sans', sans-serif;
+  text-align: left;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+/* Add a line under each list item */
+.attendees-list li {
+  border-bottom: 1px solid #ccc;
+  margin-top: 10px;
+}
+
+.description-container {
+  width: 1270px;
+  height: 300px !important;
+  margin-left: 600px;
+}
+
+.rounded-box-description {
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding-top: 30px;
+  padding-left: 20px;
+  margin-top: 10px;
+  min-height: 200px;
+  max-height: 200px; /* Set your desired maximum height */
+  overflow-y: auto;
+  font-size: 23px;
+  font-family: 'Josefin Sans', sans-serif;
+  text-align: left;
+  background-color: white;
+}
+
+
+/* Add these styles to your EventInfo.css file */
+
+#eventUIDiv2 {
+  border-radius: 10px;
+  text-align: center;
+  max-width: 1920px;
+  height: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+
+}
+
+.header-container5 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+  z-index: 1; /* Ensure the content is above the pseudo-element */
+}
+
+.header-container5::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Move the pseudo-element below the content */
+}
+
+#eventUIDiv2.icon-socialIcon .header-container5::before {
+background: rgb(183,111,221);
+background: linear-gradient(90deg, rgba(183,111,221,1) 0%, rgba(10,18,153,1) 100%);
+}
+
+#eventUIDiv2.icon-sportsIcon .header-container5::before {
+background: rgb(221,150,111);
+background: linear-gradient(90deg, rgba(221,150,111,1) 0%, rgba(227,47,84,1) 100%);
+}
+
+#eventUIDiv2.icon-partiesIcon .header-container5::before {
+background: rgb(247,178,0);
+background: linear-gradient(90deg, rgba(247,178,0,1) 0%, rgba(230,255,158,1) 100%);
+}
+
+#eventUIDiv2.icon-musicIcon .header-container5::before {
+background: rgb(165,88,184);
+background: linear-gradient(90deg, rgba(165,88,184,1) 0%, rgba(142,19,148,1) 100%);
+}
+
+#eventUIDiv2.icon-educationIcon .header-container5::before {
+  background: rgb(96,176,163);
+background: linear-gradient(90deg, rgba(96,176,163,1) 0%, rgba(70,221,227,1) 100%);
+}
+
+#eventUIDiv2.icon-artIcon .header-container5::before {
+  background: rgb(174,103,231);
+background: linear-gradient(90deg, rgba(174,103,231,1) 0%, rgba(225,160,242,1) 100%);
+}
+
+#eventUIDiv2.icon-socialIcon .title_input2 {
+  color: #001f3f; 
+}
+
+#eventUIDiv2.icon-sportsIcon .title_input2 {
+  color: rgb(153, 51, 0);
+}
+
+#eventUIDiv2.icon-partiesIcon .title_input2 {
+  color: rgb(179, 134, 0)
+}
+
+#eventUIDiv2.icon-musicIcon .title_input2 {
+  color: rgb(107, 40, 122);
+}
+
+#eventUIDiv2.icon-educationIcon .title_input2 {
+  color:  rgb(29, 87, 122);
+}
+
+#eventUIDiv2.icon-artIcon .title_input2 {
+  color: rgb(138, 25, 138);
+}
+
+#eventUIDiv2.icon-socialIcon .title_input3 {
+  color: #001f3f; 
+}
+
+#eventUIDiv2.icon-sportsIcon .title_input3 {
+  color : rgb(153, 51, 0);
+}
+
+#eventUIDiv2.icon-partiesIcon .title_input3 {
+  color:  rgb(179, 134, 0);
+}
+
+#eventUIDiv2.icon-musicIcon .title_input3 {
+  color: rgb(107, 40, 122);
+}
+
+#eventUIDiv2.icon-educationIcon .title_input3 {
+  color:  rgb(29, 87, 122);
+}
+
+#eventUIDiv2.icon-artIcon .title_input3 {
+  color:  rgb(138, 25, 138);
+}
+
+.delete-button{
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 40px;
+  width: 300px;
+  padding: 10px;
+  color: red;
+  border: ;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 80px;
+  margin-top: 140px;
+  background: white;
+  border: 2px solid #e83737;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+

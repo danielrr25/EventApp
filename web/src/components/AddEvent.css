@@ -14,8 +14,8 @@
 .header-container {
     display: flex;
     align-items: center;
-    background: rgb(141,0,255);
-    background: linear-gradient(90deg, rgba(141,0,255,1) 0%, rgba(255,0,112,1) 100%);
+    background: rgb(141, 0, 255);
+    background: linear-gradient(90deg, rgba(141, 0, 255, 1) 0%, rgba(255, 0, 112, 1) 100%);
     width: 1920px;
     height: 100px;
 }
@@ -36,7 +36,6 @@
     margin-left: 800px;
 }
 
-
 .input-container {
     display: flex;
     flex-direction: column;
@@ -52,12 +51,11 @@
 
 .input-subgroup {
     flex: 1;
-    margin: 0 10px;
     font-size: 14px;
     text-align: left;
     font-family: 'Josefin Sans', sans-serif;
     color: rgb(120, 65, 192);
-    
+    margin: 0px 10px;
 }
 
 .input-subgroup input {
@@ -69,6 +67,20 @@
     font-size: 16px;
     font-family: 'Josefin Sans', sans-serif;
     transition: border-color 0.3s;
+}
+
+.input-subgroup select {
+    width: 620px;
+    height: 60px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 16px;
+    font-family: 'Josefin Sans', sans-serif;
+    transition: border-color 0.3s;
+    height: 70px;
+    outline: none;
+    color: grey; 
 }
 
 .input-group textarea {
@@ -87,7 +99,6 @@
 
 #addEventButton {
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 40px;
     width: 600px;
     height: 80px;
     padding: 10px;
@@ -102,6 +113,7 @@
     background-size: 200% 100%;
     background-position: 100% 0;
     transition: background-position .5s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 #addEventButton:hover {
@@ -146,12 +158,12 @@ textarea {
 
 input[type="date"] {
     color: grey; 
-  }
-  
-  input[type="date"]:focus {
-    color: black;
-} 
+}
 
-input[type="date"]::-webkit-calendar-picker-indicator {
-    opacity: 0.5;
-  }
+input[type="date"]:focus {
+    color: black;
+}
+
+#eventCategory option[disabled] {
+    color: grey !important;
+}
