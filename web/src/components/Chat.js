@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getCookie } from './cookieUtils';
 
 function Chat({ eventId }) {
@@ -9,44 +9,48 @@ function Chat({ eventId }) {
   const storedUserID = getCookie('userID');
   const userID = storedUserID || '';
 
-  useEffect(() => {
-    if (chatVisible && eventId !== null && eventId !== undefined) {
-      fetchMessages();
-    }
-  }, [chatVisible, eventId]);
-
-  const toggleChat = () => {
-    setChatVisible(!chatVisible);
-  };
-
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       const response = await fetch(`http://167.172.230.181:5000/chatmessages/getchatmessages/${eventId}`, {
         headers: {
           'Authorization': storedToken,
         },
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error response from server:', errorData);
         throw new Error('Failed to fetch messages');
       }
-  
+
       const data = await response.json();
-      setMessages(data);
-      console.log('Received messages:', data);
+
+      if (Array.isArray(data)) {
+        setMessages(data);
+        console.log('Received messages:', data.toString());
+      } else {
+        console.error('Invalid data structure received from server:', data);
+      }
     } catch (error) {
       console.error('Error fetching chat messages:', error);
     }
+  }, [eventId, storedToken]);
+
+  useEffect(() => {
+    if (chatVisible && eventId !== null) {
+      fetchMessages();
+    }
+  }, [chatVisible, eventId, fetchMessages]);
+
+  const toggleChat = () => {
+    setChatVisible(!chatVisible);
   };
-  
 
   const sendMessage = async () => {
     if (userInput.trim() === '') {
       return;
     }
-  
+
     try {
       const timestamp = new Date().toISOString();
       const response = await fetch('http://167.172.230.181:5000/chatmessages/addchatmessage', {
@@ -55,27 +59,26 @@ function Chat({ eventId }) {
           'Content-Type': 'application/json',
           'Authorization': storedToken,
         },
-        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: typeof userInput === 'string' ? userInput : userInput.toString() }),
+        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput.toString() }),
       });
-  
+
       console.log('User ID:', userID);
       console.log('Event ID:', eventId);
       console.log('Timestamp:', timestamp);
-      console.log('User Input:', userInput.toString()); // Corrected this line
-  
+      console.log('User Input:', userInput.toString());
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error response from server:', errorData);
         throw new Error('Failed to send message');
       }
-  
+
       setUserInput('');
       fetchMessages(); // Update messages after sending a new message
     } catch (error) {
       console.error('Error sending chat message:', error);
     }
   };
-  
 
   return (
     <div className="ChatClass">
@@ -92,15 +95,15 @@ function Chat({ eventId }) {
             </button>
           </div>
           <div id="chat-body">
-          <div id="chat-messages">
-            {messages.map((message, index) => (
-            <div
-              key={index}
-              className={message.type === 'received' ? 'received' : 'sent'}>
-              {message.message}
+            <div id="chat-messages">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={message.type === 'received' ? 'received' : 'sent'}>
+                  {message.message}
+                </div>
+              ))}
             </div>
-            ))}
-        </div>
 
             <input
               type="text"
