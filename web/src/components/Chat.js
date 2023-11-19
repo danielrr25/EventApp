@@ -23,7 +23,7 @@ function Chat({ eventId }) {
     try {
       const response = await fetch(`http://167.172.230.181:5000/chatmessages/getchatmessages/${eventId}`, {
         headers: {
-          Authorization: storedToken,
+          'Authorization': storedToken,
         },
       });
 
@@ -55,7 +55,7 @@ function Chat({ eventId }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: storedToken,
+          'Authorization': storedToken,
         },
         body: JSON.stringify({
           message: userInput,

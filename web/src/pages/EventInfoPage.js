@@ -18,7 +18,7 @@ function EventInfoPage({ setUserID }) {
     <div>
       <EventInfo eventId={eventId} attendees={attendees} />
       <Attend setUserID={setUserID} eventId={eventId} onAttendeesUpdate={updateAttendees} />
-      <Chat />
+      <Chat setUserID={setUserID} eventId={eventId}/>
     </div>
   );
 }
