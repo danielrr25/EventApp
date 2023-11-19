@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/loginpage.dart';
+
 
 class EventsAttending extends StatefulWidget {
   final String userId;
@@ -17,49 +19,53 @@ class _EventsAttendingState extends State<EventsAttending> {
   @override
   void initState() {
     super.initState();
-      _createdEvents = fetchCreatedEvents(currentUser.jwtToken);
+    _createdEvents = fetchCreatedEvents(currentUser.userID);
   }
 
   Future<List<Event>> fetchCreatedEvents(String userId) async {
-  try {
-    final response = await http.get(
-      Uri.parse('http://167.172.230.181:5000/get-created-events/$userId'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': currentUser.jwtToken, // Include the JWT token here
-        // Include any additional headers you may need
-      },
-    );
+    try {
+          print('User ID: $userId');
+      print('JWT Token: ${currentUser.jwtToken}');
 
-    print('Response Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
+      final response = await http.get(  
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      final eventsData = jsonData as List<dynamic>;
+        //Uri.parse('http://167.172.230.181:5000/get-created-events/$userId'),
+        Uri.parse('http://167.172.230.181:5000/events/get-created-events/6552fa1135a7d70b8dce9722'),
 
-      // Convert the dynamic list to a list of Event objects
-      List<Event> events =
-          eventsData.map((data) => Event.fromJson(data)).toList();
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': currentUser.jwtToken,
+        },
+      );
 
-      return events;
-    } else {
-      print('Failed to load data. Status code: ${response.statusCode}');
+      print('JWT Token: ${currentUser.jwtToken}');
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final eventsData = jsonData as List<dynamic>;
+
+        List<Event> events =
+            eventsData.map((data) => Event.fromJson(data)).toList();
+
+        return events;
+      } else {
+        print('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception("Failed to load events");
+      }
+    } catch (e) {
+      print('Error: $e');
       throw Exception("Failed to load events");
     }
-  } catch (e) {
-    // Handle errors during the API request
-    print('Error: $e');
-    throw Exception("Failed to load events");
   }
-}
 
-
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Created Events'),
+        title: Text('MyEvents'),
+        automaticallyImplyLeading: false, // Add this line
       ),
       body: Center(
         child: FutureBuilder<List<Event>>(
@@ -81,7 +87,7 @@ class _EventsAttendingState extends State<EventsAttending> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Location: ${snapshot.data![index].eventLocation}'),
-                        Text('Creator ID: ${snapshot.data![index].creatorID}'), // Add this line
+                        Text('Creator ID: ${snapshot.data![index].creatorID}'),
                         // Add more details if needed
                       ],
                     ),
@@ -95,6 +101,7 @@ class _EventsAttendingState extends State<EventsAttending> {
     );
   }
 }
+
 
 class Event {
   final String creatorID;
@@ -114,6 +121,7 @@ class Event {
     required this.eventDescription,
     required this.listAttendees,
   });
+
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(

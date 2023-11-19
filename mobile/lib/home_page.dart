@@ -5,6 +5,9 @@ import 'package:mobile/sections/home_section.dart';
 import 'package:mobile/sections/search_event.dart';
 import 'package:mobile/sections/user_section.dart';
 // import 'package:mobile/sections/search_bar.dart';
+import 'package:mobile/sections/events_attending';
+import 'package:mobile/loginpage.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -70,7 +73,7 @@ class _HomePageState extends State<HomePage> {
       case 2:
         return createEvent();
       case 3:
-        return Center(child: Text('Events Page'));
+        return EventsAttending(userId: currentUser.userID); 
       case 4:
         return const UserSettings();
       default:
