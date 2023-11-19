@@ -4,7 +4,7 @@ const User = require('../models/userSchema');
 const { gentoken } = require('../routes_help/verification');
 const { sendemailv } = require('../routes_help/emailtransport');
 const { sendpasswordv } = require('../routes_help/pemailtransport');
-const verifyToken  = require('../utils/jwt');
+const verifyToken  = require('../routes_help/jwt');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 

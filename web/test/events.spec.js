@@ -8,7 +8,10 @@ const app = require('../server.js');
 app.use(bodyParser.json());
 app.use('/', router);
 
-jest.mock('../utils/jwt', () => {
+
+
+
+jest.mock('../routes_help/jwt', () => {
     return jest.fn((req, res, next) => {
       // Simulate successful token verification
       req.user = { id: 'mockUserId' }; 
@@ -18,38 +21,23 @@ jest.mock('../utils/jwt', () => {
 
 jest.mock('../models/eventSchema', () => {
     return {
-      findOne: jest.fn(),
-      save: jest.fn(),
+        findOne: jest.fn(),
         find: jest.fn(),
-        deleteOne: jest.fn(),
         findById: jest.fn(),
+        deleteOne: jest.fn(),
+        save: jest.fn(),
+        mockReset: function () {
+            this.findOne.mockReset();
+            this.find.mockReset();
+            this.findById.mockReset();
+            this.deleteOne.mockReset();
+            this.save.mockReset();
+        }
     };
   });
   
   describe('POST /create-event', () => {
     
-    // it('should create a new event', async () => {
-    //     Event.findOne.mockResolvedValue(null); // Mock that the event does not already exist
-    //     const newEvent = {
-    //         "creatorID": "65497a355e5ff8d811603097",
-    //         "eventName": "COP 1233proj asasdddmeasdsd12323etasdsding",
-    //         "eventCategory": "Sporasd123aasddssdts",
-    //         "eventDescription": "A charaasdsdasddsity run e12323vent to raise funds for local schools.",
-    //         "eventDate": "2023-12-05T09:00:00Z",
-    //         "eventLocation": "Centrasdal Park, New York",
-    //         "eventIcon":"test"
-    //     };
-    
-    //     const response = await request(app)
-    //       .post('/create-event')
-    //       .send(newEvent);
-        
-    
-    //     expect(response.statusCode).toBe(200);
-    //     expect(response.body.msg).toBe('Event created successfully');
-    //     expect(Event.findOne).toHaveBeenCalledWith({ eventName: newEvent.eventName });
-        
-    //   });
   
     it('should return 400 if event already exists', async () => {
       Event.findOne.mockResolvedValue(true); // Mock that the event already exists

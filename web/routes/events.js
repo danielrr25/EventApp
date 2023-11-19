@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Event = require('../models/eventSchema'); // Import your Event model
 const jwt = require('jsonwebtoken');
-const verifyToken  = require('../utils/jwt');
+const verifyToken  = require('../routes_help/jwt');
 
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
@@ -40,6 +40,8 @@ router.post('/create-event',verifyToken, async (req, res) => {
 
       res.status(200).json({ msg: 'Event created successfully', event });
   } catch (err) {
+
+      console.log(err);
       res.status(500).send('Server Error');
   }
 });
