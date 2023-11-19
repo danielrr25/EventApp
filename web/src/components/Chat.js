@@ -46,7 +46,7 @@ function Chat({ eventId }) {
     if (userInput.trim() === '') {
       return;
     }
-
+  
     try {
       const timestamp = new Date().toISOString();
       const response = await fetch('http://167.172.230.181:5000/chatmessages/addchatmessage', {
@@ -55,21 +55,27 @@ function Chat({ eventId }) {
           'Content-Type': 'application/json',
           'Authorization': storedToken,
         },
-        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput }),
+        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: typeof userInput === 'string' ? userInput : userInput.toString() }),
       });
-      console.log(userID, eventId, timestamp, userInput.toString);
-      console.log("this is user input:" + userInput);
-
+  
+      console.log('User ID:', userID);
+      console.log('Event ID:', eventId);
+      console.log('Timestamp:', timestamp);
+      console.log('User Input:', userInput.toString()); // Corrected this line
+  
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error response from server:', errorData);
         throw new Error('Failed to send message');
       }
-
+  
       setUserInput('');
       fetchMessages(); // Update messages after sending a new message
     } catch (error) {
       console.error('Error sending chat message:', error);
     }
   };
+  
 
   return (
     <div className="ChatClass">
