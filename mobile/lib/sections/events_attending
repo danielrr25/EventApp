@@ -1,0 +1,129 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class EventsAttending extends StatefulWidget {
+  final String userId;
+
+  const EventsAttending({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _EventsAttendingState createState() => _EventsAttendingState();
+}
+
+class _EventsAttendingState extends State<EventsAttending> {
+  late Future<List<Event>> _createdEvents;
+
+  @override
+  void initState() {
+    super.initState();
+      _createdEvents = fetchCreatedEvents(currentUser.jwtToken);
+  }
+
+  Future<List<Event>> fetchCreatedEvents(String userId) async {
+  try {
+    final response = await http.get(
+      Uri.parse('http://167.172.230.181:5000/get-created-events/$userId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': currentUser.jwtToken, // Include the JWT token here
+        // Include any additional headers you may need
+      },
+    );
+
+    print('Response Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final eventsData = jsonData as List<dynamic>;
+
+      // Convert the dynamic list to a list of Event objects
+      List<Event> events =
+          eventsData.map((data) => Event.fromJson(data)).toList();
+
+      return events;
+    } else {
+      print('Failed to load data. Status code: ${response.statusCode}');
+      throw Exception("Failed to load events");
+    }
+  } catch (e) {
+    // Handle errors during the API request
+    print('Error: $e');
+    throw Exception("Failed to load events");
+  }
+}
+
+
+   @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Your Created Events'),
+      ),
+      body: Center(
+        child: FutureBuilder<List<Event>>(
+          future: _createdEvents,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Text('You haven\'t created any events.');
+            } else {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(snapshot.data![index].eventName),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Location: ${snapshot.data![index].eventLocation}'),
+                        Text('Creator ID: ${snapshot.data![index].creatorID}'), // Add this line
+                        // Add more details if needed
+                      ],
+                    ),
+                  );
+                },
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class Event {
+  final String creatorID;
+  final String eventName;
+  final String eventLocation;
+  final String eventDate;
+  final String eventCategory;
+  final String eventDescription;
+  final List<String> listAttendees;
+
+  Event({
+    required this.creatorID,
+    required this.eventName,
+    required this.eventLocation,
+    required this.eventDate,
+    required this.eventCategory,
+    required this.eventDescription,
+    required this.listAttendees,
+  });
+
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      creatorID: json['creatorID'] as String,
+      eventName: json['eventName'] as String,
+      eventLocation: json['eventLocation'] as String,
+      eventDate: json['eventDate'] as String,
+      eventCategory: json['eventCategory'] as String,
+      eventDescription: json['eventDescription'] as String,
+      listAttendees: List<String>.from(json['listAttendees']),
+    );
+  }
+}
