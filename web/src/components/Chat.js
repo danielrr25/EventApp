@@ -10,7 +10,7 @@ function Chat({eventId}) {
   const userID = storedUserID || '';
 
   useEffect(() => {
-    if (chatVisible && eventId !== null) {
+    if (chatVisible && eventId !== null && eventId !== undefined) {
       fetchMessages();
     }
   }, [chatVisible, eventId]);
