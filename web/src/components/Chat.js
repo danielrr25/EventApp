@@ -33,7 +33,7 @@ function Chat({eventId}) {
 
       const data = await response.json();
       setMessages(data);
-      console.log('Received messages:', data.toString);
+      console.log('Received messages:', data);
     } catch (error) {
       console.error('Error fetching chat messages:', error);
     }
