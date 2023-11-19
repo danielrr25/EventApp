@@ -81,11 +81,12 @@ function Chat({eventId}) {
             </button>
           </div>
           <div id="chat-body">
-            <div id="chat-messages">
-              {messages.map((message, index) => (
-                <div key={index} className={message.type === 'received' ? 'received' : 'sent'}>
-                  {message.text}
-                </div>
+          <div id="chat-messages">
+            {messages.map((message, index) => (
+              <div key={index} className={message.type === 'received' ? 'received' : 'sent'}>
+                {message.message} {/* Use the correct property name (message.message) */}
+          </div>
+
               ))}
             </div>
             <input
