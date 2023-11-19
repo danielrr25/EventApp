@@ -59,7 +59,8 @@ function Chat({ eventId }) {
           'Content-Type': 'application/json',
           'Authorization': storedToken,
         },
-        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput.toString(), type: 'sent' }),
+        // body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput.toString(), type: 'sent' }),
+        body: JSON.stringify({ eventId: eventId, senderId: userID, timestamp: timestamp, body: userID + ": " + userInput, type: 'sent' }),
       });
 
       console.log('User ID:', userID);
@@ -79,7 +80,7 @@ function Chat({ eventId }) {
 
       setUserInput('');
       console.log('Message sent successfully');
-      // fetchMessages(); // Update messages after sending a new message
+      fetchMessages(); // Update messages after sending a new message
     } catch (error) {
       console.error('Error sending chat message:', error);
     }
