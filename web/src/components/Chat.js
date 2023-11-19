@@ -52,7 +52,7 @@ function Chat({eventId}) {
           'Content-Type': 'application/json',
           'Authorization': storedToken, // Include the JWT token in the headers
         },
-        body: JSON.stringify({ message: userInput , userID: userID, timestamp: timestamp}),
+        body: JSON.stringify({ userID: userID, eventId: eventId, timestamp: timestamp, message: userInput}),
       });
 
       if (!response.ok) {

@@ -67,10 +67,12 @@
 
 #chat-body {
   padding: 10px;
+  min-height: 200px;
 }
 
 #chat-messages {
   max-height: 200px;
+  overflow: auto;
   overflow-y: auto;
 }
 
