@@ -6,6 +6,8 @@ function Chat(eventId) {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
   const storedToken = getCookie('token');
+  const storedUserID = getCookie('userID');
+  const userID = storedUserID || '';
 
   useEffect(() => {
     if (chatVisible && eventId !== null) {
@@ -19,7 +21,7 @@ function Chat(eventId) {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://167.172.230.181:5000/chatmessages/getchatmessages?eventId=${eventId}`, {
+      const response = await fetch(`http://167.172.230.181:5000/chatmessages/getchatmessages/${eventId}`, {
         headers: {
           Authorization: storedToken, // Include the JWT token in the headers
         },
@@ -38,7 +40,6 @@ function Chat(eventId) {
   
     try {
       const timestamp = new Date().toISOString(); // Get current timestamp
-      const senderId = getUserId(); // Replace this with the function to get the sender's ID
   
       await fetch('http://167.172.230.181:5000/chatmessages/addchatmessage', {
         method: 'POST',
@@ -48,7 +49,7 @@ function Chat(eventId) {
         },
         body: JSON.stringify({
           message: userInput,
-          senderId: senderId,
+          userID: userID,
           timestamp: timestamp,
         }),
       });
