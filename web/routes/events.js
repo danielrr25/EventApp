@@ -3,6 +3,7 @@ const router = express.Router();
 const Event = require('../models/eventSchema'); // Import your Event model
 const jwt = require('jsonwebtoken');
 const verifyToken  = require('../utils/jwt');
+
 router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -15,7 +16,7 @@ router.post('/create-event',verifyToken, async (req, res) => {
   try {
       // Destructuring assignment to extract values from request body
       const { creatorID, eventName, eventCategory,eventDescription, eventDate, eventLocation,eventIcon } = req.body;
-      console.log(req.body);
+      
       // Check if the event already exists
       let event = await Event.findOne({ eventName });
       if (event) {
@@ -39,7 +40,6 @@ router.post('/create-event',verifyToken, async (req, res) => {
 
       res.status(200).json({ msg: 'Event created successfully', event });
   } catch (err) {
-      console.error(err.message);
       res.status(500).send('Server Error');
   }
 });
@@ -49,7 +49,7 @@ router.get('/get-event-info/:eventId',verifyToken, async (req, res) => {
   try {
       const { eventId } = req.params;
   
-      console.log(eventId);
+   
       // Find the user by ID
       const event = await Event.findOne({_id:eventId});
       if (!event) {
@@ -58,7 +58,6 @@ router.get('/get-event-info/:eventId',verifyToken, async (req, res) => {
   
       res.status(200).json(event);
     } catch (error) {
-      console.error(error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
@@ -73,7 +72,6 @@ router.get('/get-created-events/:userId',verifyToken, async (req, res) => {
 
     res.status(200).json(createdEvents);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -89,7 +87,6 @@ router.get('/get-attending-events/:userId',verifyToken, async (req, res) => {
 
     res.status(200).json(attendingEvents);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -107,7 +104,6 @@ router.get('/search-events',verifyToken, async (req, res) => {
     const events = await Event.find(query);
     res.json(events);
   } catch (error) {
-    console.error(error);
     res.status(500).send('Server Error');
   }
 });
@@ -125,7 +121,6 @@ router.get('/delete-event/:id',verifyToken, async (req, res) => {
     await Event.deleteOne({ _id: req.params.id });
     res.json({ msg: 'Event removed' });
   } catch (err) {
-    console.error(err.message);
     if (err.kind === 'ObjectId') {
       return res.status(404).json({ msg: 'Event not found' });
     }
@@ -155,7 +150,6 @@ router.post('/attendevent',verifyToken, async (req, res) => {
       await event.save();
       res.status(201).send({ message: 'Event attendance confirmed' });
   } catch (error) {
-      console.error('Error attending event:', error);
       res.status(500).send({ error: 'Internal Server Error' });
   }
 });
@@ -183,7 +177,6 @@ router.post('/unattendevent',verifyToken, async (req, res) => {
       await event.save();
       res.status(201).send({ message: 'Event attendance remove' });
   } catch (error) {
-      console.error('Error attending event:', error);
       res.status(500).send({ error: 'Internal Server Error' });
   }
 });

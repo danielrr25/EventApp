@@ -1,39 +1,366 @@
 const request = require('supertest');
 const express = require('express');
-const eventRoutes = require('../routes/events.js');
+const bodyParser = require('body-parser');
+const router = require('../routes/events.js');
 const Event = require('../models/eventSchema'); // Import your Event model
 const app = require('../server.js');
-jest.mock('../models/eventSchema');
 
+app.use(bodyParser.json());
+app.use('/', router);
 
-test('POST /create-event should create an event and return 200 status', async () => {
+jest.mock('../utils/jwt', () => {
+    return jest.fn((req, res, next) => {
+      // Simulate successful token verification
+      req.user = { id: 'mockUserId' }; 
+      next();
+    });
+  });
+
+jest.mock('../models/eventSchema', () => {
+    return {
+      findOne: jest.fn(),
+      save: jest.fn(),
+        find: jest.fn(),
+        deleteOne: jest.fn(),
+        findById: jest.fn(),
+    };
+  });
+  
+  describe('POST /create-event', () => {
+    
+    // it('should create a new event', async () => {
+    //     Event.findOne.mockResolvedValue(null); // Mock that the event does not already exist
+    //     const newEvent = {
+    //         "creatorID": "65497a355e5ff8d811603097",
+    //         "eventName": "COP 1233proj asasdddmeasdsd12323etasdsding",
+    //         "eventCategory": "Sporasd123aasddssdts",
+    //         "eventDescription": "A charaasdsdasddsity run e12323vent to raise funds for local schools.",
+    //         "eventDate": "2023-12-05T09:00:00Z",
+    //         "eventLocation": "Centrasdal Park, New York",
+    //         "eventIcon":"test"
+    //     };
+    
+    //     const response = await request(app)
+    //       .post('/create-event')
+    //       .send(newEvent);
+        
+    
+    //     expect(response.statusCode).toBe(200);
+    //     expect(response.body.msg).toBe('Event created successfully');
+    //     expect(Event.findOne).toHaveBeenCalledWith({ eventName: newEvent.eventName });
+        
+    //   });
+  
+    it('should return 400 if event already exists', async () => {
+      Event.findOne.mockResolvedValue(true); // Mock that the event already exists
+  
+      const newEvent = {
+        creatorID: '12345',
+        eventName: 'Test Event',
+        eventCategory: 'Category',
+        eventDescription: 'Description',
+        eventDate: '2023-01-01',
+        eventLocation: 'Location',
+        eventIcon: 'Icon'
+      };
+  
+      const response = await request(app)
+        .post('/create-event')
+        .send(newEvent);
+      
+      expect(response.statusCode).toBe(400);
+      expect(response.body.msg).toBe('Event already exists');
+    });
+
+  });
+
+  describe('GET /get-event-info/:eventId', () => {
+    it('should return event details for a valid event ID', async () => {
+      const mockEvent = {
+        _id: '123',
+        eventName: 'Test Event',
+        eventCategory: 'Category',
+        eventDescription: 'Description',
+        eventDate: '2023-01-01',
+        eventLocation: 'Location',
+        eventIcon: 'Icon'
+      };
+      Event.findOne.mockResolvedValue(mockEvent);
+  
+      const response = await request(app).get('/get-event-info/123');
+  
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual(mockEvent);
+      expect(Event.findOne).toHaveBeenCalledWith({_id: '123'});
+    });
+  
+    it('should return 404 if event is not found', async () => {
+      Event.findOne.mockResolvedValue(null);
+  
+      const response = await request(app).get('/get-event-info/123');
+  
+      expect(response.statusCode).toBe(404);
+      expect(response.body.error).toBe('Event not found');
+    });
+  
+    
+  });
+
+  describe('GET /get-created-events/:userId', () => {
+    it('should return events created by a user', async () => {
+      const mockEvents = [
+        { eventName: 'Event 1', creatorID: 'user123' },
+        { eventName: 'Event 2', creatorID: 'user123' }
+        
+      ];
+      Event.find.mockResolvedValue(mockEvents);
+  
+      const response = await request(app).get('/get-created-events/user123');
+  
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual(mockEvents);
+      expect(Event.find).toHaveBeenCalledWith({ creatorID: 'user123' });
+    });
+  
+    it('should handle internal server error', async () => {
+      Event.find.mockRejectedValue(new Error('Internal server error'));
+  
+      const response = await request(app).get('/get-created-events/user123');
+  
+      expect(response.statusCode).toBe(500);
+      expect(response.body.error).toBe('Internal server error');
+    });
   
 
-    const response = await request(app)
-        .post('/events/create-event')
-        .send({
-            "creatorID": "65497a355e5ff8d811603097",
-            "eventName": "Test Event",
-            "eventCategory": "Test Category",
-            "eventDescription": "Test Description",
-            "eventDate": "2021-04-30T00:00:00.000Z",
-            "eventLocation": "Test Location",
-            "eventIcon": "Test Icon"
+  });
+
+  describe('GET /get-attending-events/:userId', () => {
+    it('should return events the user is attending', async () => {
+      const mockEvents = [
+        { eventName: 'Event 1', listAttendees: ['user123'] },
+        { eventName: 'Event 2', listAttendees: ['user123'] }
+      
+      ];
+      Event.find.mockResolvedValue(mockEvents);
+  
+      const response = await request(app).get('/get-attending-events/user123');
+  
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual(mockEvents);
+      expect(Event.find).toHaveBeenCalledWith({ listAttendees: 'user123' });
+    });
+  
+    it('should handle internal server error', async () => {
+      Event.find.mockRejectedValue(new Error('Internal server error'));
+  
+      const response = await request(app).get('/get-attending-events/user123');
+  
+      expect(response.statusCode).toBe(500);
+      expect(response.body.error).toBe('Internal server error');
+    });
+  
+    
+  });
+
+  describe('GET /search-events', () => {
+    it('should return matching events based on name and category', async () => {
+      const mockEvents = [
+        { eventName: 'Music Festival', eventCategory: 'Music' },
+        { eventName: 'Art Exhibition', eventCategory: 'Art' }
+     
+      ];
+      Event.find.mockResolvedValue(mockEvents);
+  
+      const response = await request(app).get('/search-events').query({ name: 'Festival', category: 'Music' });
+  
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual(mockEvents);
+      expect(Event.find).toHaveBeenCalledWith({
+        eventName: new RegExp('Festival', 'i'),
+        eventCategory: new RegExp('Music', 'i')
+      });
+    });
+    it('should handle internal server error', async () => {
+        Event.find.mockRejectedValue(new Error('Internal server error'));
+    
+        const response = await request(app).get('/search-events').query({ name: 'Festival' });
+    
+        expect(response.statusCode).toBe(500);
+        expect(response.text).toBe('Server Error');
+      });
+    
+    });
+
+    describe('GET /delete-event/:id', () => {
+        it('should delete the event if it exists', async () => {
+          Event.findById.mockResolvedValue({ _id: '12345' });
+          Event.deleteOne.mockResolvedValue({});
+      
+          const response = await request(app).get('/delete-event/12345');
+      
+          expect(response.statusCode).toBe(200);
+          expect(response.body.msg).toBe('Event removed');
+          expect(Event.deleteOne).toHaveBeenCalledWith({ _id: '12345' });
         });
+      
+        it('should return 404 if event is not found', async () => {
+          Event.findById.mockResolvedValue(null);
+      
+          const response = await request(app).get('/delete-event/12345');
+      
+          expect(response.statusCode).toBe(404);
+          expect(response.body.msg).toBe('Event not found');
+        });
+      
+        it('should handle server error', async () => {
+          Event.findById.mockRejectedValue(new Error('Server Error'));
+      
+          const response = await request(app).get('/delete-event/12345');
+      
+          expect(response.statusCode).toBe(500);
+          expect(response.text).toBe('Server Error');
+        });
+      
+       
+      });
 
-    
-    expect(response.statusCode).toBe(200);
-    // Additional assertions as needed
-});
+      describe('POST /attendevent', () => {
+        it('should confirm event attendance', async () => {
+          const mockEvent = { listAttendees: [], save: jest.fn() };
+          Event.findById.mockResolvedValue(mockEvent);
+      
+          const response = await request(app)
+            .post('/attendevent')
+            .send({ eventid: '12345', userid: 'user123' });
+      
+          expect(response.statusCode).toBe(201);
+          expect(response.body.message).toBe('Event attendance confirmed');
+          expect(mockEvent.listAttendees).toContain('user123');
+          expect(mockEvent.save).toHaveBeenCalled();
+        });
+      
+        it('should return 400 for invalid event', async () => {
+          Event.findById.mockResolvedValue(null);
+      
+          const response = await request(app)
+            .post('/attendevent')
+            .send({ eventid: 'invalid123', userid: 'user123' });
+      
+          expect(response.statusCode).toBe(400);
+          expect(response.body.error).toBe('Invalid event');
+        });
+      
+        it('should return 409 if user already attending', async () => {
+          const mockEvent = { listAttendees: ['user123'], save: jest.fn() };
+          Event.findById.mockResolvedValue(mockEvent);
+      
+          const response = await request(app)
+            .post('/attendevent')
+            .send({ eventid: '12345', userid: 'user123' });
+      
+          expect(response.statusCode).toBe(409);
+          expect(response.body.error).toBe('User already attending event');
+        });
+      
+        it('should handle server error', async () => {
+          Event.findById.mockRejectedValue(new Error('Server Error'));
+      
+          const response = await request(app)
+            .post('/attendevent')
+            .send({ eventid: '12345', userid: 'user123' });
+      
+          expect(response.statusCode).toBe(500);
+          expect(response.body.error).toBe('Internal Server Error');
+        });
+     
+      });
 
-test('GET /get should get the info of an event and return 200 status', async () => {
- 
-    
-    const response = await request(app)
-        .get('/events/get-event-info/654ad2f76df268019d83c445');
+      describe('POST /unattendevent', () => {
+        it('should remove user from event attendance', async () => {
+          const mockEvent = { listAttendees: ['user123'], save: jest.fn() };
+          Event.findById.mockResolvedValue(mockEvent);
+      
+          const response = await request(app)
+            .post('/unattendevent')
+            .send({ eventid: '12345', userid: 'user123' });
+      
+          expect(response.statusCode).toBe(201);
+          expect(response.body.message).toBe('Event attendance remove');
+          expect(mockEvent.listAttendees).not.toContain('user123');
+          expect(mockEvent.save).toHaveBeenCalled();
+        });
+      
+        it('should return 400 for invalid event', async () => {
+          Event.findById.mockResolvedValue(null);
+      
+          const response = await request(app)
+            .post('/unattendevent')
+            .send({ eventid: 'invalid123', userid: 'user123' });
+      
+          expect(response.statusCode).toBe(400);
+          expect(response.body.error).toBe('Invalid event');
+        });
+      
+        it('should return 409 if user is not attending', async () => {
+          const mockEvent = { listAttendees: [], save: jest.fn() };
+          Event.findById.mockResolvedValue(mockEvent);
+      
+          const response = await request(app)
+            .post('/unattendevent')
+            .send({ eventid: '12345', userid: 'user123' });
+      
+          expect(response.statusCode).toBe(409);
+          expect(response.body.error).toBe('User not attending event');
+        });
+      
+        it('should handle server error', async () => {
+          Event.findById.mockRejectedValue(new Error('Server Error'));
+      
+          const response = await request(app)
+            .post('/unattendevent')
+            .send({ eventid: '12345', userid: 'user123' });
+      
+          expect(response.statusCode).toBe(500);
+          expect(response.body.error).toBe('Internal Server Error');
+        });
+      
+      });
 
-    console.log(response);
-    expect(response.statusCode).toBe(200);
-    // Additional assertions as needed
-});
-
+      describe('POST /searchevent', () => {
+        it('should find events based on search string', async () => {
+          const mockEvents = [
+            { eventName: 'Summer Festival' },
+            { eventName: 'Winter Carnival' }
+          ];
+          Event.find.mockResolvedValue(mockEvents);
+      
+          const response = await request(app)
+            .post('/searchevent')
+            .send({ searchString: 'Festival' });
+      
+          expect(response.statusCode).toBe(201);
+          expect(response.body.events).toEqual(mockEvents);
+        });
+      
+        it('should return 404 when no events match the search string', async () => {
+          Event.find.mockResolvedValue([]);
+      
+          const response = await request(app)
+            .post('/searchevent')
+            .send({ searchString: 'Nonexistent' });
+      
+          expect(response.statusCode).toBe(404);
+          expect(response.body.error).toBe('No Events');
+        });
+      
+        it('should handle server error', async () => {
+          Event.find.mockRejectedValue(new Error('Server Error'));
+      
+          const response = await request(app)
+            .post('/searchevent')
+            .send({ searchString: 'Festival' });
+      
+          expect(response.statusCode).toBe(500);
+        });
+      
+      });
