@@ -24,16 +24,16 @@ class _EventsAttendingState extends State<EventsAttending> {
 
   Future<List<Event>> fetchCreatedEvents(String userId) async {
     try {
-          print('User ID: $userId');
+      print('User ID: $userId');
       print('JWT Token: ${currentUser.jwtToken}');
 
-      final response = await http.get(  
+      var response = await http.get(  
 
-        //Uri.parse('http://167.172.230.181:5000/get-created-events/$userId'),
-        Uri.parse('http://167.172.230.181:5000/events/get-created-events/6552fa1135a7d70b8dce9722'),
+       Uri.parse('http://167.172.230.181:5000/events/get-created-events/$userId'),
+        //Uri.parse('http://167.172.230.181:5000/events/get-created-events/6552fa1135a7d70b8dce9722'),
 
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': currentUser.jwtToken,
         },
       );
