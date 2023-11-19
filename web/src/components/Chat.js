@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getCookie } from './cookieUtils';
 
-function Chat() {
+function Chat(eventId) {
   const [chatVisible, setChatVisible] = useState(false);
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
-  const [eventId, setEventId] = useState(null);
   const storedToken = getCookie('token');
 
   useEffect(() => {
@@ -36,23 +35,31 @@ function Chat() {
     if (userInput.trim() === '') {
       return;
     }
-
+  
     try {
+      const timestamp = new Date().toISOString(); // Get current timestamp
+      const senderId = getUserId(); // Replace this with the function to get the sender's ID
+  
       await fetch('http://167.172.230.181:5000/addchatmessage', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: storedToken, // Include the JWT token in the headers
         },
-        body: JSON.stringify({ message: userInput }),
+        body: JSON.stringify({
+          message: userInput,
+          senderId: senderId,
+          timestamp: timestamp,
+        }),
       });
-
+  
       setUserInput('');
       fetchMessages(); // Update messages after sending a new message
     } catch (error) {
       console.error('Error sending chat message:', error);
     }
   };
+  
 
   return (
     <div className="ChatClass">
