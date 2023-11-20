@@ -39,10 +39,74 @@ Future<List<Event>> fetchEventList({String? query}) async {
   throw Exception("Failed to load events");
 }
 
+Future attendEvent(eventId, context) async {
+  const url = "http://167.172.230.181:5000/events/attendevent";
+  try {
+    var response = await http.post(Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': currentUser.jwtToken
+        },
+        body: jsonEncode(<String, String>{
+          "eventid": eventId,
+          "userid": currentUser.userID,
+        }));
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 201) {
+      // print("Attending successfully!!!!!");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("You are attending this event!"),
+        duration: Duration(milliseconds: 3000),
+      ));
+    } else if (response.statusCode == 400) {
+      print("Please provide a valid eventID");
+    } else if (response.statusCode == 409) {
+      print("This user already attends this event");
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Text('Wait!'),
+                content: const Text('You are already attending this event'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('OK'))
+                ],
+              ));
+    } else {
+      // statusCode == 500
+      print("Something went wrong with the server!");
+
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Text('Oops!'),
+                content: const Text(
+                    'Something went wrong with the server. Try it again later'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('OK'))
+                ],
+              ));
+    }
+  } on Exception catch (e) {
+    print("ERROR:$e");
+  }
+}
+
 List<Event> filterEvents(List<Event> events, String query) {
   return events
       .where((event) =>
-          event.eventName.toLowerCase().contains(query.toLowerCase()))
+          event.eventName.toLowerCase().contains(query.toLowerCase()) ||
+          (event.eventLocation.toLowerCase().contains(query.toLowerCase())) ||
+          (event.eventCategory.toLowerCase().contains(query.toLowerCase())))
       .toList();
 }
 
@@ -64,7 +128,7 @@ class _Search extends State<Search> {
         key: _scaffoldKey,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text('Events list'),
+          title: const Text('Events in your area'),
           actions: [
             IconButton(
                 onPressed: () {
@@ -91,6 +155,45 @@ class _Search extends State<Search> {
                             child: InkWell(
                               onTap: () {
                                 print('clicked instance: ${index}');
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: Text(
+                                              snapshot.data![index].eventName),
+                                          content: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                '${snapshot.data![index].eventLocation}\nDate: ${date.day}/${date.month}/${date.year}',
+                                                style: const TextStyle(
+                                                    fontSize: 18),
+                                              ),
+                                              const SizedBox(height: 16),
+                                              Text(snapshot.data![index]
+                                                  .eventDescription),
+                                              Text(snapshot
+                                                  .data![index].eventCategory),
+                                            ],
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  attendEvent(
+                                                      snapshot
+                                                          .data![index].eventId,
+                                                      context);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text('Attend')),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text('Close')),
+                                          ],
+                                        ));
                               },
                               child: ListTile(
                                 // date = snapshot.data![index].eventDate as DateTime;

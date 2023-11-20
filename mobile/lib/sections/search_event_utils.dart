@@ -52,20 +52,26 @@ class SearchEvent extends SearchDelegate {
       } else {
         // statusCode == 500
         print("Something went wrong with the server!");
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                "Something went wrong with the server. Try it again later"),
-            duration: Duration(milliseconds: 3000),
-          ));
-        }
+
+        showDialog(
+            context: scaffoldKey.currentContext!,
+            builder: (context) => AlertDialog(
+                  title: const Text('Oops!'),
+                  content: const Text(
+                      'Something went wrong with the server. Try it again later'),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(scaffoldKey.currentContext!);
+                        },
+                        child: const Text('OK'))
+                  ],
+                ));
       }
     } on Exception catch (e) {
       print("ERROR:$e");
     }
-
-    // return response.statusCode;
-  }
+  } // attend event
 
   @override
   List<Widget>? buildActions(BuildContext context) {
