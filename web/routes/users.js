@@ -1,102 +1,100 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const cors = require('cors');
 const User = require('../models/userSchema');
 const { gentoken } = require('../routes_help/verification');
 const { sendemailv } = require('../routes_help/emailtransport');
 const { sendpasswordv } = require('../routes_help/pemailtransport');
-const verifyToken  = require('../routes_help/jwt');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const verifyToken  = require('../routes_help/jwt');
 
-
-
-
-const JWT_SECRET = "TheIndustrialRevolutionAndItsConsequencesHaveBeenADisasterForTheHumanRace";//change this to an evniroment variable later
 router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
+  res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:80');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization,authorization');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS,Bearer');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
 
+const allowedOrigins = ['www.popout.world', 'popout.world'];
+router.use(cors({
+  origin: function(origin, callback){
+    if (!origin) {
+      return callback(null, true);
+    }
 
-  
+    if (allowedOrigins.includes(origin)) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
 
-// Login route
+}));
+
+const JWT_SECRET = "TheIndustrialRevolutionAndItsConsequencesHaveBeenADisasterForTheHumanRace";//change this to an evniroment variable later
+
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
         const user = await User.findOne({ username });
-
+   
         if (!user) {
-            return res.status(400).json({ error: 'User does not exist' });
+            return res.status(400).send({ error: 'Invalid login credentials' });
         }
-
-        if (!user.isverified) {
-            return res.status(400).send({ error: 'Not verified via email' });
-        }
-
+        //if (!user.isverified) {
+        //    return res.status(400).send({ error: 'Not verified via email' });
+        //}
         const isMatch = await bcrypt.compare(password, user.password);
+        
         if (!isMatch) {
-            return res.status(400).json({ error: 'Invalid login credentials' });
+            return res.status(400).send({ error: 'Invalid login credentials' });
         }
 
         // Create a JWT token that expires in 1 hour
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
-
+        
         res.json({ token, userID: user._id, message: 'Logged in successfully' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send(error);
     }
 });
 
-// Register route
 router.post('/register', async (req, res) => {
-    console.log("JWT SECRET: " + JWT_SECRET);
-    try {
-        const { username, password, firstname, lastname, email } = req.body;
-
-        let existingUser = await User.findOne({ username });
-        if (existingUser) {
-            return res.status(400).json({ error: 'Username already taken' });
-        }
-
-        existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ error: 'Email already registered' });
-        }
-
-        const emailvtoken = gentoken();
-      
-        const newUser = new User({
-            username,
-            password,
-            firstname,
-            lastname,
-            email,
-            emailvtoken
-        });
-
-        await newUser.save();
-
-        sendemailv(user.email, emailvtoken);
-        // Create a JWT token that expires in 1 hour
-        const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '1h' });
-
-        res.status(201).json({ token, message: 'User registered successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal server error' });
+  try {
+    const { username, password,  firstname, lastname,email} = req.body;
+    // Check if the user already exists
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists' });
     }
-});
 
+    const emailvtoken = gentoken();
+
+    // Create a new user
+    const user = new User({
+      username,
+      password,
+      email,
+      firstname,
+      lastname,
+      emailvtoken 
+    });
+    await user.save();
+
+    sendemailv(user.email, emailvtoken);
+
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 router.get('/user-info/:id',verifyToken, async (req, res) => {
     try {
       const { id } = req.params;
-      console.log(id);
       // Find the user by ID
       const user = await User.findOne({_id:id});
       if (!user) {
@@ -115,7 +113,6 @@ router.post('/deleteuser',verifyToken, async (req, res) => {
     try {
         const { id } = req.body;
         const existingUser = await User.findOne({ _id: id });
-        console.log(existingUser);
         if (!existingUser) {
             return res.status(400).send({ error: 'User does not exist' });
         }        
@@ -195,7 +192,7 @@ router.post('/searchfriend',verifyToken, async (req, res) => {
             friendQuery.username = searchRegex;
         }
         const user = await User.findById(idUser); 
-        const friends = await User.find(friendQuery);          
+        const friend = await User.findOne(friendQuery);          
         
         if (!user) {
             return res.status(400).send({ error: 'Invalid user' });
@@ -219,12 +216,10 @@ router.post('/searchfriend',verifyToken, async (req, res) => {
 //reset password route that sends email with code to user
 router.post('/resetpassword', async (req, res) => {
     try {
-        //console.log(code);
         const { email } = req.body;
       
         // Find the user by ID
         const user = await User.findOne({email});
-        console.log(user);
         if (!user) {
           return res.status(404).json({ error: 'Invalid email' });
         }
@@ -236,11 +231,11 @@ router.post('/resetpassword', async (req, res) => {
 
         return res.status(201).send('Email sent successfully');
         } catch (error) {
-          console.log(error);
           res.status(500).send(error);
         }
 });
 
+//reset password enter code route for code to be entered from email
 router.post('/resetpasswordentercode', async (req, res) => {
     try {
         const { code } = req.body;
@@ -276,8 +271,7 @@ router.post('/changepassword', async (req, res) => {
         
         if (isMatch){
             return res.status(408).send({error: 'cannot repeat a past password '});
-        }     
-        //if (confirmpassword  
+        }                 
         // Mark the email as verified
         user.password = newpassword;           
         await user.save();
@@ -311,3 +305,4 @@ router.post('/verifyemail', async (req, res) => {
     });
 
 module.exports = router;
+

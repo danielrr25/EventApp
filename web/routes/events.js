@@ -3,20 +3,36 @@ const router = express.Router();
 const Event = require('../models/eventSchema'); // Import your Event model
 const jwt = require('jsonwebtoken');
 const verifyToken  = require('../routes_help/jwt');
-
+const cors = require('cors');
 router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:3000');
+  res.header('Access-Control-Allow-Origin', 'http://167.172.230.181:80');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
 
+const allowedOrigins = ['www.popout.world', 'popout.world'];
+router.use(cors({
+  origin: function(origin, callback){
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+
+}));
+
 router.post('/create-event',verifyToken, async (req, res) => {
   try {
       // Destructuring assignment to extract values from request body
       const { creatorID, eventName, eventCategory,eventDescription, eventDate, eventLocation,eventIcon } = req.body;
-      
+  
       // Check if the event already exists
       let event = await Event.findOne({ eventName });
       if (event) {
@@ -34,14 +50,12 @@ router.post('/create-event',verifyToken, async (req, res) => {
           listAttendees: [] ,
           eventIcon
       });
-      console.log(event);
       // Save the event to the database
       await event.save();
 
       res.status(200).json({ msg: 'Event created successfully', event });
   } catch (err) {
-
-      console.log(err);
+      console.error(err.message);
       res.status(500).send('Server Error');
   }
 });
@@ -51,7 +65,7 @@ router.get('/get-event-info/:eventId',verifyToken, async (req, res) => {
   try {
       const { eventId } = req.params;
   
-   
+    
       // Find the user by ID
       const event = await Event.findOne({_id:eventId});
       if (!event) {
@@ -60,6 +74,7 @@ router.get('/get-event-info/:eventId',verifyToken, async (req, res) => {
   
       res.status(200).json(event);
     } catch (error) {
+      
       res.status(500).json({ error: 'Internal server error' });
     }
   });
@@ -74,6 +89,7 @@ router.get('/get-created-events/:userId',verifyToken, async (req, res) => {
 
     res.status(200).json(createdEvents);
   } catch (error) {
+    
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -89,6 +105,7 @@ router.get('/get-attending-events/:userId',verifyToken, async (req, res) => {
 
     res.status(200).json(attendingEvents);
   } catch (error) {
+    
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -106,6 +123,7 @@ router.get('/search-events',verifyToken, async (req, res) => {
     const events = await Event.find(query);
     res.json(events);
   } catch (error) {
+    
     res.status(500).send('Server Error');
   }
 });
@@ -187,12 +205,19 @@ router.post('/searchevent',verifyToken, async (req, res) => {
     
   try {
       const { searchString } = req.body; 
-      const eventQuery = {};
+      let eventQuery = {};
 
       if (searchString) {
           // This will create a case-insensitive regex that matches any username containing the searchString
           const searchRegex = new RegExp('.*' + searchString + '.*', 'i');
-          eventQuery.search = searchRegex;
+          eventQuery = {
+            $or: [
+              { eventName: searchRegex },
+              { eventCategory: searchRegex },
+              { eventDescription: searchRegex },
+              { eventLocation: searchRegex }
+            ]
+          };
       }
 
       //find all events that match the query

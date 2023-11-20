@@ -23,19 +23,17 @@ mongoose.connect('mongodb+srv://BigProject:TryG6F2BdhCa14KB@cluster1.uorvble.mon
 // Import and use your route files here
 const usersRouter = require('./routes/users');
 const eventsRouter = require('./routes/events');
-const attendeesRouter = require('./routes/attendees');
 const chatMessagesRouter = require('./routes/chatmessages');
 
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
-app.use('/attendees', attendeesRouter);
 app.use('/chatmessages', chatMessagesRouter);
 
 // Start the Express server
 const port = process.env.PORT || 3000;
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
 module.exports = app;
-
