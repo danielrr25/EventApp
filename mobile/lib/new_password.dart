@@ -135,7 +135,7 @@ class _NewPasswordState extends State<NewPassword> {
                             fillColor: const Color.fromARGB(255, 252, 250, 250),
                             filled: true,
                             hintStyle: TextStyle(color: Colors.grey[500]),
-                            errorMaxLines: 2,
+                            errorMaxLines: 3,
                             suffixIcon: InkWell(
                               onTap: () {
                                 setState(() {
@@ -152,7 +152,11 @@ class _NewPasswordState extends State<NewPassword> {
                               return "Enter New Password";
                             }
                             if (passwordValidator(value) == false) {
-                              return "Password Must Have a Capital and Lowercase letter, a Number, and a Special Symbol (Like !, #, @, etc.)";
+                              return "Password Must Be At Least 8 Characters Long, Have a Capital and Lowercase Letter, a Number, and a Special Symbol (!, #, @, etc.)";
+                            }
+
+                            if (value.length < 8) {
+                              return "Password Must Be At Least 8 Characters Long";
                             }
 
                             return null;
@@ -239,6 +243,13 @@ class _NewPasswordState extends State<NewPassword> {
                           if (statusCode == 404) {
                             setState(() {
                               errorMessage = "User Does Not Exist";
+                            });
+                          }
+
+                          if (statusCode == 408) {
+                            setState(() {
+                              errorMessage =
+                                  "Password Cannot Be A Previously Used Password";
                             });
                           }
 

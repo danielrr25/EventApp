@@ -27,6 +27,10 @@ class _UserSettingsState extends State<UserSettings> {
     if (response.statusCode == 201) {
       if (context.mounted) {
         Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Account Successfully Deleted"),
+          duration: Duration(milliseconds: 1500),
+        ));
       }
     }
 
@@ -71,6 +75,9 @@ class _UserSettingsState extends State<UserSettings> {
               onPressed: () {
                 print('Confirmed');
                 Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Successfully Logged out"),
+                    duration: Duration(milliseconds: 1500)));
                 Navigator.pop(context);
               },
             ),

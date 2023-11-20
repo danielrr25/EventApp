@@ -216,7 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         fillColor: const Color.fromARGB(255, 252, 250, 250),
                         filled: true,
                         hintStyle: TextStyle(color: Colors.grey[500]),
-                        errorMaxLines: 2,
+                        errorMaxLines: 3,
                         suffixIcon: InkWell(
                           onTap: () {
                             setState(() {
@@ -233,7 +233,11 @@ class _SignUpPageState extends State<SignUpPage> {
                           return "Enter Password";
                         }
                         if (passwordValidator(value) == false) {
-                          return "Password Must Have a Capital and Lowercase Letter, a Number, and a Special Symbol (Like !, #, @, etc.)";
+                          return "Password Must Be At Least 8 Characters Long, Have a Capital and Lowercase Letter, a Number, and a Special Symbol (!, #, @, etc.)";
+                        }
+
+                        if (value.length < 8) {
+                          return "Password Must Be At Least 8 Characters Long";
                         }
                         return null;
                       }),
