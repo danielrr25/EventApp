@@ -6,8 +6,11 @@ import 'package:http/http.dart' as http;
 
 class SearchEvent extends SearchDelegate {
   late Future<List<Event>> _eventList;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
-  Future attendEvent(eventId) async {
+  SearchEvent(this.scaffoldKey);
+
+  Future attendEvent(eventId, context) async {
     const url = "http://167.172.230.181:5000/events/attendevent";
     try {
       var response = await http.post(Uri.parse(url),
@@ -23,20 +26,39 @@ class SearchEvent extends SearchDelegate {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 201) {
-        print("Attending successfully!!!!!");
-        // if (context.mounted) {
-        //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        //     content: Text("Verification Code Sent To Email"),
-        //     duration: Duration(milliseconds: 1500),
-        //   ));
-        // }
+        // print("Attending successfully!!!!!");
+        ScaffoldMessenger.of(scaffoldKey.currentContext!)
+            .showSnackBar(const SnackBar(
+          content: Text("You are attending this event!"),
+          duration: Duration(milliseconds: 3000),
+        ));
       } else if (response.statusCode == 400) {
         print("Please provide a valid eventID");
       } else if (response.statusCode == 409) {
         print("This user already attends this event");
+        showDialog(
+            context: scaffoldKey.currentContext!,
+            builder: (context) => AlertDialog(
+                  title: const Text('Wait!'),
+                  content: const Text('You are already attending this event'),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(scaffoldKey.currentContext!);
+                        },
+                        child: const Text('OK'))
+                  ],
+                ));
       } else {
         // statusCode == 500
         print("Something went wrong with the server!");
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                "Something went wrong with the server. Try it again later"),
+            duration: Duration(milliseconds: 3000),
+          ));
+        }
       }
     } on Exception catch (e) {
       print("ERROR:$e");
@@ -106,7 +128,9 @@ class SearchEvent extends SearchDelegate {
                                     TextButton(
                                         onPressed: () {
                                           attendEvent(
-                                              filteredEvents[index].eventId);
+                                              filteredEvents[index].eventId,
+                                              context);
+                                          Navigator.pop(context);
                                         },
                                         child: const Text('Attend')),
                                     TextButton(

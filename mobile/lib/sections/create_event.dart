@@ -45,7 +45,7 @@ class _createEventState extends State<createEvent> {
             "eventDate": _dateTime.toString(),
             "eventLocation": _eventLocation.text,
             // "listAtendees": "100",
-            "eventIcon": "partyIcon",
+            "eventIcon": "socialIcon",
           }));
 
       if (context.mounted) {

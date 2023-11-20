@@ -55,19 +55,21 @@ class Search extends StatefulWidget {
 
 class _Search extends State<Search> {
   late final Future<List<Event>> _eventList = fetchEventList();
-  final bool _customIcon = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: const Text('Events list'),
           actions: [
             IconButton(
                 onPressed: () {
-                  showSearch(context: context, delegate: SearchEvent());
+                  showSearch(
+                      context: context, delegate: SearchEvent(_scaffoldKey));
                 },
                 icon: const Icon(Icons.search_rounded))
           ],
