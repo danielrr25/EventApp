@@ -8,7 +8,7 @@ class UserSettings extends StatefulWidget {
 
   @override
   State<UserSettings> createState() => _UserSettingsState();
-}
+} 
 
 class _UserSettingsState extends State<UserSettings> {
   final String url = "http://167.172.230.181:5000/users/deleteuser";
@@ -83,6 +83,8 @@ class _UserSettingsState extends State<UserSettings> {
           },
           child: const Text('Log out', style: TextStyle(fontSize: 20)),
         ),
+
+        
       ]),
     );
   }

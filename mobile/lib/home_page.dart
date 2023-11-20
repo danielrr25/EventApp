@@ -52,8 +52,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Create Event',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events attending',
+            icon: Icon(Icons.chat),
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -67,13 +67,14 @@ class _HomePageState extends State<HomePage> {
   Widget _buildPageContent() {
     switch (_selectedIndex) {
       case 0:
-        return HomeSection();
+        //return HomeSection();
+        return EventsAttending(userId: currentUser.userID);
       case 1:
         return Search();
       case 2:
         return createEvent();
       case 3:
-        return EventsAttending(userId: currentUser.userID); 
+        return HomeSection(); 
       case 4:
         return const UserSettings();
       default:
