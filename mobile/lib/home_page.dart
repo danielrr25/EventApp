@@ -6,6 +6,9 @@ import 'package:mobile/sections/home_section.dart';
 import 'package:mobile/sections/search_event.dart';
 import 'package:mobile/sections/user_section.dart';
 // import 'package:mobile/sections/search_bar.dart';
+import 'package:mobile/sections/events_attending';
+import 'package:mobile/loginpage.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -65,7 +68,8 @@ class _HomePageState extends State<HomePage> {
   Widget _buildPageContent() {
     switch (_selectedIndex) {
       case 0:
-        return HomeSection();
+        //return HomeSection();
+        return EventsAttending(userId: currentUser.userID);
       case 1:
         return Search();
       case 2:

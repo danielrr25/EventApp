@@ -1,0 +1,252 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile/loginpage.dart';
+
+
+class EventsAttending extends StatefulWidget {
+  final String userId;
+
+  const EventsAttending({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _EventsAttendingState createState() => _EventsAttendingState();
+}
+
+class _EventsAttendingState extends State<EventsAttending> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  late Future<List<Event>> _createdEvents;
+  late Future<List<Event>> _attendingEvents;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _createdEvents = fetchCreatedEvents(widget.userId);
+    _attendingEvents = fetchAttendingEvents(widget.userId);
+  }
+
+  Future<List<Event>> fetchCreatedEvents(String userId) async {
+    try {
+      print('User ID: $userId');
+      print('JWT Token: ${currentUser.jwtToken}');
+
+      var response = await http.get(
+        Uri.parse('http://167.172.230.181:5000/events/get-created-events/$userId'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': currentUser.jwtToken,
+        },
+      );
+
+      print('JWT Token: ${currentUser.jwtToken}');
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final eventsData = jsonData as List<dynamic>;
+
+        List<Event> events = eventsData.map((data) => Event.fromJson(data)).toList();
+
+        return events;
+      } else {
+        print('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception("Failed to load events");
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception("Failed to load events");
+    }
+  }
+
+  
+  Future<List<Event>> fetchAttendingEvents(String userId) async {
+    try {
+      var response = await http.get(
+        Uri.parse('http://167.172.230.181:5000/events/get-attending-events/$userId'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': currentUser.jwtToken,
+        },
+      );
+          print('Response Status Code (Attending Events): ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final eventsData = jsonData as List<dynamic>;
+
+        List<Event> events = eventsData.map((data) => Event.fromJson(data)).toList();
+        return events;
+      } else {
+        print('Failed to load data. Status code: ${response.statusCode}');
+        throw Exception('Failed to load attending events');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to load attending events');
+    }
+  }
+
+
+@override
+Widget build(BuildContext context) {
+  return DefaultTabController(
+    length: 2,
+    child: Scaffold(
+      body: Column(
+        children: [
+          Container(
+            color: Colors.blue, // Set background color for the TabBar
+            child: TabBar(
+              labelColor: Colors.black, // Set text color for selected tab
+              unselectedLabelColor: Colors.grey, // Set text color for unselected tabs
+              indicatorColor: Colors.yellow, // Set color for the indicator
+              tabs: [
+                Tab(
+                  child: Text(
+                    'My Events',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    'Attending Events',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                _buildMyEvents(),
+                _buildAttendingEvents(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
+  Widget _buildMyEvents() {
+    return Center(
+      child: FutureBuilder<List<Event>>(
+        future: _createdEvents,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Text('You haven\'t created any events.');
+          } else {
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+              ),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return _buildEventCard(snapshot.data![index]);
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildAttendingEvents() {
+    return Center(
+      child: FutureBuilder<List<Event>>(
+        future: _attendingEvents,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Text('You aren\'t attending any events.');
+          } else {
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+              ),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return _buildEventCard(snapshot.data![index]);
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildEventCard(Event event) {
+    return Card(
+      elevation: 5.0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(event.eventName, style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Location: ${event.eventLocation}'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Creator ID: ${event.creatorID}'),
+          ),
+          // Add more details if needed
+        ],
+      ),
+    );
+  }
+}
+
+
+
+class Event {
+  final String creatorID;
+  final String eventName;
+  final String eventLocation;
+  final String eventDate;
+  final String eventCategory;
+  final String eventDescription;
+  final List<String> listAttendees;
+
+  Event({
+    required this.creatorID,
+    required this.eventName,
+    required this.eventLocation,
+    required this.eventDate,
+    required this.eventCategory,
+    required this.eventDescription,
+    required this.listAttendees,
+  });
+
+
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      creatorID: json['creatorID'] as String,
+      eventName: json['eventName'] as String,
+      eventLocation: json['eventLocation'] as String,
+      eventDate: json['eventDate'] as String,
+      eventCategory: json['eventCategory'] as String,
+      eventDescription: json['eventDescription'] as String,
+      listAttendees: List<String>.from(json['listAttendees']),
+    );
+  }
+}

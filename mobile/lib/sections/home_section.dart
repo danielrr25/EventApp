@@ -22,6 +22,10 @@ class _HomeSectionState extends State<HomeSection> {
   late final Future<List<Event>> _eventList = _fetchEventList();
   List<Event> filteredEventData = [];
 
+  // Variable to keep track of the selected category
+  String selectedCategory = '';
+
+
   @override
   void initState() {
     super.initState();
@@ -64,13 +68,21 @@ class _HomeSectionState extends State<HomeSection> {
   void filterEventsByCategory(String category) async {
   print('All Events: $eventDataList');
   setState(() {
-    filteredEventData = eventDataList
-        .where((event) =>
-            event.eventCategory.toLowerCase() == category.toLowerCase())
-        .toList();
+    if (selectedCategory == category) {
+      // If the same category is selected again, reset to show all events
+      selectedCategory = '';
+      filteredEventData = [];
+    } else {
+      selectedCategory = category;
+      filteredEventData = eventDataList
+          .where((event) =>
+              event.eventCategory.toLowerCase() == category.toLowerCase())
+          .toList();
+    }
     print('Filtered Events: $filteredEventData');
   });
 }
+
 
 
   @override
@@ -80,13 +92,12 @@ class _HomeSectionState extends State<HomeSection> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Category selection circles displayed in a row
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CategoryCircle(
                   icon: Icons.sports_soccer,
-                  isSelected: true,
+                  isSelected: selectedCategory == 'Sports',
                   onPressed: () {
                     filterEventsByCategory('Sports');
                   },
@@ -94,40 +105,78 @@ class _HomeSectionState extends State<HomeSection> {
                 ),
                 CategoryCircle(
                   icon: Icons.music_note,
-                  isSelected: true,
+                  isSelected: selectedCategory == 'Music',
                   onPressed: () {
                     filterEventsByCategory('Music');
                   },
                   label: 'Music',
                 ),
-                // Add more CategoryCircle widgets as needed
+                CategoryCircle(
+                  icon: Icons.school,
+                  isSelected: selectedCategory == 'Education',
+                  onPressed: () {
+                    filterEventsByCategory('Education');
+                  },
+                  label: 'Education',
+                ),
+                CategoryCircle(
+                  icon: Icons.local_bar,
+                  isSelected: selectedCategory == 'Parties',
+                  onPressed: () {
+                    filterEventsByCategory('Parties');
+                  },
+                  label: 'Parties',
+                ),
+                CategoryCircle(
+                  icon: Icons.color_lens_sharp,
+                  isSelected: selectedCategory == 'Art',
+                  onPressed: () {
+                    filterEventsByCategory('Art');
+                  },
+                  label: 'Art',
+                ),
+                CategoryCircle(
+                  icon: Icons.people,
+                  isSelected: selectedCategory == 'Social',
+                  onPressed: () {
+                    filterEventsByCategory('Social');
+                  },
+                  label: 'Social',
+                ),
+                CategoryCircle(
+                  icon: Icons.more,
+                  isSelected: selectedCategory == 'More',
+                  onPressed: () {
+                    filterEventsByCategory('More');
+                  },
+                  label: 'More',
+                ),
               ],
             ),
-
-            // Display events using GridView.builder
             Expanded(
               child: FutureBuilder<List<Event>>(
                 future: _eventList,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    // Show a loading indicator while waiting for data
                     return CircularProgressIndicator();
                   } else if (snapshot.hasError) {
-                    // Display an error message if data fetching fails
                     return Text('Error: ${snapshot.error}');
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    // Display a message when no events are found
                     return Text('No events found.');
                   } else {
+                    final eventsToDisplay = selectedCategory.isNotEmpty
+                        ? filteredEventData
+                        : snapshot.data!;
                     return GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                       ),
-                      itemCount: snapshot.data!.length,
+                      itemCount: eventsToDisplay.length,
                       itemBuilder: (context, index) {
-                        // Display each event using the EventCard widget
-                        return EventCard(eventData: snapshot.data![index]);
+                        return EventCard(
+                          eventData: eventsToDisplay[index],
+                        );
                       },
                     );
                   }
@@ -151,17 +200,38 @@ class EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(8.0),
-      child: ListTile(
-        title: Text(eventData.eventName),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Location: ${eventData.eventLocation}'),
-
-            Text('Category: ${eventData.eventCategory}'),
-            // You can add more details if needed
-          ],
-        ),
+      child: Stack(
+        children: [
+          ListTile(
+            title: Text(
+              eventData.eventName,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              )
+              ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Location: ${eventData.eventLocation}'),
+                Text('Category: ${eventData.eventCategory}'),
+                // You can add more details if needed
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 8.0,
+            right: 8.0,
+            child: CircleAvatar(
+              backgroundColor: Colors.blue, // Customize the color as needed
+              radius: 12.0,
+              child: Text(
+                eventData.listAttendees.length.toString(),
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
