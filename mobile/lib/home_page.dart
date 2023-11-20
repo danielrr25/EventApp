@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/sections/chat_section.dart';
 import 'package:mobile/sections/create_event.dart';
 import 'package:mobile/sections/home_section.dart';
 import 'package:mobile/sections/search_event.dart';
@@ -49,8 +50,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Create Event',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events attending',
+            icon: Icon(Icons.chat_rounded),
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -70,7 +71,7 @@ class _HomePageState extends State<HomePage> {
       case 2:
         return createEvent();
       case 3:
-        return Center(child: Text('Events Page'));
+        return ChatSection();
       case 4:
         return const UserSettings();
       default:
