@@ -25,7 +25,6 @@ class _HomeSectionState extends State<HomeSection> {
   // Variable to keep track of the selected category
   String selectedCategory = '';
 
-
   @override
   void initState() {
     super.initState();
@@ -48,9 +47,10 @@ class _HomeSectionState extends State<HomeSection> {
         final eventsData = jsonData['events'];
 
         // Assign the fetched events to eventDataList
-        eventDataList = eventsData.map<Event>((e) => Event.fromJson(e)).toList();
-        
-          print('Fetched Events: $eventDataList'); // Add this line
+        eventDataList =
+            eventsData.map<Event>((e) => Event.fromJson(e)).toList();
+
+        print('Fetched Events: $eventDataList'); // Add this line
 
         return eventDataList;
       } else {
@@ -66,24 +66,22 @@ class _HomeSectionState extends State<HomeSection> {
 
   // Method to filter events locally based on category
   void filterEventsByCategory(String category) async {
-  print('All Events: $eventDataList');
-  setState(() {
-    if (selectedCategory == category) {
-      // If the same category is selected again, reset to show all events
-      selectedCategory = '';
-      filteredEventData = [];
-    } else {
-      selectedCategory = category;
-      filteredEventData = eventDataList
-          .where((event) =>
-              event.eventCategory.toLowerCase() == category.toLowerCase())
-          .toList();
-    }
-    print('Filtered Events: $filteredEventData');
-  });
-}
-
-
+    print('All Events: $eventDataList');
+    setState(() {
+      if (selectedCategory == category) {
+        // If the same category is selected again, reset to show all events
+        selectedCategory = '';
+        filteredEventData = [];
+      } else {
+        selectedCategory = category;
+        filteredEventData = eventDataList
+            .where((event) =>
+                event.eventCategory.toLowerCase() == category.toLowerCase())
+            .toList();
+      }
+      print('Filtered Events: $filteredEventData');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +97,7 @@ class _HomeSectionState extends State<HomeSection> {
                   icon: Icons.sports_soccer,
                   isSelected: selectedCategory == 'Sports',
                   onPressed: () {
+                    print('You just clicked me');
                     filterEventsByCategory('Sports');
                   },
                   label: 'Sports',
@@ -200,38 +199,41 @@ class EventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(8.0),
-      child: Stack(
-        children: [
-          ListTile(
-            title: Text(
-              eventData.eventName,
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              )
-              ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Location: ${eventData.eventLocation}'),
-                Text('Category: ${eventData.eventCategory}'),
-                // You can add more details if needed
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 8.0,
-            right: 8.0,
-            child: CircleAvatar(
-              backgroundColor: Colors.blue, // Customize the color as needed
-              radius: 12.0,
-              child: Text(
-                eventData.listAttendees.length.toString(),
-                style: TextStyle(color: Colors.white),
+      child: InkWell(
+        onTap: () {
+          print('you just pressed me');
+        },
+        child: Stack(
+          children: [
+            ListTile(
+              title: Text(eventData.eventName,
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  )),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Location: ${eventData.eventLocation}'),
+                  Text('Category: ${eventData.eventCategory}'),
+                  // You can add more details if needed
+                ],
               ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 8.0,
+              right: 8.0,
+              child: CircleAvatar(
+                backgroundColor: Colors.blue, // Customize the color as needed
+                radius: 12.0,
+                child: Text(
+                  eventData.listAttendees.length.toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
